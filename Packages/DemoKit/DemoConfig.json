@@ -1,0 +1,146 @@
+{
+  "contacts" : [
+    { "id" : 8000000000001001, "standing" : 10 },
+    { "id" : 8000000000001002, "standing" : 5 },
+    { "id" : 8000000000001003, "standing" : 5 },
+    { "id" : 8000000000001004, "standing" : 0 },
+    { "id" : 8000000000001005, "standing" : -5 }
+  ],
+  "mail" : {
+    "labels" : [
+      { "color" : "#ffffff", "labelID" : 1, "name" : "[Inbox]" },
+      { "color" : "#ffffff", "labelID" : 2, "name" : "[Sent]" },
+      { "color" : "#ffffff", "labelID" : 4, "name" : "[Corp]" },
+      { "color" : "#ffffff", "labelID" : 8, "name" : "[Alliance]" },
+      { "color" : "#ffff01", "labelID" : 16, "name" : "Market" },
+      { "color" : "#00ff33", "labelID" : 32, "name" : "Industry" }
+    ],
+    "mailingLists" : [
+      { "mailingListID" : 8000000000002001, "name" : "Todaki Industry Circle" },
+      { "mailingListID" : 8000000000002002, "name" : "New Pilot Fleets" }
+    ],
+    "messages" : [
+      {
+        "body" : "Welcome aboard, pilot.<br><br>The School of Applied Knowledge has assigned you a hangar at Todaki VI - Moon 1. Your training plan is ready; keep the skill queue running at all times, even while you sleep.<br><br>Fly safe,<br>Instructor Teva Raskold",
+        "from" : 8000000000001001,
+        "hoursAgo" : 2.5,
+        "isRead" : false,
+        "labels" : [1],
+        "mailID" : 8000000000003001,
+        "subject" : "Welcome to the School of Applied Knowledge"
+      },
+      {
+        "body" : "Reminder for the circle: the shared research slots at the home station free up on Thursday. If you have blueprint copies queued, check their material efficiency before you start the next run.<br><br>Ilmari",
+        "from" : 8000000000001002,
+        "hoursAgo" : 7,
+        "isRead" : false,
+        "labels" : [1, 32],
+        "mailID" : 8000000000003002,
+        "recipients" : [{ "id" : 8000000000002001, "type" : "mailing_list" }],
+        "subject" : "Research slots open on Thursday"
+      },
+      {
+        "body" : "Hi,<br><br>Tritanium buy orders in the region are sitting well above their weekly average. If you have ore in your hangar, refining and selling now looks better than hauling it to a trade hub.<br><br>Sella",
+        "from" : 8000000000001003,
+        "hoursAgo" : 20,
+        "isRead" : true,
+        "labels" : [1, 16],
+        "mailID" : 8000000000003003,
+        "subject" : "Market tip: Tritanium is up"
+      },
+      {
+        "body" : "New pilot roam this weekend, 19:00 EVE time, forming at the home station. Bring a fitted frigate, a spare ship and some cheap ammunition. No experience needed; we will explain everything on comms.",
+        "from" : 8000000000001004,
+        "hoursAgo" : 31,
+        "isRead" : false,
+        "labels" : [1],
+        "mailID" : 8000000000003004,
+        "recipients" : [{ "id" : 8000000000002002, "type" : "mailing_list" }],
+        "subject" : "Weekend roam for new pilots"
+      },
+      {
+        "body" : "Your courier contract arrived intact and on time. Thank you for the quick delivery; I will send the next one your way.<br><br>Regards,<br>Orvan Dekker",
+        "from" : 8000000000001005,
+        "hoursAgo" : 52,
+        "isRead" : true,
+        "labels" : [1],
+        "mailID" : 8000000000003005,
+        "subject" : "Courier contract delivered"
+      },
+      {
+        "body" : "Two data sites showed up two jumps from the home station. Relic and data analyzers work well with a scanning frigate. Remember to fit a cloak if you go deeper into low security space.",
+        "from" : 8000000000001003,
+        "hoursAgo" : 76,
+        "isRead" : true,
+        "labels" : [1],
+        "mailID" : 8000000000003006,
+        "subject" : "Exploration sites nearby"
+      },
+      {
+        "body" : "Quick reminder: manufacturing jobs keep running while you are offline, but finished items wait at the facility until you deliver them. Check the industry window before you undock.<br><br>Ilmari",
+        "from" : 8000000000001002,
+        "hoursAgo" : 101,
+        "isRead" : true,
+        "labels" : [1, 32],
+        "mailID" : 8000000000003007,
+        "subject" : "Deliver your finished jobs"
+      },
+      {
+        "body" : "For a new pilot: train the core fitting skills first (CPU Management, Power Grid Management), then the support skills for your ship. They pay off in every ship you will ever fly.<br><br>Teva",
+        "from" : 8000000000001001,
+        "hoursAgo" : 140,
+        "isRead" : true,
+        "labels" : [1],
+        "mailID" : 8000000000003008,
+        "subject" : "Which skills to train next"
+      }
+    ],
+    "senders" : [
+      { "id" : 8000000000001001, "name" : "Teva Raskold" },
+      { "id" : 8000000000001002, "name" : "Ilmari Venko" },
+      { "id" : 8000000000001003, "name" : "Sella Okkanen" },
+      { "id" : 8000000000001004, "name" : "Kaito Brennholt" },
+      { "id" : 8000000000001005, "name" : "Orvan Dekker" }
+    ]
+  },
+  "pilot" : {
+    "corporationID" : 1000044,
+    "corporationName" : "School of Applied Knowledge",
+    "homeSolarSystemID" : 30001407,
+    "homeStationID" : 60004420,
+    "homeStationName" : "Todaki VI - Moon 1 - School of Applied Knowledge",
+    "name" : "Demo Pilot"
+  },
+  "plan" : [
+    { "level" : 4, "skillID" : 3426 },
+    { "level" : 4, "skillID" : 3413 },
+    { "level" : 3, "skillID" : 3330 },
+    { "level" : 3, "skillID" : 3301 },
+    { "level" : 3, "skillID" : 3449 },
+    { "level" : 3, "skillID" : 3436 },
+    { "level" : 3, "skillID" : 3380 }
+  ],
+  "sizeBudget" : 1500000,
+  "syntheticCharacterNames" : [
+    "Aldren Vask",
+    "Mira Tolvaine",
+    "Jorek Halloway",
+    "Siv Arranen",
+    "Tobin Marsk",
+    "Lessa Quorin",
+    "Edda Valtonen",
+    "Rurik Sandvel",
+    "Nalia Petrosk",
+    "Corvin Ahlberg",
+    "Yuna Kessrin",
+    "Pell Odegaard"
+  ],
+  "syntheticCorporationNames" : [
+    "Northline Logistics",
+    "Ashfall Mining Collective",
+    "Quiet Orbit Traders",
+    "Bluewater Fabrication",
+    "Kestrel Survey Group",
+    "Lantern Point Holdings"
+  ]
+}
