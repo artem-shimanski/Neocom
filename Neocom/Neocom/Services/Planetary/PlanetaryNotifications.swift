@@ -1,3 +1,4 @@
+import DemoFixtures
 import Foundation
 import UserNotifications
 
@@ -167,6 +168,8 @@ enum PlanetaryNotifications {
     /// the app's one schedule (`LocalNotifications`): it serializes the replacements and shares
     /// iOS's pending budget fairly with the other kinds.
     static func reschedule(characterID: Int64, report: PlanetaryReport) {
+        // The demo pilot's colonies are recorded; their timers notify nobody.
+        guard !DemoIDs.contains(characterID) else { return }
         let alerts = plan(report: report, settings: .load(characterID: characterID))
         let prefix = NotificationKind.planetary.scope(characterID: characterID)
         let requests = alerts.map { alert in

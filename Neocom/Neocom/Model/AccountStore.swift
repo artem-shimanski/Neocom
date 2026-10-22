@@ -1,13 +1,21 @@
+import DemoFixtures
 import ESIKit
 import Foundation
 import Observation
+import SDEKit
 import SwiftData
+import TrainingKit
 
 /// The authorized characters, the selected one, and their ESI clients and per-character sheets.
 @Observable
 @MainActor
 final class AccountStore {
+    /// The signed-in characters. Never contains the demo pilot.
     private(set) var accounts: [Account] = []
+
+    /// The demo pilot while the demo is on. Kept out of `accounts`, so widgets, notifications
+    /// and background checks never see it.
+    private(set) var demoAccount: Account?
 
     var currentAccountID: Int64? {
         didSet {
@@ -19,7 +27,13 @@ final class AccountStore {
 
     var currentAccount: Account? {
         guard let currentAccountID else { return nil }
+        if let demoAccount, demoAccount.id == currentAccountID { return demoAccount }
         return accounts.first { $0.id == currentAccountID }
+    }
+
+    /// The characters a fit can be flown by: the signed-in ones and the demo pilot.
+    var pickerAccounts: [Account] {
+        demoAccount.map { accounts + [$0] } ?? accounts
     }
 
     @ObservationIgnored private let keychain: Keychain
@@ -42,6 +56,8 @@ final class AccountStore {
     @ObservationIgnored private var mailSheets: [Int64: MailSheet] = [:]
     @ObservationIgnored private var killmailSheets: [Int64: KillmailsSheet] = [:]
     @ObservationIgnored private var plans: [Int64: TrainingPlanStore] = [:]
+    /// The demo pilot's training plan lives in memory only, never in the CloudKit container.
+    @ObservationIgnored private var demoPlanContainer: ModelContainer?
 
     /// Incremented by every sign-in and by `dropCachedData()`. Re-authorizing the selected
     /// character replaces its sheets without changing `currentAccountID`; views observe this to
@@ -50,6 +66,7 @@ final class AccountStore {
 
     private static let accountsKey = "accounts"
     private static let currentAccountKey = "currentAccountID"
+    private static let demoActiveKey = "demoPilotActive"
 
     /// Dependencies are optional so the defaults are created on the main actor.
     init(keychain: Keychain? = nil,
@@ -70,18 +87,9 @@ final class AccountStore {
     func signIn() async throws -> Account {
         let (claims, token) = try await authenticator.signIn()
         let account = Account(claims: claims, token: token)
+        exitDemo()
         // A re-authorization brings a new token pair and possibly new scopes.
-        sessions[account.id] = nil
-        sheets[account.id] = nil
-        fittingSheets[account.id] = nil
-        planetSheets[account.id] = nil
-        // Invalidated so a long fetch does not overwrite the new sheet's file.
-        assetSheets[account.id]?.invalidate()
-        assetSheets[account.id] = nil
-        dropBusinessSheets(of: account.id)
-        dropMailSheet(of: account.id)
-        dropKillmailsSheet(of: account.id)
-        plans[account.id] = nil
+        dropState(of: account.id)
         upsert(account)
         currentAccountID = account.id
         signInGeneration += 1
@@ -92,17 +100,7 @@ final class AccountStore {
         // Removes the character's training plan and ESI cache; other characters are unaffected.
         plan(for: account)?.clear()
         accounts.removeAll { $0.id == account.id }
-        sessions[account.id] = nil
-        sheets[account.id] = nil
-        fittingSheets[account.id] = nil
-        planetSheets[account.id] = nil
-        // Invalidated so a long fetch does not write its file back after the cache is cleared.
-        assetSheets[account.id]?.invalidate()
-        assetSheets[account.id] = nil
-        dropBusinessSheets(of: account.id)
-        dropMailSheet(of: account.id)
-        dropKillmailsSheet(of: account.id)
-        plans[account.id] = nil
+        dropState(of: account.id)
         ESICache().removeAll(characterID: account.id)
         LocalNotifications.shared.removeAll(characterID: account.id)
         if currentAccountID == account.id {
@@ -110,6 +108,48 @@ final class AccountStore {
         }
         save()
         WidgetSnapshotWriter.shared.setNeedsUpdate()
+    }
+
+    /// Drops the session, sheets and plan of a character.
+    private func dropState(of characterID: Int64) {
+        sessions[characterID] = nil
+        sheets[characterID] = nil
+        fittingSheets[characterID] = nil
+        planetSheets[characterID] = nil
+        // Invalidated so a long fetch does not write its file back after the cache is cleared
+        // or over the new sheet's file.
+        assetSheets[characterID]?.invalidate()
+        assetSheets[characterID] = nil
+        dropBusinessSheets(of: characterID)
+        dropMailSheet(of: characterID)
+        dropKillmailsSheet(of: characterID)
+        plans[characterID] = nil
+    }
+
+    // MARK: - Demo
+
+    /// Selects the demo pilot, starting from a clean cache; no-op when the app has no demo data.
+    func enterDemo() {
+        guard let archive = DemoPilot.archive else { return }
+        if demoAccount == nil {
+            ESICache().removeAll(characterID: archive.pilot.id)
+            demoAccount = Account(demo: archive.pilot)
+            defaults.set(true, forKey: Self.demoActiveKey)
+        }
+        currentAccountID = archive.pilot.id
+    }
+
+    /// Ends the demo and drops everything it cached; selects the first signed-in character.
+    func exitDemo() {
+        guard let demoAccount else { return }
+        self.demoAccount = nil
+        defaults.set(false, forKey: Self.demoActiveKey)
+        dropState(of: demoAccount.id)
+        demoPlanContainer = nil
+        ESICache().removeAll(characterID: demoAccount.id)
+        if currentAccountID == demoAccount.id {
+            currentAccountID = accounts.first?.id
+        }
     }
 
     /// Invalidates and drops every character's sheets; called by `CachedData.clear`. Sessions
@@ -272,7 +312,11 @@ final class AccountStore {
     func killmails(for account: Account) -> KillmailsSheet {
         if let sheet = killmailSheets[account.id] { return sheet }
 
-        let sheet = KillmailsSheet(characterID: account.id, client: client(for: account), scopes: account.hasScope)
+        // The demo pilot's killmails are recorded, so their bodies come from its own client.
+        let client = client(for: account)
+        let sheet = KillmailsSheet(characterID: account.id, client: client,
+                                   publicClient: account.isDemo ? client : ESIService.publicClient,
+                                   scopes: account.hasScope)
         killmailSheets[account.id] = sheet
         return sheet
     }
@@ -291,6 +335,7 @@ final class AccountStore {
     /// The training plan of `account`; `nil` without a model context (previews, tests).
     func plan(for account: Account) -> TrainingPlanStore? {
         if let plan = plans[account.id] { return plan }
+        if account.isDemo { return demoPlan(for: account) }
         guard let modelContext else { return nil }
 
         let plan = TrainingPlanStore(context: modelContext, characterID: account.id)
@@ -302,11 +347,29 @@ final class AccountStore {
         currentAccount.flatMap(plan(for:))
     }
 
+    /// The demo pilot's plan in an in-memory container, seeded from the demo data.
+    private func demoPlan(for account: Account) -> TrainingPlanStore? {
+        let configuration = ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
+        guard let container = try? ModelContainer(for: TrainingPlanEntry.self, configurations: configuration)
+        else { return nil }
+        demoPlanContainer = container
+        let plan = TrainingPlanStore(context: container.mainContext, characterID: account.id)
+        let items = DemoPilot.archive?.plan ?? []
+        plan.add(items.map { SkillCatalog.Requirement(skillID: TypeID(rawValue: UInt32(clamping: $0.skillID)),
+                                                      level: $0.level) })
+        plans[account.id] = plan
+        return plan
+    }
+
     private func session(for account: Account) -> AccountSession {
         if let session = sessions[account.id] { return session }
 
-        let session = AccountSession(account: account) { [weak self] token in
-            await self?.replaceToken(token, of: account.id)
+        let session = if account.isDemo, let archive = DemoPilot.archive {
+            AccountSession(demoClient: ESIService.demoClient(archive: archive))
+        } else {
+            AccountSession(account: account) { [weak self] token in
+                await self?.replaceToken(token, of: account.id)
+            }
         }
         sessions[account.id] = session
         return session
@@ -337,8 +400,17 @@ final class AccountStore {
            let stored = try? JSONDecoder().decode([Account].self, from: data) {
             accounts = stored
         }
+        if defaults.bool(forKey: Self.demoActiveKey) {
+            if let archive = DemoPilot.archive {
+                // Recorded dates are rebased on every fetch; nothing cached survives a launch.
+                ESICache().removeAll(characterID: archive.pilot.id)
+                demoAccount = Account(demo: archive.pilot)
+            } else {
+                defaults.set(false, forKey: Self.demoActiveKey)
+            }
+        }
         let storedID = (defaults.object(forKey: Self.currentAccountKey) as? NSNumber)?.int64Value
-        currentAccountID = accounts.contains { $0.id == storedID } ? storedID : accounts.first?.id
+        currentAccountID = pickerAccounts.contains { $0.id == storedID } ? storedID : accounts.first?.id
     }
 
     private func save() {

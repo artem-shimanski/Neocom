@@ -8457,6 +8457,16 @@
         }
       }
     },
+    "Demo" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Демо"
+          }
+        }
+      }
+    },
     "Deployables" : {
       "comment" : "Plural EVE category name, a section of assets.",
       "localizations" : {
@@ -9527,6 +9537,26 @@
         }
       }
     },
+    "Exit Demo" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выйти из демо"
+          }
+        }
+      }
+    },
+    "Exit Demo?" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выйти из демо?"
+          }
+        }
+      }
+    },
     "Exp" : {
       "localizations" : {
         "ru" : {
@@ -9613,6 +9643,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Скоро истекает"
+          }
+        }
+      }
+    },
+    "Explore with a demo pilot" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть на демо-пилоте"
+          }
+        }
+      }
+    },
+    "Explore with a Demo Pilot" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть на демо-пилоте"
           }
         }
       }
@@ -14624,6 +14674,16 @@
         }
       }
     },
+    "No sign-in needed. Recorded data; nothing is sent to EVE." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вход не нужен. Записанные данные; в EVE ничего не отправляется."
+          }
+        }
+      }
+    },
     "No skill in any queue has an end time ahead." : {
       "localizations" : {
         "ru" : {
@@ -18415,6 +18475,16 @@
         }
       }
     },
+    "Sign in with EVE Online to see your characters here, or look around with a demo pilot." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Войдите через EVE Online, чтобы увидеть здесь своих персонажей, или осмотритесь с демо-пилотом."
+          }
+        }
+      }
+    },
     "Sign in with EVE Online to see your characters here." : {
       "localizations" : {
         "ru" : {
@@ -19861,6 +19931,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Срок отсчитывается с момента принятия: дни на выполнение идут после того, как контракт принят. Завершите доставку в клиенте EVE в пункте назначения."
+          }
+        }
+      }
+    },
+    "The demo pilot can't change anything in EVE. Sign in with your character to do this." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Демо-пилот ничего не может изменить в EVE. Чтобы сделать это, войдите своим персонажем."
+          }
+        }
+      }
+    },
+    "The demo pilot will be removed, with everything changed during the demo." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Демо-пилот будет удалён вместе со всем, что изменено в демо."
           }
         }
       }

@@ -36,7 +36,7 @@ struct FitPilotRoster {
     let currentID: Int64?
 
     init(accounts: AccountStore, catalog: SkillCatalog?) {
-        members = accounts.accounts.map { account in
+        members = accounts.pickerAccounts.map { account in
             let sheet = accounts.sheet(for: account)
             let pilot = sheet.snapshot == nil ? nil : catalog.map { sheet.pilot(using: $0) }
             return Member(account: account, sheet: sheet, pilot: pilot)

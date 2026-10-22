@@ -1,5 +1,9 @@
+import DemoFixtures
+import DemoKit
 import ESIKit
 import Foundation
+import OpenAPIRuntime
+import os
 
 /// The app's ESI stack, assembled from ESIKit.
 ///
@@ -27,7 +31,8 @@ nonisolated enum ESIService {
     private static let errorLimiter = ESIErrorLimiter(policy: configuration.errorLimit)
 
     /// A client for routes that need no character.
-    static let publicClient = Client(esi: ESI(configuration: configuration, errorLimiter: errorLimiter))
+    static let publicClient = Client(esi: ESI(configuration: configuration, errorLimiter: errorLimiter,
+                                              additionalMiddlewares: additionalMiddlewares))
 
     /// A client that signs requests as the character behind `tokenProvider`, refreshing the
     /// token and retrying on `401`.
@@ -35,7 +40,38 @@ nonisolated enum ESIService {
         Client(esi: ESI(
             configuration: configuration,
             tokenProvider: tokenProvider,
-            errorLimiter: errorLimiter
+            errorLimiter: errorLimiter,
+            additionalMiddlewares: additionalMiddlewares
         ))
     }
+
+    /// A client for the demo pilot: answers from `archive`, sends public requests upstream
+    /// without a token, and rejects every write.
+    static func demoClient(archive: DemoArchive) -> Client {
+        let transport = DemoTransport(
+            archive: archive,
+            writeRejectionMessage: String(localized: "The demo pilot can't change anything in EVE. Sign in with your character to do this."),
+            onMiss: logMiss
+        )
+        return Client(esi: ESI(configuration: configuration, transport: transport, errorLimiter: errorLimiter))
+    }
+
+    #if DEBUG
+    /// Records every response while the app runs with `-NeocomRecordDemo YES`.
+    static let demoRecorder: DemoRecorder? = UserDefaults.standard.bool(forKey: "NeocomRecordDemo") ? DemoRecorder() : nil
+
+    private static var additionalMiddlewares: [any ClientMiddleware] {
+        demoRecorder.map { [$0] } ?? []
+    }
+
+    private static let demoLog = Logger(subsystem: Bundle.main.bundleIdentifier ?? "Neocom", category: "Demo")
+
+    private static let logMiss: (@Sendable (DemoRequestKey, DemoTransport.Miss) -> Void)? = { key, miss in
+        guard miss != .forwarded else { return }
+        demoLog.notice("Demo fixture miss (\(String(describing: miss), privacy: .public)): \(key.description, privacy: .public)")
+    }
+    #else
+    private static let additionalMiddlewares: [any ClientMiddleware] = []
+    private static let logMiss: (@Sendable (DemoRequestKey, DemoTransport.Miss) -> Void)? = nil
+    #endif
 }

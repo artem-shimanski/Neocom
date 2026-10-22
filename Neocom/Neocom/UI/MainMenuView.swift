@@ -154,10 +154,17 @@ private struct HomeView: View {
 
             if isSignedOut {
                 Section {
-                    HUDEmptyPanel(placeholderSystemImage: "lock.open",
-                                  title: Text("Sign in to unlock the rest of Neocom"),
-                                  message: Text("Skills and training, assets, mail, planets, market orders, industry and contracts open up as soon as a pilot is on board."))
-                        .hudBareRow()
+                    HUDEmptyPanel(title: Text("Sign in to unlock the rest of Neocom"),
+                                  message: Text("Skills and training, assets, mail, planets, market orders, industry and contracts open up as soon as a pilot is on board."),
+                                  placeholderSystemImage: "lock.open") {
+                        if DemoPilot.isAvailable {
+                            Button("Explore with a demo pilot") {
+                                accounts.enterDemo()
+                            }
+                            .hudProminentButton()
+                        }
+                    }
+                    .hudBareRow()
                 }
             }
 

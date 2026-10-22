@@ -1,3 +1,4 @@
+import DemoFixtures
 import KillmailKit
 import LiteRow
 import LiteRowUI
@@ -62,8 +63,10 @@ enum KillmailText {
         return .hudInkMuted
     }
 
+    /// `nil` for the demo's synthetic killmails, which zKillboard does not know.
     static func zKillboard(killID: Int64) -> URL? {
-        URL(string: "https://zkillboard.com/kill/\(killID)/")
+        guard !DemoIDs.contains(killID) else { return nil }
+        return URL(string: "https://zkillboard.com/kill/\(killID)/")
     }
 
     static func sectionTitle(_ section: KillmailSection) -> String {

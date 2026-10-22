@@ -22,6 +22,11 @@ struct HUDOutlineTag: View {
                     .strokeBorder(color.opacity(0.4), lineWidth: 1)
             }
     }
+
+    /// Marks the demo pilot wherever its name is shown.
+    static var demo: HUDOutlineTag {
+        HUDOutlineTag(text: Text("Demo"))
+    }
 }
 
 #Preview("Outline tag") {
@@ -29,6 +34,7 @@ struct HUDOutlineTag: View {
         HUDOutlineTag(text: Text(verbatim: "Final Blow"))
         HUDOutlineTag(text: Text(verbatim: "Top Damage"))
         HUDOutlineTag(text: Text(verbatim: "NPC"), color: .hudInkMuted)
+        HUDOutlineTag.demo
     }
     .padding(HUDMetrics.gutter)
     .background(Color.hudSurface)

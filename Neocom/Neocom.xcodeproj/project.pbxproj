@@ -34,6 +34,8 @@
 		16AC7A12304F1700007A8447 /* LegacyImportKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7A11304F1700007A8447 /* LegacyImportKit */; };
 		16AC7A21304F1800007A8447 /* TrainingTimeline in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7A20304F1800007A8447 /* TrainingTimeline */; };
 		16AC7A23304F1800007A8447 /* TrainingTimeline in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7A22304F1800007A8447 /* TrainingTimeline */; };
+		16AC7A32304F1900007A8447 /* DemoKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7A31304F1900007A8447 /* DemoKit */; };
+		16AC7A34304F1900007A8447 /* DemoFixtures in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7A33304F1900007A8447 /* DemoFixtures */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -109,6 +111,8 @@
 				16AC7982304F1100007A8447 /* MarketKit in Frameworks */,
 				16AC7992304F1200007A8447 /* BusinessKit in Frameworks */,
 				16AC79A2304F1300007A8447 /* MailKit in Frameworks */,
+				16AC7A32304F1900007A8447 /* DemoKit in Frameworks */,
+				16AC7A34304F1900007A8447 /* DemoFixtures in Frameworks */,
 				16AC79C2304F1500007A8447 /* KillmailKit in Frameworks */,
 				16AC7A12304F1700007A8447 /* LegacyImportKit in Frameworks */,
 				16AC79D2304F1600007A8447 /* ZKillKit in Frameworks */,
@@ -189,6 +193,8 @@
 				16AC7981304F1100007A8447 /* MarketKit */,
 				16AC7991304F1200007A8447 /* BusinessKit */,
 				16AC79A1304F1300007A8447 /* MailKit */,
+				16AC7A31304F1900007A8447 /* DemoKit */,
+				16AC7A33304F1900007A8447 /* DemoFixtures */,
 				16AC79C1304F1500007A8447 /* KillmailKit */,
 				16AC7A11304F1700007A8447 /* LegacyImportKit */,
 				16AC79D1304F1600007A8447 /* ZKillKit */,
@@ -261,6 +267,7 @@
 				16AC7980304F1100007A8447 /* XCLocalSwiftPackageReference "../Packages/MarketKit" */,
 				16AC7990304F1200007A8447 /* XCLocalSwiftPackageReference "../Packages/BusinessKit" */,
 				16AC79A0304F1300007A8447 /* XCLocalSwiftPackageReference "../Packages/MailKit" */,
+				16AC7A30304F1900007A8447 /* XCLocalSwiftPackageReference "../Packages/DemoKit" */,
 				16AC79C0304F1500007A8447 /* XCLocalSwiftPackageReference "../Packages/KillmailKit" */,
 				16AC7A10304F1700007A8447 /* XCLocalSwiftPackageReference "../Packages/LegacyImportKit" */,
 				16E6543F308793EB007C0FE9 /* XCRemoteSwiftPackageReference "DogmaKit" */,
@@ -696,6 +703,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../Packages/LegacyImportKit;
 		};
+		16AC7A30304F1900007A8447 /* XCLocalSwiftPackageReference "../Packages/DemoKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Packages/DemoKit;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -833,6 +844,14 @@
 		16AC7A22304F1800007A8447 /* TrainingTimeline */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TrainingTimeline;
+		};
+		16AC7A31304F1900007A8447 /* DemoKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DemoKit;
+		};
+		16AC7A33304F1900007A8447 /* DemoFixtures */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DemoFixtures;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

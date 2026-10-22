@@ -1,11 +1,19 @@
+import DemoFixtures
 import Foundation
 
 /// URL builder for the EVE image server, which needs no authentication.
 nonisolated enum EVEImage {
     private static let baseURL = URL(string: "https://images.evetech.net")!
 
+    /// Demo ids have no image on the server: the demo pilot gets its own bundled portrait, every
+    /// other synthetic character a generic silhouette.
     static func portrait(characterID: Int64, size: Int = 256) -> URL {
-        baseURL
+        if DemoIDs.contains(characterID),
+           let url = Bundle.main.url(forResource: characterID == DemoIDs.characterID ? "demo-portrait" : "synthetic-portrait",
+                                     withExtension: "png") {
+            return url
+        }
+        return baseURL
             .appending(path: "characters/\(characterID)/portrait")
             .appending(queryItems: [URLQueryItem(name: "size", value: "\(size)")])
     }

@@ -23,6 +23,9 @@
       location = "container:Packages/MailKit">
    </FileRef>
    <FileRef
+      location = "container:Packages/DemoKit">
+   </FileRef>
+   <FileRef
       location = "container:Packages/KillmailKit">
    </FileRef>
    <FileRef

@@ -17,12 +17,17 @@ struct PilotCardView: View {
             HStack(spacing: 14) {
                 portrait
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(account?.characterName ?? String(localized: "No Character"))
-                        .font(.hudCardTitle)
-                        .tracking(0.5)
-                        .textCase(.uppercase)
-                        .foregroundStyle(Color.hudInk)
-                        .lineLimit(2)
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Text(account?.characterName ?? String(localized: "No Character"))
+                            .font(.hudCardTitle)
+                            .tracking(0.5)
+                            .textCase(.uppercase)
+                            .foregroundStyle(Color.hudInk)
+                            .lineLimit(2)
+                        if account?.isDemo == true {
+                            HUDOutlineTag.demo
+                        }
+                    }
                     Text(subtitle)
                         .font(.hudCaption)
                         .foregroundStyle(Color.hudInkMuted)
@@ -84,7 +89,8 @@ struct PilotCardView: View {
 
     private func loadCorporation() async {
         corporationName = nil
-        guard let account else { return }
+        // The demo pilot has no public record; its profile comes from the sheet.
+        guard let account, !account.isDemo else { return }
         // Public data only: the card must render before a token is refreshed or the profile has
         // been fetched.
         guard let character = try? await ESIService.publicClient.character(id: account.characterID),

@@ -45,6 +45,9 @@ struct NeocomApp: App {
         NotificationPlanner.shared.attach(accounts: accounts, sde: sde)
         // Writes the widgets' snapshot to the App Group.
         WidgetSnapshotWriter.shared.attach(accounts: accounts, sde: sde)
+        #if DEBUG
+        DemoRecordingPass.startIfRequested(accounts: accounts)
+        #endif
     }
 
     var body: some Scene {

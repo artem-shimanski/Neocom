@@ -8,14 +8,17 @@ struct AccountsView: View {
     @State private var isSigningIn = false
     @State private var error: Error?
     @State private var pendingRemoval: Account?
+    @State private var isConfirmingDemoExit = false
 
     var body: some View {
         NavigationStack {
             HUDList {
-                if accounts.accounts.isEmpty {
+                if accounts.pickerAccounts.isEmpty {
                     Section {
                         HUDEmptyPanel(title: Text("No Characters"),
-                                      message: Text("Sign in with EVE Online to see your characters here."))
+                                      message: DemoPilot.isAvailable
+                                          ? Text("Sign in with EVE Online to see your characters here, or look around with a demo pilot.")
+                                          : Text("Sign in with EVE Online to see your characters here."))
                             .hudBareRow()
                     }
                 } else {
@@ -25,10 +28,15 @@ struct AccountsView: View {
                                 pilotRow(account)
                             }
                         }
+                        if let demo = accounts.demoAccount {
+                            pilotRow(demo)
+                        }
                     } header: {
-                        HUDSectionHeader(Text("Pilots · \(accounts.accounts.count)"))
+                        HUDSectionHeader(Text("Pilots · \(accounts.pickerAccounts.count)"))
                     } footer: {
-                        HUDFootnote("Swipe a pilot left to remove it.")
+                        if !accounts.accounts.isEmpty {
+                            HUDFootnote("Swipe a pilot left to remove it.")
+                        }
                     }
                 }
 
@@ -49,6 +57,43 @@ struct AccountsView: View {
                     .disabled(isSigningIn)
                 } footer: {
                     HUDFootnote("Opens the EVE Online sign-in page.")
+                }
+
+                if accounts.demoAccount != nil {
+                    HUDListSection {
+                        Button {
+                            isConfirmingDemoExit = true
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: "rectangle.portrait.and.arrow.right")
+                                    .font(.system(size: 18, weight: .semibold))
+                                Text("Exit Demo")
+                                    .font(.hudTileTitle)
+                            }
+                            .foregroundStyle(Color.hudDanger)
+                            .hudRow()
+                        }
+                        .hudRowButton()
+                    }
+                } else if DemoPilot.isAvailable {
+                    HUDListSection {
+                        Button {
+                            accounts.enterDemo()
+                            dismiss()
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: "play.circle")
+                                    .font(.system(size: 18, weight: .semibold))
+                                Text("Explore with a Demo Pilot")
+                                    .font(.hudTileTitle)
+                            }
+                            .foregroundStyle(Color.hudAccent)
+                            .hudRow()
+                        }
+                        .hudRowButton()
+                    } footer: {
+                        HUDFootnote("No sign-in needed. Recorded data; nothing is sent to EVE.")
+                    }
                 }
             }
             .navigationTitle("Characters")
@@ -73,6 +118,11 @@ struct AccountsView: View {
             } message: { _ in
                 Text("The pilot will be signed out. You can add it back by signing in again.")
             }
+            .confirmationDialog("Exit Demo?", isPresented: $isConfirmingDemoExit, titleVisibility: .visible) {
+                Button("Exit Demo", role: .destructive) { accounts.exitDemo() }
+            } message: {
+                Text("The demo pilot will be removed, with everything changed during the demo.")
+            }
             .alert(
                 "Sign-in Failed",
                 isPresented: Binding(get: { error != nil }, set: { if !$0 { error = nil } }),
@@ -94,6 +144,9 @@ struct AccountsView: View {
                 HUDImagePlate(url: account.portraitURL, size: 44, radius: 10, framed: true)
                 Text(account.characterName)
                     .font(.hudTileTitle)
+                if account.isDemo {
+                    HUDOutlineTag.demo
+                }
                 Spacer(minLength: 0)
                 if account.id == accounts.currentAccountID {
                     HUDStatusChip(text: Text("Active"), color: .hudAccent, mark: .symbol("checkmark"))
@@ -103,8 +156,14 @@ struct AccountsView: View {
         }
         .hudRowButton(HUDRowStyle(minHeight: 68, verticalPadding: 12))
         .contextMenu {
-            Button("Remove", systemImage: "trash", role: .destructive) {
-                pendingRemoval = account
+            if account.isDemo {
+                Button("Exit Demo", systemImage: "rectangle.portrait.and.arrow.right", role: .destructive) {
+                    isConfirmingDemoExit = true
+                }
+            } else {
+                Button("Remove", systemImage: "trash", role: .destructive) {
+                    pendingRemoval = account
+                }
             }
         }
     }

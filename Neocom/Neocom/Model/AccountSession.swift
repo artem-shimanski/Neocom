@@ -28,6 +28,11 @@ final class AccountSession {
         }
         client = ESIService.client(tokenProvider: tokens)
     }
+
+    /// A session around a client that needs no token, such as the demo pilot's.
+    init(demoClient: Client) {
+        client = demoClient
+    }
 }
 
 /// Holds one character's refresh token, which changes on every use; the actor serializes
