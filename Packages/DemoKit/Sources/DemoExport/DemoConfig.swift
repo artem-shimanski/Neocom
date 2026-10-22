@@ -34,7 +34,6 @@ public struct DemoConfig: Codable, Sendable {
         public var gender: String
         public var raceID: Int64
         public var bloodlineID: Int64
-        /// ISK in the wallet.
         public var walletBalance: Double
     }
 

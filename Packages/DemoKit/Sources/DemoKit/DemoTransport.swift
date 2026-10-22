@@ -142,7 +142,6 @@ public struct DemoTransport: ClientTransport {
                                  operationID: operationID)
     }
 
-    /// Sends a request to `upstream` through `upstreamMiddlewares`.
     private func forward(_ request: HTTPRequest, body: HTTPBody?, baseURL: URL,
                          operationID: String) async throws -> (HTTPResponse, HTTPBody?) {
         var next: @Sendable (HTTPRequest, HTTPBody?, URL) async throws -> (HTTPResponse, HTTPBody?) = {
