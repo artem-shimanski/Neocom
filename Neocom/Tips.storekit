@@ -1,0 +1,113 @@
+{
+  "identifier" : "6F1C2E0A-8B4D-4C3B-9E57-3A2D1F0B7C11",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "1.99",
+      "familyShareable" : false,
+      "internalID" : "6700000001",
+      "localizations" : [
+        {
+          "description" : "A coffee for the developer.",
+          "displayName" : "Coffee",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.shimanski.neocom.tip.coffee",
+      "referenceName" : "Tip Coffee",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "6700000002",
+      "localizations" : [
+        {
+          "description" : "Lunch for the developer.",
+          "displayName" : "Lunch",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.shimanski.neocom.tip.lunch",
+      "referenceName" : "Tip Lunch",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "6700000003",
+      "localizations" : [
+        {
+          "description" : "Dinner for the developer.",
+          "displayName" : "Dinner",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.shimanski.neocom.tip.dinner",
+      "referenceName" : "Tip Dinner",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "19.99",
+      "familyShareable" : false,
+      "internalID" : "6700000004",
+      "localizations" : [
+        {
+          "description" : "A big thank-you.",
+          "displayName" : "Big thanks",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.shimanski.neocom.tip.bigthanks",
+      "referenceName" : "Tip Big thanks",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "49.99",
+      "familyShareable" : false,
+      "internalID" : "6700000005",
+      "localizations" : [
+        {
+          "description" : "A feast for the developer.",
+          "displayName" : "Feast",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.shimanski.neocom.tip.feast",
+      "referenceName" : "Tip Feast",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "99.99",
+      "familyShareable" : false,
+      "internalID" : "6700000006",
+      "localizations" : [
+        {
+          "description" : "A banquet for the developer.",
+          "displayName" : "Banquet",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.shimanski.neocom.tip.banquet",
+      "referenceName" : "Tip Banquet",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

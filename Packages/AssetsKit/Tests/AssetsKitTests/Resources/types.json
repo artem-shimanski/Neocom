@@ -1,0 +1,1270 @@
+[
+ {
+  "typeID": 25,
+  "name": "Corpse Male",
+  "groupID": 14,
+  "groupName": "Biomass",
+  "categoryID": 2,
+  "categoryName": "Celestial",
+  "volume": 2.0
+ },
+ {
+  "typeID": 34,
+  "name": "Tritanium",
+  "groupID": 18,
+  "groupName": "Mineral",
+  "categoryID": 4,
+  "categoryName": "Material",
+  "volume": 0.01
+ },
+ {
+  "typeID": 188,
+  "name": "Proton M",
+  "groupID": 83,
+  "groupName": "Projectile Ammo",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.0125
+ },
+ {
+  "typeID": 189,
+  "name": "Depleted Uranium M",
+  "groupID": 83,
+  "groupName": "Projectile Ammo",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.0125
+ },
+ {
+  "typeID": 195,
+  "name": "Nuclear L",
+  "groupID": 83,
+  "groupName": "Projectile Ammo",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.025
+ },
+ {
+  "typeID": 202,
+  "name": "Mjolnir Cruise Missile",
+  "groupID": 386,
+  "groupName": "Cruise Missile",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.05
+ },
+ {
+  "typeID": 211,
+  "name": "Inferno Light Missile",
+  "groupID": 384,
+  "groupName": "Light Missile",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.015
+ },
+ {
+  "typeID": 212,
+  "name": "Mjolnir Light Missile",
+  "groupID": 384,
+  "groupName": "Light Missile",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.015
+ },
+ {
+  "typeID": 216,
+  "name": "Tungsten Charge S",
+  "groupID": 85,
+  "groupName": "Hybrid Charge",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.0025
+ },
+ {
+  "typeID": 218,
+  "name": "Lead Charge S",
+  "groupID": 85,
+  "groupName": "Hybrid Charge",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.0025
+ },
+ {
+  "typeID": 225,
+  "name": "Iridium Charge M",
+  "groupID": 85,
+  "groupName": "Hybrid Charge",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.0125
+ },
+ {
+  "typeID": 226,
+  "name": "Lead Charge M",
+  "groupID": 85,
+  "groupName": "Hybrid Charge",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.0125
+ },
+ {
+  "typeID": 229,
+  "name": "Plutonium Charge M",
+  "groupID": 85,
+  "groupName": "Hybrid Charge",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.0125
+ },
+ {
+  "typeID": 267,
+  "name": "Scourge Torpedo",
+  "groupID": 89,
+  "groupName": "Torpedo",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.05
+ },
+ {
+  "typeID": 399,
+  "name": "Small Shield Booster I",
+  "groupID": 40,
+  "groupName": "Shield Booster",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 400,
+  "name": "Small Shield Booster II",
+  "groupID": 40,
+  "groupName": "Shield Booster",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 438,
+  "name": "1MN Afterburner II",
+  "groupID": 46,
+  "groupName": "Propulsion Module",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 523,
+  "name": "Small Armor Repairer I",
+  "groupID": 62,
+  "groupName": "Armor Repair Unit",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 567,
+  "name": "Dual 150mm Railgun I",
+  "groupID": 74,
+  "groupName": "Hybrid Weapon",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 10.0,
+  "capacity": 2.0
+ },
+ {
+  "typeID": 577,
+  "name": "Medium Capacitor Booster I",
+  "groupID": 76,
+  "groupName": "Capacitor Booster",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 10.0,
+  "capacity": 32.0
+ },
+ {
+  "typeID": 606,
+  "name": "Velator",
+  "groupID": 237,
+  "groupName": "Corvette",
+  "categoryID": 6,
+  "categoryName": "Ship",
+  "volume": 24500.0,
+  "capacity": 135.0,
+  "slots": {
+   "high": 2,
+   "medium": 2,
+   "low": 2,
+   "rig": 0,
+   "subsystem": 0,
+   "service": 0,
+   "droneCapacity": 10.0
+  }
+ },
+ {
+  "typeID": 607,
+  "name": "Imicus",
+  "groupID": 25,
+  "groupName": "Frigate",
+  "categoryID": 6,
+  "categoryName": "Ship",
+  "volume": 21500.0,
+  "capacity": 400.0,
+  "slots": {
+   "high": 3,
+   "medium": 4,
+   "low": 3,
+   "rig": 3,
+   "subsystem": 0,
+   "service": 0,
+   "droneCapacity": 40.0
+  }
+ },
+ {
+  "typeID": 627,
+  "name": "Thorax",
+  "groupID": 26,
+  "groupName": "Cruiser",
+  "categoryID": 6,
+  "categoryName": "Ship",
+  "volume": 112000.0,
+  "capacity": 465.0,
+  "slots": {
+   "high": 5,
+   "medium": 4,
+   "low": 5,
+   "rig": 3,
+   "subsystem": 0,
+   "service": 0,
+   "droneCapacity": 50.0
+  }
+ },
+ {
+  "typeID": 650,
+  "name": "Nereus",
+  "groupID": 28,
+  "groupName": "Hauler",
+  "categoryID": 6,
+  "categoryName": "Ship",
+  "volume": 240000.0,
+  "capacity": 2700.0,
+  "slots": {
+   "high": 2,
+   "medium": 5,
+   "low": 5,
+   "rig": 3,
+   "subsystem": 0,
+   "service": 0,
+   "droneCapacity": 30.0
+  }
+ },
+ {
+  "typeID": 1130,
+  "name": "Iron Charge S Blueprint",
+  "groupID": 167,
+  "groupName": "Hybrid Charge Blueprint",
+  "categoryID": 9,
+  "categoryName": "Blueprint",
+  "volume": 0.01
+ },
+ {
+  "typeID": 1248,
+  "name": "Capacitor Flux Coil II",
+  "groupID": 768,
+  "groupName": "Capacitor Flux Coil",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 1317,
+  "name": "Expanded Cargohold I",
+  "groupID": 765,
+  "groupName": "Expanded Cargohold",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 1810,
+  "name": "Scourge Auto-Targeting Light Missile I",
+  "groupID": 394,
+  "groupName": "Auto-Targeting Light Missile",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.015
+ },
+ {
+  "typeID": 1818,
+  "name": "Scourge Auto-Targeting Heavy Missile I",
+  "groupID": 395,
+  "groupName": "Auto-Targeting Heavy Missile",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.03
+ },
+ {
+  "typeID": 1826,
+  "name": "Scourge Auto-Targeting Cruise Missile I",
+  "groupID": 396,
+  "groupName": "Auto-Targeting Cruise Missile",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.05
+ },
+ {
+  "typeID": 1875,
+  "name": "Rapid Light Missile Launcher I",
+  "groupID": 511,
+  "groupName": "Missile Launcher Rapid Light",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 10.0,
+  "capacity": 0.285
+ },
+ {
+  "typeID": 1968,
+  "name": "Remote Sensor Dampener I",
+  "groupID": 208,
+  "groupName": "Sensor Dampener",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0,
+  "capacity": 1.0
+ },
+ {
+  "typeID": 1973,
+  "name": "Sensor Booster I",
+  "groupID": 212,
+  "groupName": "Sensor Booster",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0,
+  "capacity": 1.0
+ },
+ {
+  "typeID": 1977,
+  "name": "Tracking Computer I",
+  "groupID": 213,
+  "groupName": "Tracking Computer",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0,
+  "capacity": 1.0
+ },
+ {
+  "typeID": 2117,
+  "name": "Burst Jammer II",
+  "groupID": 80,
+  "groupName": "Burst Jammer",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 2193,
+  "name": "Praetor I",
+  "groupID": 100,
+  "groupName": "Combat Drone",
+  "categoryID": 18,
+  "categoryName": "Drone",
+  "volume": 25.0
+ },
+ {
+  "typeID": 2205,
+  "name": "Acolyte II",
+  "groupID": 100,
+  "groupName": "Combat Drone",
+  "categoryID": 18,
+  "categoryName": "Drone",
+  "volume": 5.0
+ },
+ {
+  "typeID": 2301,
+  "name": "EM Shield Hardener II",
+  "groupID": 77,
+  "groupName": "Shield Hardener",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 2446,
+  "name": "Ogre II",
+  "groupID": 100,
+  "groupName": "Combat Drone",
+  "categoryID": 18,
+  "categoryName": "Drone",
+  "volume": 25.0
+ },
+ {
+  "typeID": 2454,
+  "name": "Hobgoblin I",
+  "groupID": 100,
+  "groupName": "Combat Drone",
+  "categoryID": 18,
+  "categoryName": "Drone",
+  "volume": 5.0
+ },
+ {
+  "typeID": 2476,
+  "name": "Berserker I",
+  "groupID": 100,
+  "groupName": "Combat Drone",
+  "categoryID": 18,
+  "categoryName": "Drone",
+  "volume": 25.0
+ },
+ {
+  "typeID": 2478,
+  "name": "Berserker II",
+  "groupID": 100,
+  "groupName": "Combat Drone",
+  "categoryID": 18,
+  "categoryName": "Drone",
+  "volume": 25.0
+ },
+ {
+  "typeID": 2488,
+  "name": "Warrior II",
+  "groupID": 100,
+  "groupName": "Combat Drone",
+  "categoryID": 18,
+  "categoryName": "Drone",
+  "volume": 5.0
+ },
+ {
+  "typeID": 2531,
+  "name": "Explosive Shield Amplifier II",
+  "groupID": 295,
+  "groupName": "Shield Resistance Amplifier",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 2605,
+  "name": "Nanofiber Internal Structure II",
+  "groupID": 763,
+  "groupName": "Nanofiber Internal Structure",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 3130,
+  "name": "Heavy Electron Blaster II",
+  "groupID": 74,
+  "groupName": "Hybrid Weapon",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 10.0,
+  "capacity": 2.5
+ },
+ {
+  "typeID": 3146,
+  "name": "Heavy Neutron Blaster II",
+  "groupID": 74,
+  "groupName": "Hybrid Weapon",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 10.0,
+  "capacity": 1.0
+ },
+ {
+  "typeID": 3242,
+  "name": "Warp Disruptor I",
+  "groupID": 52,
+  "groupName": "Warp Scrambler",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 3651,
+  "name": "Civilian Miner",
+  "groupID": 54,
+  "groupName": "Mining Laser",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 4025,
+  "name": "X5 Enduring Stasis Webifier",
+  "groupID": 65,
+  "groupName": "Stasis Web",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 5051,
+  "name": "Heavy F-RX Compact Capacitor Booster",
+  "groupID": 76,
+  "groupName": "Capacitor Booster",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 20.0,
+  "capacity": 128.0
+ },
+ {
+  "typeID": 5302,
+  "name": "Phased Muon Scoped Sensor Dampener",
+  "groupID": 208,
+  "groupName": "Sensor Dampener",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0,
+  "capacity": 1.0
+ },
+ {
+  "typeID": 5599,
+  "name": "Type-D Restrained Nanofiber Structure",
+  "groupID": 763,
+  "groupName": "Nanofiber Internal Structure",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 5631,
+  "name": "Type-D Restrained Overdrive Injector",
+  "groupID": 764,
+  "groupName": "Overdrive Injector System",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 7085,
+  "name": "Mega Afocal Pulse Laser I",
+  "groupID": 53,
+  "groupName": "Energy Weapon",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 20.0,
+  "capacity": 1.0
+ },
+ {
+  "typeID": 7289,
+  "name": "150mm 'Scout' Accelerator Cannon",
+  "groupID": 74,
+  "groupName": "Hybrid Weapon",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0,
+  "capacity": 0.1
+ },
+ {
+  "typeID": 7541,
+  "name": "Anode Light Ion Particle Cannon I",
+  "groupID": 74,
+  "groupName": "Hybrid Weapon",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0,
+  "capacity": 0.3
+ },
+ {
+  "typeID": 7747,
+  "name": "Regulated Mega Electron Phase Cannon I",
+  "groupID": 74,
+  "groupName": "Hybrid Weapon",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 20.0,
+  "capacity": 5.0
+ },
+ {
+  "typeID": 7831,
+  "name": "Regulated Mega Ion Phase Cannon I",
+  "groupID": 74,
+  "groupName": "Hybrid Weapon",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 20.0,
+  "capacity": 3.0
+ },
+ {
+  "typeID": 8101,
+  "name": "'Malkuth' Heavy Missile Launcher I",
+  "groupID": 510,
+  "groupName": "Missile Launcher Heavy",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 10.0,
+  "capacity": 0.96
+ },
+ {
+  "typeID": 8335,
+  "name": "Type-D Restrained Shield Power Relay",
+  "groupID": 57,
+  "groupName": "Shield Power Relay",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 8585,
+  "name": "Medium S95a Scoped Remote Shield Booster",
+  "groupID": 41,
+  "groupName": "Remote Shield Booster",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 10.0
+ },
+ {
+  "typeID": 9327,
+  "name": "800mm Heavy 'Scout' Repeating Cannon I",
+  "groupID": 55,
+  "groupName": "Projectile Weapon",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 20.0,
+  "capacity": 3.0
+ },
+ {
+  "typeID": 9632,
+  "name": "Compact Multispectrum Shield Hardener",
+  "groupID": 77,
+  "groupName": "Shield Hardener",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 9646,
+  "name": "Compact Explosive Shield Hardener",
+  "groupID": 77,
+  "groupName": "Shield Hardener",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 9728,
+  "name": "'Concussion' Compact Medium Graviton Smartbomb",
+  "groupID": 72,
+  "groupName": "Smart Bomb",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 10.0
+ },
+ {
+  "typeID": 10690,
+  "name": "125mm Carbide Railgun I",
+  "groupID": 74,
+  "groupName": "Hybrid Weapon",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0,
+  "capacity": 0.2
+ },
+ {
+  "typeID": 10998,
+  "name": "Warp Core Stabilizer I",
+  "groupID": 315,
+  "groupName": "Warp Core Stabilizer",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 11129,
+  "name": "Gallente Shuttle",
+  "groupID": 31,
+  "groupName": "Shuttle",
+  "categoryID": 6,
+  "categoryName": "Ship",
+  "volume": 5000.0,
+  "capacity": 10.0,
+  "slots": {
+   "high": 0,
+   "medium": 0,
+   "low": 0,
+   "rig": 0,
+   "subsystem": 0,
+   "service": 0,
+   "droneCapacity": 0.0
+  }
+ },
+ {
+  "typeID": 11269,
+  "name": "Multispectrum Energized Membrane II",
+  "groupID": 326,
+  "groupName": "Energized Armor Membrane",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 11305,
+  "name": "Kinetic Armor Hardener I",
+  "groupID": 328,
+  "groupName": "Armor Hardener",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 11355,
+  "name": "Small Remote Armor Repairer I",
+  "groupID": 325,
+  "groupName": "Remote Armor Repairer",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 11359,
+  "name": "Large Remote Armor Repairer I",
+  "groupID": 325,
+  "groupName": "Remote Armor Repairer",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 25.0
+ },
+ {
+  "typeID": 11646,
+  "name": "Explosive Armor Hardener II",
+  "groupID": 328,
+  "groupName": "Armor Hardener",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 11737,
+  "name": "Precious Alloy",
+  "groupID": 355,
+  "groupName": "Refinables",
+  "categoryID": 17,
+  "categoryName": "Commodity",
+  "volume": 1.0
+ },
+ {
+  "typeID": 11739,
+  "name": "Condensed Alloy",
+  "groupID": 355,
+  "groupName": "Refinables",
+  "categoryID": 17,
+  "categoryName": "Commodity",
+  "volume": 1.0
+ },
+ {
+  "typeID": 12066,
+  "name": "100MN Afterburner I",
+  "groupID": 46,
+  "groupName": "Propulsion Module",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 50.0
+ },
+ {
+  "typeID": 12789,
+  "name": "Void M",
+  "groupID": 377,
+  "groupName": "Advanced Blaster Charge",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.0125
+ },
+ {
+  "typeID": 13923,
+  "name": "Domination Torpedo Launcher",
+  "groupID": 508,
+  "groupName": "Missile Launcher Torpedo",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 20.0,
+  "capacity": 2.0
+ },
+ {
+  "typeID": 13939,
+  "name": "Domination Gyrostabilizer",
+  "groupID": 59,
+  "groupName": "Gyrostabilizer",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 13986,
+  "name": "Domination EM Armor Hardener",
+  "groupID": 328,
+  "groupName": "Armor Hardener",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 13992,
+  "name": "Domination Thermal Armor Hardener",
+  "groupID": 328,
+  "groupName": "Armor Hardener",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 13995,
+  "name": "Domination Thermal Shield Hardener",
+  "groupID": 77,
+  "groupName": "Shield Hardener",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 14041,
+  "name": "Domination EM Shield Amplifier",
+  "groupID": 295,
+  "groupName": "Shield Resistance Amplifier",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 14106,
+  "name": "Domination 10MN Afterburner",
+  "groupID": 46,
+  "groupName": "Propulsion Module",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 14136,
+  "name": "True Sansha Power Diagnostic System",
+  "groupID": 766,
+  "groupName": "Power Diagnostic System",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 16240,
+  "name": "Catalyst",
+  "groupID": 420,
+  "groupName": "Destroyer",
+  "categoryID": 6,
+  "categoryName": "Ship",
+  "volume": 55000.0,
+  "capacity": 450.0,
+  "slots": {
+   "high": 8,
+   "medium": 2,
+   "low": 3,
+   "rig": 3,
+   "subsystem": 0,
+   "service": 0,
+   "droneCapacity": 0.0
+  }
+ },
+ {
+  "typeID": 16357,
+  "name": "Experimental Enduring EM Armor Hardener I",
+  "groupID": 328,
+  "groupName": "Armor Hardener",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 16375,
+  "name": "Prototype Compact Kinetic Armor Hardener I",
+  "groupID": 328,
+  "groupName": "Armor Hardener",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 16383,
+  "name": "Prototype Compact Thermal Armor Hardener I",
+  "groupID": 328,
+  "groupName": "Armor Hardener",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 16469,
+  "name": "Medium Infectious Scoped Energy Neutralizer",
+  "groupID": 71,
+  "groupName": "Energy Neutralizer",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 17196,
+  "name": "Angel Platinum Tag",
+  "groupID": 370,
+  "groupName": "Criminal Tags",
+  "categoryID": 17,
+  "categoryName": "Commodity",
+  "volume": 0.1
+ },
+ {
+  "typeID": 17258,
+  "name": "True Sansha Gold Tag",
+  "groupID": 370,
+  "groupName": "Criminal Tags",
+  "categoryID": 17,
+  "categoryName": "Commodity",
+  "volume": 0.1
+ },
+ {
+  "typeID": 17366,
+  "name": "Station Container",
+  "groupID": 448,
+  "groupName": "Audit Log Secure Container",
+  "categoryID": 2,
+  "categoryName": "Celestial",
+  "volume": 2000000.0,
+  "capacity": 1000000.0
+ },
+ {
+  "typeID": 18662,
+  "name": "Gist C-Type 100MN Afterburner",
+  "groupID": 46,
+  "groupName": "Propulsion Module",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 19053,
+  "name": "Centum C-Type Medium Remote Armor Repairer",
+  "groupID": 325,
+  "groupName": "Remote Armor Repairer",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 10.0
+ },
+ {
+  "typeID": 19237,
+  "name": "Gistum C-Type Thermal Shield Amplifier",
+  "groupID": 295,
+  "groupName": "Shield Resistance Amplifier",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 19923,
+  "name": "Morpheus Enduring Magnetometric ECM",
+  "groupID": 201,
+  "groupName": "ECM",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 19994,
+  "name": "Arch Angel Carbonized Lead M",
+  "groupID": 83,
+  "groupName": "Projectile Ammo",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.0125
+ },
+ {
+  "typeID": 20424,
+  "name": "Datacore - Mechanical Engineering",
+  "groupID": 333,
+  "groupName": "Datacores",
+  "categoryID": 17,
+  "categoryName": "Commodity",
+  "volume": 0.1
+ },
+ {
+  "typeID": 20502,
+  "name": "High-grade Halo Delta",
+  "groupID": 300,
+  "groupName": "Cyberimplant",
+  "categoryID": 20,
+  "categoryName": "Implant",
+  "volume": 1.0
+ },
+ {
+  "typeID": 20721,
+  "name": "Arch Angel Carbonized Lead L",
+  "groupID": 83,
+  "groupName": "Projectile Ammo",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.025
+ },
+ {
+  "typeID": 20725,
+  "name": "Arch Angel Proton L",
+  "groupID": 83,
+  "groupName": "Projectile Ammo",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.025
+ },
+ {
+  "typeID": 20773,
+  "name": "Domination Proton M",
+  "groupID": 83,
+  "groupName": "Projectile Ammo",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.0125
+ },
+ {
+  "typeID": 21640,
+  "name": "Valkyrie II",
+  "groupID": 100,
+  "groupName": "Combat Drone",
+  "categoryID": 18,
+  "categoryName": "Drone",
+  "volume": 10.0
+ },
+ {
+  "typeID": 22175,
+  "name": "Data Analyzer I",
+  "groupID": 538,
+  "groupName": "Data Miners",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 23158,
+  "name": "Positron Cord",
+  "groupID": 530,
+  "groupName": "Materials and Compounds",
+  "categoryID": 17,
+  "categoryName": "Commodity",
+  "volume": 0.1
+ },
+ {
+  "typeID": 23527,
+  "name": "Drone Link Augmentor I",
+  "groupID": 647,
+  "groupName": "Drone Control Range Module",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 25.0
+ },
+ {
+  "typeID": 23791,
+  "name": "'Citadella' 100mm Steel Plates",
+  "groupID": 329,
+  "groupName": "Armor Plate",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 5.0
+ },
+ {
+  "typeID": 25314,
+  "name": "Standard Sooth Sayer Booster Blueprint",
+  "groupID": 718,
+  "groupName": "Booster Blueprints",
+  "categoryID": 9,
+  "categoryName": "Blueprint",
+  "volume": 0.01
+ },
+ {
+  "typeID": 25589,
+  "name": "Malfunctioning Shield Emitter",
+  "groupID": 754,
+  "groupName": "Salvaged Materials",
+  "categoryID": 4,
+  "categoryName": "Material",
+  "volume": 0.01
+ },
+ {
+  "typeID": 25590,
+  "name": "Contaminated Nanite Compound",
+  "groupID": 754,
+  "groupName": "Salvaged Materials",
+  "categoryID": 4,
+  "categoryName": "Material",
+  "volume": 0.01
+ },
+ {
+  "typeID": 25592,
+  "name": "Defective Current Pump",
+  "groupID": 754,
+  "groupName": "Salvaged Materials",
+  "categoryID": 4,
+  "categoryName": "Material",
+  "volume": 0.01
+ },
+ {
+  "typeID": 25593,
+  "name": "Smashed Trigger Unit",
+  "groupID": 754,
+  "groupName": "Salvaged Materials",
+  "categoryID": 4,
+  "categoryName": "Material",
+  "volume": 0.01
+ },
+ {
+  "typeID": 25594,
+  "name": "Tangled Power Conduit",
+  "groupID": 754,
+  "groupName": "Salvaged Materials",
+  "categoryID": 4,
+  "categoryName": "Material",
+  "volume": 0.01
+ },
+ {
+  "typeID": 25597,
+  "name": "Damaged Artificial Neural Network",
+  "groupID": 754,
+  "groupName": "Salvaged Materials",
+  "categoryID": 4,
+  "categoryName": "Material",
+  "volume": 0.01
+ },
+ {
+  "typeID": 25598,
+  "name": "Tripped Power Circuit",
+  "groupID": 754,
+  "groupName": "Salvaged Materials",
+  "categoryID": 4,
+  "categoryName": "Material",
+  "volume": 0.01
+ },
+ {
+  "typeID": 25599,
+  "name": "Charred Micro Circuit",
+  "groupID": 754,
+  "groupName": "Salvaged Materials",
+  "categoryID": 4,
+  "categoryName": "Material",
+  "volume": 0.01
+ },
+ {
+  "typeID": 25600,
+  "name": "Burned Logic Circuit",
+  "groupID": 754,
+  "groupName": "Salvaged Materials",
+  "categoryID": 4,
+  "categoryName": "Material",
+  "volume": 0.01
+ },
+ {
+  "typeID": 25602,
+  "name": "Thruster Console",
+  "groupID": 754,
+  "groupName": "Salvaged Materials",
+  "categoryID": 4,
+  "categoryName": "Material",
+  "volume": 0.01
+ },
+ {
+  "typeID": 25605,
+  "name": "Armor Plates",
+  "groupID": 754,
+  "groupName": "Salvaged Materials",
+  "categoryID": 4,
+  "categoryName": "Material",
+  "volume": 0.01
+ },
+ {
+  "typeID": 25619,
+  "name": "Logic Circuit",
+  "groupID": 754,
+  "groupName": "Salvaged Materials",
+  "categoryID": 4,
+  "categoryName": "Material",
+  "volume": 0.01
+ },
+ {
+  "typeID": 26254,
+  "name": "Astronautics Rigging",
+  "groupID": 269,
+  "groupName": "Rigging",
+  "categoryID": 16,
+  "categoryName": "Skill",
+  "volume": 0.01
+ },
+ {
+  "typeID": 30028,
+  "name": "Combat Scanner Probe I",
+  "groupID": 479,
+  "groupName": "Scanner Probe",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 1.0
+ },
+ {
+  "typeID": 31055,
+  "name": "Medium Trimark Armor Pump I",
+  "groupID": 773,
+  "groupName": "Rig Armor",
+  "categoryID": 7,
+  "categoryName": "Module",
+  "volume": 10.0
+ },
+ {
+  "typeID": 33045,
+  "name": "NEO YC 114: Goggle Wearing Internet Crime Fighters",
+  "groupID": 1195,
+  "groupName": "Tournament Cards: New Eden Open YC 114",
+  "categoryID": 63,
+  "categoryName": "Special Edition Assets",
+  "volume": 0.01
+ },
+ {
+  "typeID": 33063,
+  "name": "Women's 'Red Star' T-shirt",
+  "groupID": 1089,
+  "groupName": "Tops",
+  "categoryID": 30,
+  "categoryName": "Apparel",
+  "volume": 0.1
+ },
+ {
+  "typeID": 33572,
+  "name": "Barium Firework",
+  "groupID": 500,
+  "groupName": "Festival Charges",
+  "categoryID": 8,
+  "categoryName": "Charge",
+  "volume": 0.1
+ },
+ {
+  "typeID": 34201,
+  "name": "Accelerant Decryptor",
+  "groupID": 1304,
+  "groupName": "Generic Decryptor",
+  "categoryID": 35,
+  "categoryName": "Decryptors",
+  "volume": 0.1
+ },
+ {
+  "typeID": 34205,
+  "name": "Process Decryptor",
+  "groupID": 1304,
+  "groupName": "Generic Decryptor",
+  "categoryID": 35,
+  "categoryName": "Decryptors",
+  "volume": 0.1
+ },
+ {
+  "typeID": 34394,
+  "name": "Women's 'Outlaw' Coat (Burnt Orange)",
+  "groupID": 1088,
+  "groupName": "Outer",
+  "categoryID": 30,
+  "categoryName": "Apparel",
+  "volume": 0.1
+ },
+ {
+  "typeID": 37879,
+  "name": "Festive Firecrackers",
+  "groupID": 1194,
+  "groupName": "Special Edition Commodities",
+  "categoryID": 63,
+  "categoryName": "Special Edition Assets",
+  "volume": 0.01
+ }
+]

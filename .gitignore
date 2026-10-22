@@ -1,0 +1,11 @@
+.DS_Store
+*.xcuserstate
+xcuserdata/
+.build/
+DerivedData/
+
+Packages/*/Package.resolved
+
+# Local tooling and working notes
+.claude/
+CLAUDE.md

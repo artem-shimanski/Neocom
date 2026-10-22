@@ -1,0 +1,836 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 110;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		000000000000000000000160 /* NeocomWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 000000000000000000000130 /* NeocomWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		16AC7931304F0C2A007A8447 /* ESIKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7930304F0C2A007A8447 /* ESIKit */; };
+		16AC7941304F0D00007A8447 /* LiteRow in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7940304F0D00007A8447 /* LiteRow */; };
+		16AC7943304F0D00007A8447 /* LiteRowUI in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7942304F0D00007A8447 /* LiteRowUI */; };
+		16AC7945304F0D00007A8447 /* SDEKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7944304F0D00007A8447 /* SDEKit */; };
+		16AC7947304F0D00007A8447 /* SDEDataMain in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7946304F0D00007A8447 /* SDEDataMain */; };
+		16AC7949304F0D00007A8447 /* SDEDataEN in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7948304F0D00007A8447 /* SDEDataEN */; };
+		16AC7952304F0E00007A8447 /* TrainingKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7951304F0E00007A8447 /* TrainingKit */; };
+		16AC7960304F0F00007A8447 /* DogmaKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7961304F0F00007A8447 /* DogmaKit */; };
+		16AC7962304F0F00007A8447 /* DogmaPlanetary in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7963304F0F00007A8447 /* DogmaPlanetary */; };
+		16AC7972304F1000007A8447 /* AssetsKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7971304F1000007A8447 /* AssetsKit */; };
+		16AC7982304F1100007A8447 /* MarketKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7981304F1100007A8447 /* MarketKit */; };
+		16AC7992304F1200007A8447 /* BusinessKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7991304F1200007A8447 /* BusinessKit */; };
+		16AC79A2304F1300007A8447 /* MailKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC79A1304F1300007A8447 /* MailKit */; };
+		16AC79B2304F1400007A8447 /* DogmaKitIO in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC79B1304F1400007A8447 /* DogmaKitIO */; };
+		16AC79C2304F1500007A8447 /* KillmailKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC79C1304F1500007A8447 /* KillmailKit */; };
+		16AC79D2304F1600007A8447 /* ZKillKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC79D1304F1600007A8447 /* ZKillKit */; };
+		16AC7A01304F1600007A8447 /* SDEDataDE in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7A00304F1600007A8447 /* SDEDataDE */; };
+		16AC7A03304F1600007A8447 /* SDEDataES in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7A02304F1600007A8447 /* SDEDataES */; };
+		16AC7A05304F1600007A8447 /* SDEDataFR in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7A04304F1600007A8447 /* SDEDataFR */; };
+		16AC7A07304F1600007A8447 /* SDEDataJA in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7A06304F1600007A8447 /* SDEDataJA */; };
+		16AC7A09304F1600007A8447 /* SDEDataKO in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7A08304F1600007A8447 /* SDEDataKO */; };
+		16AC7A0B304F1600007A8447 /* SDEDataRU in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7A0A304F1600007A8447 /* SDEDataRU */; };
+		16AC7A0D304F1600007A8447 /* SDEDataZH in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7A0C304F1600007A8447 /* SDEDataZH */; };
+		16AC7A12304F1700007A8447 /* LegacyImportKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7A11304F1700007A8447 /* LegacyImportKit */; };
+		16AC7A21304F1800007A8447 /* TrainingTimeline in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7A20304F1800007A8447 /* TrainingTimeline */; };
+		16AC7A23304F1800007A8447 /* TrainingTimeline in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7A22304F1800007A8447 /* TrainingTimeline */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		000000000000000170000000 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 000000000000000000000000 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 000000000000000200000000;
+			remoteInfo = NeocomWidgets;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		000000000000000150000000 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				000000000000000000000160 /* NeocomWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		000000000000000000000120 /* Neocom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neocom.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		000000000000000000000130 /* NeocomWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NeocomWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		000000000000000000000010 /* Neocom */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Neocom;
+			sourceTree = "<group>";
+		};
+		000000000000000000000011 /* NeocomWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NeocomWidgets;
+			sourceTree = "<group>";
+		};
+		000000000000000000000012 /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		000000000000000000000013 /* Neocom/Resources/Fonts */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Neocom/Resources/Fonts;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		000000000000000130000000 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+				16AC7931304F0C2A007A8447 /* ESIKit in Frameworks */,
+				16AC7941304F0D00007A8447 /* LiteRow in Frameworks */,
+				16AC7943304F0D00007A8447 /* LiteRowUI in Frameworks */,
+				16AC7945304F0D00007A8447 /* SDEKit in Frameworks */,
+				16AC7947304F0D00007A8447 /* SDEDataMain in Frameworks */,
+				16AC7949304F0D00007A8447 /* SDEDataEN in Frameworks */,
+				16AC7A01304F1600007A8447 /* SDEDataDE in Frameworks */,
+				16AC7A03304F1600007A8447 /* SDEDataES in Frameworks */,
+				16AC7A05304F1600007A8447 /* SDEDataFR in Frameworks */,
+				16AC7A07304F1600007A8447 /* SDEDataJA in Frameworks */,
+				16AC7A09304F1600007A8447 /* SDEDataKO in Frameworks */,
+				16AC7A0B304F1600007A8447 /* SDEDataRU in Frameworks */,
+				16AC7A0D304F1600007A8447 /* SDEDataZH in Frameworks */,
+				16AC7952304F0E00007A8447 /* TrainingKit in Frameworks */,
+				16AC7A21304F1800007A8447 /* TrainingTimeline in Frameworks */,
+				16AC7972304F1000007A8447 /* AssetsKit in Frameworks */,
+				16AC7982304F1100007A8447 /* MarketKit in Frameworks */,
+				16AC7992304F1200007A8447 /* BusinessKit in Frameworks */,
+				16AC79A2304F1300007A8447 /* MailKit in Frameworks */,
+				16AC79C2304F1500007A8447 /* KillmailKit in Frameworks */,
+				16AC7A12304F1700007A8447 /* LegacyImportKit in Frameworks */,
+				16AC79D2304F1600007A8447 /* ZKillKit in Frameworks */,
+				16AC7960304F0F00007A8447 /* DogmaKit in Frameworks */,
+				16AC7962304F0F00007A8447 /* DogmaPlanetary in Frameworks */,
+				16AC79B2304F1400007A8447 /* DogmaKitIO in Frameworks */,
+			);
+		};
+		000000000000000230000000 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+				16AC7A23304F1800007A8447 /* TrainingTimeline in Frameworks */,
+			);
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		000000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000000010 /* Neocom */,
+				000000000000000000000011 /* NeocomWidgets */,
+				000000000000000000000012 /* Shared */,
+				000000000000000000000013 /* Neocom/Resources/Fonts */,
+				000000000000000000000020 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		000000000000000000000020 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000000120 /* Neocom.app */,
+				000000000000000000000130 /* NeocomWidgets.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		000000000000000100000000 /* Neocom */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 000000000000000110000000 /* Build configuration list for PBXNativeTarget "Neocom" */;
+			buildPhases = (
+				000000000000000120000000 /* Sources */,
+				000000000000000130000000 /* Frameworks */,
+				000000000000000140000000 /* Resources */,
+				000000000000000150000000 /* Embed Foundation Extensions */,
+				000000000000000160000000 /* Set Build Number */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				000000000000000180000000 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				000000000000000000000010 /* Neocom */,
+				000000000000000000000012 /* Shared */,
+			);
+			name = Neocom;
+			packageProductDependencies = (
+				16AC7930304F0C2A007A8447 /* ESIKit */,
+				16AC7940304F0D00007A8447 /* LiteRow */,
+				16AC7942304F0D00007A8447 /* LiteRowUI */,
+				16AC7944304F0D00007A8447 /* SDEKit */,
+				16AC7946304F0D00007A8447 /* SDEDataMain */,
+				16AC7948304F0D00007A8447 /* SDEDataEN */,
+				16AC7A00304F1600007A8447 /* SDEDataDE */,
+				16AC7A02304F1600007A8447 /* SDEDataES */,
+				16AC7A04304F1600007A8447 /* SDEDataFR */,
+				16AC7A06304F1600007A8447 /* SDEDataJA */,
+				16AC7A08304F1600007A8447 /* SDEDataKO */,
+				16AC7A0A304F1600007A8447 /* SDEDataRU */,
+				16AC7A0C304F1600007A8447 /* SDEDataZH */,
+				16AC7951304F0E00007A8447 /* TrainingKit */,
+				16AC7A20304F1800007A8447 /* TrainingTimeline */,
+				16AC7971304F1000007A8447 /* AssetsKit */,
+				16AC7981304F1100007A8447 /* MarketKit */,
+				16AC7991304F1200007A8447 /* BusinessKit */,
+				16AC79A1304F1300007A8447 /* MailKit */,
+				16AC79C1304F1500007A8447 /* KillmailKit */,
+				16AC7A11304F1700007A8447 /* LegacyImportKit */,
+				16AC79D1304F1600007A8447 /* ZKillKit */,
+				16AC7961304F0F00007A8447 /* DogmaKit */,
+				16AC7963304F0F00007A8447 /* DogmaPlanetary */,
+				16AC79B1304F1400007A8447 /* DogmaKitIO */,
+			);
+			productName = MyApp;
+			productReference = 000000000000000000000120 /* Neocom.app */;
+			productType = "com.apple.product-type.application";
+		};
+		000000000000000200000000 /* NeocomWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 000000000000000210000000 /* Build configuration list for PBXNativeTarget "NeocomWidgets" */;
+			buildPhases = (
+				000000000000000220000000 /* Sources */,
+				000000000000000230000000 /* Frameworks */,
+				000000000000000240000000 /* Resources */,
+				000000000000000260000000 /* Set Build Number */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				000000000000000000000011 /* NeocomWidgets */,
+				000000000000000000000012 /* Shared */,
+				000000000000000000000013 /* Neocom/Resources/Fonts */,
+			);
+			name = NeocomWidgets;
+			packageProductDependencies = (
+				16AC7A22304F1800007A8447 /* TrainingTimeline */,
+			);
+			productName = NeocomWidgets;
+			productReference = 000000000000000000000130 /* NeocomWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		000000000000000000000000 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2630;
+				LastUpgradeCheck = 2700;
+				TargetAttributes = {
+					000000000000000100000000 = {
+						CreatedOnToolsVersion = 26.3;
+					};
+					000000000000000200000000 = {
+						CreatedOnToolsVersion = 26.3;
+					};
+				};
+			};
+			buildConfigurationList = 000000000000000010000000 /* Build configuration list for PBXProject "Neocom" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				ru,
+			);
+			mainGroup = 000000000000000000000001;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				16AC792F304F0C2A007A8447 /* XCRemoteSwiftPackageReference "EveAPIKit" */,
+				16AC7932304F0C3F007A8447 /* XCLocalSwiftPackageReference "../Packages/SDE" */,
+				16AC794A304F0D00007A8447 /* XCRemoteSwiftPackageReference "LiteRow" */,
+				16AC7950304F0E00007A8447 /* XCLocalSwiftPackageReference "../Packages/TrainingKit" */,
+				16AC7970304F1000007A8447 /* XCLocalSwiftPackageReference "../Packages/AssetsKit" */,
+				16AC7980304F1100007A8447 /* XCLocalSwiftPackageReference "../Packages/MarketKit" */,
+				16AC7990304F1200007A8447 /* XCLocalSwiftPackageReference "../Packages/BusinessKit" */,
+				16AC79A0304F1300007A8447 /* XCLocalSwiftPackageReference "../Packages/MailKit" */,
+				16AC79C0304F1500007A8447 /* XCLocalSwiftPackageReference "../Packages/KillmailKit" */,
+				16AC7A10304F1700007A8447 /* XCLocalSwiftPackageReference "../Packages/LegacyImportKit" */,
+				16E6543F308793EB007C0FE9 /* XCRemoteSwiftPackageReference "DogmaKit" */,
+			);
+			preferredProjectObjectVersion = 110;
+			productRefGroup = 000000000000000000000020 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				000000000000000100000000 /* Neocom */,
+				000000000000000200000000 /* NeocomWidgets */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		000000000000000140000000 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		000000000000000240000000 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		000000000000000160000000 /* Set Build Number */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			name = "Set Build Number";
+			shellPath = /bin/sh;
+			shellScript = (
+				"\"${SRCROOT}/Scripts/set-build-number.sh\"",
+				"",
+			);
+		};
+		000000000000000260000000 /* Set Build Number */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			name = "Set Build Number";
+			shellPath = /bin/sh;
+			shellScript = (
+				"\"${SRCROOT}/Scripts/set-build-number.sh\"",
+				"",
+			);
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		000000000000000120000000 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		000000000000000220000000 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		000000000000000180000000 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 000000000000000200000000 /* NeocomWidgets */;
+			targetProxy = 000000000000000170000000 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		000000000000000011000000 /* Debug configuration for PBXProject "Neocom" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLETVOS_DEPLOYMENT_TARGET = 27.0;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 357;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DRIVERKIT_DEPLOYMENT_TARGET = 27.0;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 3.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PROJECT_UNIQUE_VALUE = END38N0B;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				WATCHOS_DEPLOYMENT_TARGET = 27.0;
+				XROS_DEPLOYMENT_TARGET = 27.0;
+			};
+			name = Debug;
+		};
+		000000000000000012000000 /* Release configuration for PBXProject "Neocom" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLETVOS_DEPLOYMENT_TARGET = 27.0;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 357;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DRIVERKIT_DEPLOYMENT_TARGET = 27.0;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 3.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PROJECT_UNIQUE_VALUE = END38N0B;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				WATCHOS_DEPLOYMENT_TARGET = 27.0;
+				XROS_DEPLOYMENT_TARGET = 27.0;
+			};
+			name = Release;
+		};
+		000000000000000111000000 /* Debug configuration for PBXNativeTarget "Neocom" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Neocom.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YB4RLQ4M9A;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.6;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.shimanski.neocom;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+			};
+			name = Debug;
+		};
+		000000000000000112000000 /* Release configuration for PBXNativeTarget "Neocom" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Neocom.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YB4RLQ4M9A;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.6;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.shimanski.neocom;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+			};
+			name = Release;
+		};
+		000000000000000211000000 /* Debug configuration for PBXNativeTarget "NeocomWidgets" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = NeocomWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YB4RLQ4M9A;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "NeocomWidgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Neocom;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.shimanski.neocom.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		000000000000000212000000 /* Release configuration for PBXNativeTarget "NeocomWidgets" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = NeocomWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YB4RLQ4M9A;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "NeocomWidgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Neocom;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.shimanski.neocom.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		000000000000000010000000 /* Build configuration list for PBXProject "Neocom" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				000000000000000011000000 /* Debug configuration for PBXProject "Neocom" */,
+				000000000000000012000000 /* Release configuration for PBXProject "Neocom" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		000000000000000110000000 /* Build configuration list for PBXNativeTarget "Neocom" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				000000000000000111000000 /* Debug configuration for PBXNativeTarget "Neocom" */,
+				000000000000000112000000 /* Release configuration for PBXNativeTarget "Neocom" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		000000000000000210000000 /* Build configuration list for PBXNativeTarget "NeocomWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				000000000000000211000000 /* Debug configuration for PBXNativeTarget "NeocomWidgets" */,
+				000000000000000212000000 /* Release configuration for PBXNativeTarget "NeocomWidgets" */,
+			);
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		16AC7932304F0C3F007A8447 /* XCLocalSwiftPackageReference "../Packages/SDE" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Packages/SDE;
+		};
+		16AC7950304F0E00007A8447 /* XCLocalSwiftPackageReference "../Packages/TrainingKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Packages/TrainingKit;
+		};
+		16AC7970304F1000007A8447 /* XCLocalSwiftPackageReference "../Packages/AssetsKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Packages/AssetsKit;
+		};
+		16AC7980304F1100007A8447 /* XCLocalSwiftPackageReference "../Packages/MarketKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Packages/MarketKit;
+		};
+		16AC7990304F1200007A8447 /* XCLocalSwiftPackageReference "../Packages/BusinessKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Packages/BusinessKit;
+		};
+		16AC79A0304F1300007A8447 /* XCLocalSwiftPackageReference "../Packages/MailKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Packages/MailKit;
+		};
+		16AC79C0304F1500007A8447 /* XCLocalSwiftPackageReference "../Packages/KillmailKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Packages/KillmailKit;
+		};
+		16AC7A10304F1700007A8447 /* XCLocalSwiftPackageReference "../Packages/LegacyImportKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Packages/LegacyImportKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		16AC792F304F0C2A007A8447 /* XCRemoteSwiftPackageReference "EveAPIKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/artem-shimanski/EveAPIKit.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
+		16AC794A304F0D00007A8447 /* XCRemoteSwiftPackageReference "LiteRow" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/artem-shimanski/LiteRow.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
+		16E6543F308793EB007C0FE9 /* XCRemoteSwiftPackageReference "DogmaKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/artem-shimanski/DogmaKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		16AC7930304F0C2A007A8447 /* ESIKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 16AC792F304F0C2A007A8447 /* XCRemoteSwiftPackageReference "EveAPIKit" */;
+			productName = ESIKit;
+		};
+		16AC7940304F0D00007A8447 /* LiteRow */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 16AC794A304F0D00007A8447 /* XCRemoteSwiftPackageReference "LiteRow" */;
+			productName = LiteRow;
+		};
+		16AC7942304F0D00007A8447 /* LiteRowUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 16AC794A304F0D00007A8447 /* XCRemoteSwiftPackageReference "LiteRow" */;
+			productName = LiteRowUI;
+		};
+		16AC7944304F0D00007A8447 /* SDEKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SDEKit;
+		};
+		16AC7946304F0D00007A8447 /* SDEDataMain */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SDEDataMain;
+		};
+		16AC7948304F0D00007A8447 /* SDEDataEN */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SDEDataEN;
+		};
+		16AC7951304F0E00007A8447 /* TrainingKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TrainingKit;
+		};
+		16AC7961304F0F00007A8447 /* DogmaKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DogmaKit;
+		};
+		16AC7963304F0F00007A8447 /* DogmaPlanetary */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DogmaPlanetary;
+		};
+		16AC7971304F1000007A8447 /* AssetsKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AssetsKit;
+		};
+		16AC7981304F1100007A8447 /* MarketKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MarketKit;
+		};
+		16AC7991304F1200007A8447 /* BusinessKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BusinessKit;
+		};
+		16AC79A1304F1300007A8447 /* MailKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MailKit;
+		};
+		16AC79B1304F1400007A8447 /* DogmaKitIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DogmaKitIO;
+		};
+		16AC79C1304F1500007A8447 /* KillmailKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = KillmailKit;
+		};
+		16AC79D1304F1600007A8447 /* ZKillKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 16AC792F304F0C2A007A8447 /* XCRemoteSwiftPackageReference "EveAPIKit" */;
+			productName = ZKillKit;
+		};
+		16AC7A00304F1600007A8447 /* SDEDataDE */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SDEDataDE;
+		};
+		16AC7A02304F1600007A8447 /* SDEDataES */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SDEDataES;
+		};
+		16AC7A04304F1600007A8447 /* SDEDataFR */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SDEDataFR;
+		};
+		16AC7A06304F1600007A8447 /* SDEDataJA */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SDEDataJA;
+		};
+		16AC7A08304F1600007A8447 /* SDEDataKO */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SDEDataKO;
+		};
+		16AC7A0A304F1600007A8447 /* SDEDataRU */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SDEDataRU;
+		};
+		16AC7A0C304F1600007A8447 /* SDEDataZH */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SDEDataZH;
+		};
+		16AC7A11304F1700007A8447 /* LegacyImportKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LegacyImportKit;
+		};
+		16AC7A20304F1800007A8447 /* TrainingTimeline */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TrainingTimeline;
+		};
+		16AC7A22304F1800007A8447 /* TrainingTimeline */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TrainingTimeline;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 000000000000000000000000 /* Project object */;
+}

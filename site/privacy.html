@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy - Neocom</title>
+<meta name="description" content="How the Neocom EVE Online companion app handles your data: no server, no tracking, everything stays between your device, CCP and your iCloud.">
+<link rel="canonical" href="https://getneocom.com/privacy.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://getneocom.com/privacy.html">
+<meta property="og:title" content="Privacy Policy - Neocom">
+<meta property="og:description" content="How the Neocom EVE Online companion app handles your data.">
+<meta property="og:image" content="https://getneocom.com/assets/screens/ipad-fittingeditor.jpg">
+<meta name="theme-color" content="#070B10">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="page" id="top">
+<header class="site-header">
+<nav class="site-nav" aria-label="Main">
+<a class="logo" href="index.html#top">
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 2 29 9.5v13L16 30 3 22.5v-13Z" stroke="var(--accent)" stroke-width="1.5"></path><path d="M11 21V11l10 10V11" stroke="#EAF2F8" stroke-width="2" stroke-linecap="square"></path></svg>
+<span class="logo-text">NEOCOM</span>
+</a>
+<div class="spacer"></div>
+<div class="nav-links">
+<a href="index.html#features">Features</a>
+<a href="index.html#fitting">Fitting</a>
+<a href="index.html#open">Open source</a>
+<a href="https://github.com/artem-shimanski/Neocom">GitHub</a>
+</div>
+<a class="nav-cta" href="index.html#download">GET THE APP</a>
+</nav>
+</header>
+<main class="prose-wrap">
+<div class="prose">
+      <p class="eyebrow">Effective date: 2026-10-21</p>
+      <h1>Privacy Policy</h1>
+      <p>Neocom is an unofficial, open-source companion app for EVE Online, for iPhone, iPad and Mac, with Home Screen and Lock Screen widgets. This policy explains what data the app handles, where it goes and how you can remove it. The source code is public on <a href="https://github.com/artem-shimanski/Neocom">GitHub</a>, so every statement below can be checked.</p>
+
+      <h2>In short</h2>
+      <ul>
+        <li>Neocom has no server of its own. The developer does not collect, receive, store or sell any of your data.</li>
+        <li>No analytics, no advertising, no tracking, no third-party SDKs. The app does not use the advertising identifier and does not track you across apps or websites.</li>
+        <li>Your EVE data travels only between your device and CCP's services. Your own fittings and training plan sync only through your personal iCloud account.</li>
+      </ul>
+
+      <h2>Data the app works with</h2>
+      <p>When you sign in with an EVE Online character, the app loads that character's data from CCP's EVE Swagger Interface (ESI), within the permissions (scopes) you approve on CCP's sign-in page. Depending on the screens you use, this includes:</p>
+      <ul>
+        <li>character profile, portrait, corporation and alliance;</li>
+        <li>skills, skill queue, attributes, implants and jump clones;</li>
+        <li>wallet balance, current location and ship;</li>
+        <li>assets, market orders, industry jobs, contracts and planetary colonies;</li>
+        <li>EVE mail, mail labels, mailing lists and contacts;</li>
+        <li>killmails and in-game saved fittings.</li>
+      </ul>
+      <p>This data is loaded directly from CCP to your device and stays there. It is never sent to the developer or to anyone else.</p>
+      <p>Some actions write back to your EVE account, and only when you perform them: sending, labelling or deleting EVE mail, and saving or deleting in-game fittings.</p>
+
+      <h2>Sign-in and tokens</h2>
+      <p>Sign-in uses EVE Single Sign-On (SSO) in the system's secure browser sheet, with PKCE. The app never sees your EVE account password and holds no client secret. The tokens CCP issues are stored in your device's Keychain. They are not synced through iCloud Keychain and are used only to call ESI on your behalf.</p>
+
+      <h2>Services the app connects to</h2>
+      <ul>
+        <li><strong>CCP hf.</strong> handles EVE SSO (<code>login.eveonline.com</code>), ESI (<code>esi.evetech.net</code>) and the image server (<code>images.evetech.net</code>, for portraits, logos and item images). The app makes these requests from your device, so CCP sees them like any other request: your IP address and, for authenticated calls, your access token. See <a href="https://www.ccpgames.com/privacy-policy">CCP's privacy policy</a>.</li>
+        <li><strong>zKillboard</strong> (<code>zkillboard.com</code>) is contacted only when you open killboard search results. The request contains the character, corporation, alliance or ship you are looking up and your IP address. No tokens or account data are sent. The request also carries a User-Agent that names the app and its developer.</li>
+        <li><strong>Apple</strong> provides iCloud sync and in-app purchases, described below. See <a href="https://www.apple.com/legal/privacy/">Apple's privacy policy</a>.</li>
+      </ul>
+      <p>The static EVE game database (items, ships, skills and so on) is included in the app and is not downloaded at run time.</p>
+
+      <h2>Data stored on your device</h2>
+      <ul>
+        <li><strong>Cache:</strong> ESI responses and images are cached on the device to speed up loading. Settings → Cached Data clears the cache at any time.</li>
+        <li><strong>Widgets:</strong> to show your skill queue, the app writes a small snapshot into storage shared only with its own widgets. The snapshot holds pilot names and portraits, the skills in training and the next planned skills. The widgets make no network requests.</li>
+        <li><strong>Notifications:</strong> reminders (for example, a finished skill or industry job) are scheduled locally on the device. No push server is involved. To keep them current, the app may refresh data from ESI in the background, if iOS allows it.</li>
+        <li><strong>Preferences:</strong> settings such as the theme, market region and notification options are kept on the device.</li>
+        <li><strong>Earlier Neocom versions:</strong> if fittings from an earlier version of Neocom are found on the device, they are imported once, locally.</li>
+      </ul>
+
+      <h2>iCloud sync</h2>
+      <p>The fittings you create in the app and your local skill training plan are stored with Apple's iCloud (CloudKit), in the private database of your own iCloud account, so they appear on all your devices. The developer cannot access this data. If iCloud is turned off, the data stays on the device.</p>
+
+      <h2>In-app purchases</h2>
+      <p>Optional tips are handled entirely by Apple through the App Store. The app only sees whether a purchase succeeded. It never receives your payment details or Apple Account information.</p>
+
+      <h2>Removing your data</h2>
+      <ul>
+        <li><strong>Signing a character out</strong> deletes its tokens, its cached data, its training plan (on all your devices) and its pending notifications from the app.</li>
+        <li><strong>Revoking access at CCP:</strong> signing out does not revoke the app's access on CCP's side. You can do that at any time on the <a href="https://developers.eveonline.com/authorized-apps">Authorized Applications page</a> of your EVE account.</li>
+        <li><strong>Fittings</strong> are deleted inside the app. iCloud data can also be removed in your device's iCloud settings (Manage Storage).</li>
+        <li><strong>Deleting the app</strong> removes everything stored on the device.</li>
+      </ul>
+
+      <h2>Children</h2>
+      <p>Neocom is not directed at children and does not knowingly handle any child's personal data. The developer collects no data from anyone.</p>
+
+      <h2>Changes to this policy</h2>
+      <p>If the app's handling of data changes, this page is updated and the effective date above changes with it. Earlier versions are kept in the <a href="https://github.com/artem-shimanski/Neocom/commits/main/site/privacy.html">repository history</a>.</p>
+
+      <h2>Contact</h2>
+      <p>Questions about this policy or the app can be asked by opening an issue on <a href="https://github.com/artem-shimanski/Neocom/issues">GitHub</a>.</p>
+    </div>
+</main>
+<footer class="site-footer">
+<div class="wrap">
+<div class="foot-row">
+<span class="foot-brand">NEOCOM <span>· getneocom.com</span></span>
+<div class="foot-links">
+<a href="https://github.com/artem-shimanski/Neocom">GitHub</a>
+<a href="privacy.html">Privacy policy</a>
+<a href="https://github.com/artem-shimanski/Neocom/issues">Contact</a>
+</div>
+</div>
+<p class="legal">EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights are reserved worldwide. All other trademarks are the property of their respective owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual property of CCP hf. Neocom is a fan-made app and is not affiliated with or endorsed by CCP hf.</p>
+</div>
+</footer>
+</div>
+</body>
+</html>

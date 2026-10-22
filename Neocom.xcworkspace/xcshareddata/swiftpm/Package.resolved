@@ -1,0 +1,96 @@
+{
+  "originHash" : "a498f881f12cc1e9027c674e44b206cdbd3f21c63016493ea9240787c3def700",
+  "pins" : [
+    {
+      "identity" : "bitfield",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/artem-shimanski/BitField.git",
+      "state" : {
+        "revision" : "e65cec777f334b0a1b354169c360574819a91dbd",
+        "version" : "0.1.0"
+      }
+    },
+    {
+      "identity" : "dogmakit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/artem-shimanski/DogmaKit.git",
+      "state" : {
+        "revision" : "2f926af5c5f2ac0c83ed0796f46cf7bc05209d14",
+        "version" : "0.2.1"
+      }
+    },
+    {
+      "identity" : "eveapikit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/artem-shimanski/EveAPIKit.git",
+      "state" : {
+        "revision" : "d9ce59c2e5366571293aae5d6bda17d255c134aa",
+        "version" : "0.1.0"
+      }
+    },
+    {
+      "identity" : "flatbin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/artem-shimanski/FlatBin.git",
+      "state" : {
+        "revision" : "3c671003129ffc625fd086af60de4836bbaef6c6",
+        "version" : "0.1.0"
+      }
+    },
+    {
+      "identity" : "literow",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/artem-shimanski/LiteRow.git",
+      "state" : {
+        "revision" : "18bed5f4a9568ea33c9d9960727bb89cfbd26331",
+        "version" : "0.1.0"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections",
+      "state" : {
+        "revision" : "35a1edcb8ebd2bfe251d587f0b69e62af28f508c",
+        "version" : "1.7.3"
+      }
+    },
+    {
+      "identity" : "swift-http-types",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-http-types",
+      "state" : {
+        "revision" : "bff4b6903cdc99dda49649dd52f46c11cfd3ed50",
+        "version" : "1.8.0"
+      }
+    },
+    {
+      "identity" : "swift-openapi-runtime",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-openapi-runtime",
+      "state" : {
+        "revision" : "478bf6ce34f71734bc88b79b37b842118312d133",
+        "version" : "1.13.2"
+      }
+    },
+    {
+      "identity" : "swift-openapi-urlsession",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-openapi-urlsession",
+      "state" : {
+        "revision" : "77effea09e780f6f3f119ffb8150ff25e31c78b1",
+        "version" : "1.3.2"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-syntax.git",
+      "state" : {
+        "revision" : "0687f71944021d616d34d922343dcef086855920",
+        "version" : "600.0.1"
+      }
+    }
+  ],
+  "version" : 3
+}

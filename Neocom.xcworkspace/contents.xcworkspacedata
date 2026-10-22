@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:Neocom/Neocom.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "container:Packages/SDE">
+   </FileRef>
+   <FileRef
+      location = "container:Packages/TrainingKit">
+   </FileRef>
+   <FileRef
+      location = "container:Packages/AssetsKit">
+   </FileRef>
+   <FileRef
+      location = "container:Packages/MarketKit">
+   </FileRef>
+   <FileRef
+      location = "container:Packages/BusinessKit">
+   </FileRef>
+   <FileRef
+      location = "container:Packages/MailKit">
+   </FileRef>
+   <FileRef
+      location = "container:Packages/KillmailKit">
+   </FileRef>
+   <FileRef
+      location = "container:Packages/LegacyImportKit">
+   </FileRef>
+</Workspace>
