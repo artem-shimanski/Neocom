@@ -47,6 +47,9 @@ nonisolated enum ESIService {
 
     /// A client for the demo pilot: answers from the bundled demo data, sends public requests
     /// upstream without a token, and rejects every write. Dates are rebased to its creation.
+    ///
+    /// Only the requests sent upstream go through the shared error limiter: a local answer neither
+    /// waits on ESI's error budget nor spends it.
     static func demoClient() -> Client {
         let transport = DemoTransport(
             loadArchive: {
@@ -54,9 +57,12 @@ nonisolated enum ESIService {
                 return archive
             },
             writeRejectionMessage: String(localized: "The demo pilot can't change anything in EVE. Sign in with your character to do this."),
+            upstreamMiddlewares: [ESIErrorLimitMiddleware(limiter: errorLimiter), ESIReplayedLimitMiddleware()],
             onMiss: logMiss
         )
-        return Client(esi: ESI(configuration: configuration, transport: transport, errorLimiter: errorLimiter))
+        var demoConfiguration = configuration
+        demoConfiguration.errorLimit = .disabled
+        return Client(esi: ESI(configuration: demoConfiguration, transport: transport))
     }
 
     #if DEBUG
@@ -64,7 +70,7 @@ nonisolated enum ESIService {
     static let demoRecorder: DemoRecorder? = UserDefaults.standard.bool(forKey: "NeocomRecordDemo") ? DemoRecorder() : nil
 
     private static var additionalMiddlewares: [any ClientMiddleware] {
-        demoRecorder.map { [$0] } ?? []
+        [ESIReplayedLimitMiddleware()] + (demoRecorder.map { [$0] } ?? [])
     }
 
     private static let demoLog = Logger(subsystem: Bundle.main.bundleIdentifier ?? "Neocom", category: "Demo")
@@ -74,7 +80,7 @@ nonisolated enum ESIService {
         demoLog.notice("Demo fixture miss (\(String(describing: miss), privacy: .public)): \(key.description, privacy: .public)")
     }
     #else
-    private static let additionalMiddlewares: [any ClientMiddleware] = []
+    private static let additionalMiddlewares: [any ClientMiddleware] = [ESIReplayedLimitMiddleware()]
     private static let logMiss: (@Sendable (DemoRequestKey, DemoTransport.Miss) -> Void)? = nil
     #endif
 }

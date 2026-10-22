@@ -13,7 +13,11 @@ import Synchronization
 ///    charge, and the write policy (mail updates succeed, every other write fails with
 ///    `writeRejectionMessage`);
 /// 3. `404` for any other request about a demo id, `403` for public routes that need a token;
-/// 4. everything else goes to `upstream`. Requests about demo ids never reach it.
+/// 4. everything else goes to `upstream`, through `upstreamMiddlewares`. Requests about demo ids
+///    never reach it.
+///
+/// Answers given here never pass `upstreamMiddlewares`: a local answer does not wait on ESI's error
+/// budget, and spends none of it.
 public struct DemoTransport: ClientTransport {
 
     /// How a request without a recorded response was resolved.
@@ -43,6 +47,7 @@ public struct DemoTransport: ClientTransport {
 
     private let store: Task<Store, any Error>
     private let upstream: any ClientTransport
+    private let upstreamMiddlewares: [any ClientMiddleware]
     private let writeRejectionMessage: String
     private let publicReadOnlyOperations: Set<String>
     private let onMiss: (@Sendable (DemoRequestKey, Miss) -> Void)?
@@ -51,6 +56,7 @@ public struct DemoTransport: ClientTransport {
     ///   - archive: The demo data.
     ///   - writeRejectionMessage: Sent as `{"error": …}` with the `400` that answers a write.
     ///   - upstream: Receives requests that are not about the demo pilot.
+    ///   - upstreamMiddlewares: Run around every request sent to `upstream`, outermost first.
     ///   - publicReadOnlyOperations: Non-`GET` operations that are not writes.
     ///   - now: The moment dates are rebased to, read once: every response of one transport
     ///     shifts by the same amount.
@@ -58,17 +64,20 @@ public struct DemoTransport: ClientTransport {
     public init(archive: DemoArchive,
                 writeRejectionMessage: String,
                 upstream: any ClientTransport = DemoTransport.defaultUpstream,
+                upstreamMiddlewares: [any ClientMiddleware] = [],
                 publicReadOnlyOperations: Set<String> = DemoTransport.publicReadOnlyOperations,
                 now: @escaping @Sendable () -> Date = { .now },
                 onMiss: (@Sendable (DemoRequestKey, Miss) -> Void)? = nil) {
         self.init(loadArchive: { archive }, writeRejectionMessage: writeRejectionMessage, upstream: upstream,
-                  publicReadOnlyOperations: publicReadOnlyOperations, now: now, onMiss: onMiss)
+                  upstreamMiddlewares: upstreamMiddlewares, publicReadOnlyOperations: publicReadOnlyOperations,
+                  now: now, onMiss: onMiss)
     }
 
     /// Starts `loadArchive` in the background right away; requests wait for it.
     public init(loadArchive: @escaping @Sendable () async throws -> DemoArchive,
                 writeRejectionMessage: String,
                 upstream: any ClientTransport = DemoTransport.defaultUpstream,
+                upstreamMiddlewares: [any ClientMiddleware] = [],
                 publicReadOnlyOperations: Set<String> = DemoTransport.publicReadOnlyOperations,
                 now: @escaping @Sendable () -> Date = { .now },
                 onMiss: (@Sendable (DemoRequestKey, Miss) -> Void)? = nil) {
@@ -79,6 +88,7 @@ public struct DemoTransport: ClientTransport {
         }
         self.writeRejectionMessage = writeRejectionMessage
         self.upstream = upstream
+        self.upstreamMiddlewares = upstreamMiddlewares
         self.publicReadOnlyOperations = publicReadOnlyOperations
         self.onMiss = onMiss
     }
@@ -128,8 +138,25 @@ public struct DemoTransport: ClientTransport {
             return json(status: 403, .object(["error": .string("Forbidden")]))
         }
         onMiss?(key, .forwarded)
-        return try await upstream.send(request, body: requestData.map { HTTPBody($0) },
-                                       baseURL: baseURL, operationID: operationID)
+        return try await forward(request, body: requestData.map { HTTPBody($0) }, baseURL: baseURL,
+                                 operationID: operationID)
+    }
+
+    /// Sends a request to `upstream` through `upstreamMiddlewares`.
+    private func forward(_ request: HTTPRequest, body: HTTPBody?, baseURL: URL,
+                         operationID: String) async throws -> (HTTPResponse, HTTPBody?) {
+        var next: @Sendable (HTTPRequest, HTTPBody?, URL) async throws -> (HTTPResponse, HTTPBody?) = {
+            [upstream] request, body, baseURL in
+            try await upstream.send(request, body: body, baseURL: baseURL, operationID: operationID)
+        }
+        for middleware in upstreamMiddlewares.reversed() {
+            let inner = next
+            next = { request, body, baseURL in
+                try await middleware.intercept(request, body: body, baseURL: baseURL, operationID: operationID,
+                                               next: inner)
+            }
+        }
+        return try await next(request, body, baseURL)
     }
 
     /// `Last-Modified` is passed on as recorded: it only tells whether pages belong together.
@@ -170,8 +197,8 @@ public struct DemoTransport: ClientTransport {
             onMiss?(DemoRequestKey(method: request.method.rawValue, operationID: operationID,
                                    path: request.path ?? "", query: "", bodyDigest: DemoRequestKey.digest(of: payload)),
                     .forwarded)
-            if let (response, responseBody) = try? await upstream.send(request, body: HTTPBody(payload),
-                                                                       baseURL: baseURL, operationID: operationID),
+            if let (response, responseBody) = try? await forward(request, body: HTTPBody(payload),
+                                                                 baseURL: baseURL, operationID: operationID),
                response.status.code == 200,
                let responseBody,
                let data = try? await Data(collecting: responseBody, upTo: 16 << 20),

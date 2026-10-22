@@ -287,6 +287,51 @@ private func send(_ transport: DemoTransport, _ method: HTTPRequest.Method, _ pa
         #expect(upstream.paths == ["/markets/prices", "/route/30000142/30001407"])
         #expect(upstream.calls.withLock { $0.last?.2 } == Data(#"{"preference":"Shorter"}"#.utf8))
     }
+
+    @Test func localAnswersSkipUpstreamMiddlewares() async throws {
+        let upstream = StubUpstream()
+        let middleware = CountingMiddleware()
+        let transport = DemoTransport(archive: archive(), writeRejectionMessage: message, upstream: upstream,
+                                      upstreamMiddlewares: [middleware], now: { now })
+        _ = try await send(transport, .get, "/characters/\(demo)/assets?page=1", operationID: "GetCharactersCharacterIdAssets")
+        _ = try await send(transport, .get, "/characters/\(demo)/wallet", operationID: "GetCharactersCharacterIdWallet")
+        _ = try await send(transport, .get, "/universe/structures/1035000000001", operationID: "GetUniverseStructuresStructureId")
+        #expect(middleware.operations.isEmpty)
+
+        _ = try await send(transport, .get, "/markets/prices", operationID: "GetMarketsPrices")
+        _ = try await send(transport, .post, "/universe/names", operationID: "PostUniverseNames", body: "[30001407]")
+        #expect(middleware.operations == ["GetMarketsPrices", "PostUniverseNames"])
+        #expect(upstream.paths == ["/markets/prices", "/universe/names"])
+    }
+
+    @Test func exhaustedErrorBudgetDoesNotHoldLocalAnswers() async throws {
+        let limiter = ESIErrorLimiter()
+        var fields = HTTPFields()
+        fields[.esiErrorLimitRemain] = "0"
+        fields[.esiErrorLimitReset] = "60"
+        await limiter.observe(fields)
+        let transport = DemoTransport(archive: archive(), writeRejectionMessage: message, upstream: StubUpstream(),
+                                      upstreamMiddlewares: [ESIErrorLimitMiddleware(limiter: limiter)], now: { now })
+        let started = ContinuousClock.now
+        let (response, _) = try await send(transport, .get, "/characters/\(demo)/assets?page=1",
+                                           operationID: "GetCharactersCharacterIdAssets")
+        #expect(response.status.code == 200)
+        #expect(ContinuousClock.now - started < .seconds(5))
+    }
+}
+
+/// Records the operations that pass through it.
+final class CountingMiddleware: ClientMiddleware, Sendable {
+    private let seen = Mutex<[String]>([])
+
+    var operations: [String] { seen.withLock { $0 } }
+
+    func intercept(_ request: HTTPRequest, body: HTTPBody?, baseURL: URL, operationID: String,
+                   next: @concurrent @Sendable (HTTPRequest, HTTPBody?, URL) async throws -> (HTTPResponse, HTTPBody?))
+        async throws -> (HTTPResponse, HTTPBody?) {
+        seen.withLock { $0.append(operationID) }
+        return try await next(request, body, baseURL)
+    }
 }
 
 @Suite struct DemoRecorderTests {
