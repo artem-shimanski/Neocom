@@ -168,23 +168,16 @@ struct FittingEditorView: View {
                 }
             }
             ToolbarItem(placement: .primaryAction) {
-                Button("Skills", systemImage: "graduationcap") {
-                    isSkillsSheetPresented = true
-                }
-                // Needs an open fit.
-                .disabled(model?.snapshot == nil)
-            }
-            ToolbarItem(placement: .primaryAction) {
                 Menu {
                     if let shownFittingID, fittings.isDraft(shownFittingID) {
                         Button("Save", systemImage: "square.and.arrow.down") {
                             fittings.persist(shownFittingID)
                         }
                     }
-                    Button("Rename") {
+                    Button("Rename", systemImage: "pencil") {
                         isRenameAlertPresented = true
                     }
-                    Button("Notes") {
+                    Button("Notes", systemImage: "square.and.pencil") {
                         isNotesSheetPresented = true
                     }
                     if accounts.currentFittings != nil {
