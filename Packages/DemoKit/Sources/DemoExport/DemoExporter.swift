@@ -6,6 +6,8 @@ public enum DemoExportError: Error, CustomStringConvertible {
     case missingPilotProfile(Int64)
     case overBudget(size: Int, budget: Int)
     case leaks([String])
+    case inconsistentSkillQueue(String)
+    case notSynthetic(Int64)
 
     public var description: String {
         switch self {
@@ -15,6 +17,10 @@ public enum DemoExportError: Error, CustomStringConvertible {
             "The archive is \(size) bytes, over the budget of \(budget) bytes."
         case let .leaks(findings):
             "The archive leaks the real pilot:\n" + findings.map { "  - \($0)" }.joined(separator: "\n")
+        case let .inconsistentSkillQueue(reason):
+            "The configured skill queue does not follow the recorded skills: \(reason)."
+        case let .notSynthetic(id):
+            "The configured id \(id) is outside the synthetic range."
         }
     }
 }
@@ -148,11 +154,16 @@ public struct DemoExporter {
             if entry.operationID == "GetCharactersDetail" {
                 output.body?["description"] = .string("")
                 output.body?["title"] = nil
+                output.body?["corporation_title"] = nil
+            }
+            if entry.operationID == "GetCharactersCharacterIdFittings", let body = output.body {
+                output.body = cleanFittings(body)
             }
             entries.append(output)
         }
         entries.append(contentsOf: syntheticMail(recordedAt: recording.recordedAt))
         entries.append(contacts())
+        try applyOverlays(to: &entries, recordedAt: recording.recordedAt)
 
         var names: [String: DemoArchive.Name] = [:]
         for (id, name) in recordedNames {
@@ -172,6 +183,9 @@ public struct DemoExporter {
                                                                      category: "corporation")
         names[String(config.pilot.homeStationID)] = DemoArchive.Name(name: config.pilot.homeStationName,
                                                                      category: "station")
+        for named in config.names {
+            names[String(named.id)] = DemoArchive.Name(name: named.name, category: named.category)
+        }
 
         var archive = DemoArchive(
             recordedAt: recording.recordedAt,
@@ -180,10 +194,11 @@ public struct DemoExporter {
                                      corporationID: config.pilot.corporationID),
             entries: entries.sorted { ($0.path, $0.operationID, $0.query, $0.method) < ($1.path, $1.operationID, $1.query, $1.method) },
             names: names,
-            assetNames: assetNames.mapValues { rewriter.rewrite(string: $0) },
+            assetNames: cleanAssetNames(assetNames.mapValues { rewriter.rewrite(string: $0) }),
             plan: config.plan
         )
         try Self.trim(&archive, budget: config.sizeBudget)
+        Self.prune(&archive)
         return archive
     }
 

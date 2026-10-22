@@ -29,6 +29,7 @@ do {
     let exporter = DemoExporter(config: config)
     let archive = try exporter.export(recording)
     let data = try exporter.encode(archive, recording: recording)
+    print("Leak check passed: no real character id, corporation or alliance id, pilot name, owner hash or token.")
     try data.write(to: URL(fileURLWithPath: output), options: .atomic)
     print("\(archive.entries.count) entries, \(archive.names.count) names, \(data.count) bytes → \(output)")
 } catch {

@@ -262,3 +262,61 @@ private func send(_ transport: DemoTransport, _ method: HTTPRequest.Method, _ pa
         #expect(archive.entries.contains { $0.path == "/characters/\(demo)" })
     }
 }
+
+/// The bundled archive, read through the generated client the way the app's sheets read it.
+@Suite struct BundledFixturesTests {
+    static let url = URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        .deletingLastPathComponent().deletingLastPathComponent()
+        .appendingPathComponent("Neocom/Neocom/Resources/Demo/DemoFixtures.json")
+
+    @Test func decodesTheOverlaidRoutes() async throws {
+        let archive = try DemoArchive.decode(from: Data(contentsOf: Self.url))
+        let upstream = StubUpstream()
+        let transport = DemoTransport(archive: archive, writeRejectionMessage: message, upstream: upstream,
+                                      now: { .now }, onMiss: nil)
+        let client = Client(esi: ESI(configuration: ESIConfiguration(userAgent: "DemoKitTests"), transport: transport))
+        let date = try #require(Components.Parameters.CompatibilityDate(rawValue: ESIConfiguration.defaultCompatibilityDate))
+
+        guard case let .ok(queue) = try await client.getCharactersCharacterIdSkillqueue(
+            path: .init(characterId: demo), headers: .init(xCompatibilityDate: date)) else { Issue.record("skill queue"); return }
+        let entries = try queue.body.json
+        #expect((5 ... 7).contains(entries.count))
+        let first = try #require(entries.first)
+        #expect(try #require(first.startDate) < .now && first.finishDate.map { $0 > .now } == true)
+        #expect(first.trainingStartSp == first.levelStartSp)
+
+        guard case let .ok(orders) = try await client.getCharactersCharacterIdOrders(
+            path: .init(characterId: demo), headers: .init(xCompatibilityDate: date)) else { Issue.record("orders"); return }
+        #expect(try orders.body.json.count >= 5)
+
+        guard case let .ok(history) = try await client.getCharactersCharacterIdOrdersHistory(
+            path: .init(characterId: demo), query: .init(page: 1), headers: .init(xCompatibilityDate: date))
+        else { Issue.record("order history"); return }
+        #expect(try history.body.json.contains { $0.state == .cancelled })
+
+        guard case let .ok(jobs) = try await client.getCharactersCharacterIdIndustryJobs(
+            path: .init(characterId: demo), query: .init(includeCompleted: true), headers: .init(xCompatibilityDate: date))
+        else { Issue.record("industry jobs"); return }
+        let statuses = try jobs.body.json.map(\.status)
+        #expect(statuses.contains(.active) && statuses.contains(.ready))
+
+        guard case let .ok(contracts) = try await client.getCharactersCharacterIdContracts(
+            path: .init(characterId: demo), query: .init(page: 1), headers: .init(xCompatibilityDate: date))
+        else { Issue.record("contracts"); return }
+        let list = try contracts.body.json
+        #expect(list.count >= 2 && list.contains { $0._type == .courier })
+        for contract in list {
+            guard case let .ok(items) = try await client.getCharactersCharacterIdContractsContractIdItems(
+                path: .init(characterId: demo, contractId: contract.contractId), headers: .init(xCompatibilityDate: date))
+            else { Issue.record("items of \(contract.contractId)"); return }
+            #expect(try !items.body.json.isEmpty)
+        }
+
+        guard case let .ok(fittings) = try await client.getCharactersCharacterIdFittings(
+            path: .init(characterId: demo), headers: .init(xCompatibilityDate: date)) else { Issue.record("fittings"); return }
+        let fits = try fittings.body.json
+        #expect(!fits.isEmpty && fits.count <= 8 && fits.allSatisfy { $0.description.isEmpty })
+        #expect(upstream.paths.isEmpty)
+    }
+}

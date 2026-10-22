@@ -6,6 +6,125 @@
     { "id" : 8000000000001004, "standing" : 0 },
     { "id" : 8000000000001005, "standing" : -5 }
   ],
+  "contracts" : [
+    {
+      "assigneeID" : 0,
+      "availability" : "public",
+      "contractID" : 8000000000007001,
+      "endLocationID" : 60004420,
+      "expiresInHours" : 316,
+      "issuedHoursAgo" : 20,
+      "issuerCorporationID" : 1000044,
+      "issuerID" : 8000000000000001,
+      "items" : [
+        { "isIncluded" : true, "quantity" : 1, "typeID" : 626 },
+        { "isIncluded" : true, "quantity" : 1, "typeID" : 3530 },
+        { "isIncluded" : true, "quantity" : 1, "typeID" : 2048 },
+        { "isIncluded" : true, "quantity" : 5, "typeID" : 2183 }
+      ],
+      "price" : 21500000,
+      "startLocationID" : 60004420,
+      "status" : "outstanding",
+      "title" : "Vexor with armor modules and drones",
+      "type" : "item_exchange",
+      "volume" : 10065
+    },
+    {
+      "assigneeID" : 8000000000000001,
+      "availability" : "personal",
+      "collateral" : 15000000,
+      "contractID" : 8000000000007002,
+      "daysToComplete" : 3,
+      "endLocationID" : 60003760,
+      "expiresInHours" : 67,
+      "issuedHoursAgo" : 5,
+      "issuerCorporationID" : 8000000000004001,
+      "issuerID" : 8000000000001005,
+      "items" : [
+        { "isIncluded" : true, "quantity" : 2000000, "typeID" : 34 },
+        { "isIncluded" : true, "quantity" : 840000, "typeID" : 35 }
+      ],
+      "reward" : 6500000,
+      "startLocationID" : 60004420,
+      "status" : "outstanding",
+      "title" : "Minerals to Jita",
+      "type" : "courier",
+      "volume" : 28400
+    },
+    {
+      "assigneeID" : 8000000000000001,
+      "availability" : "personal",
+      "contractID" : 8000000000007003,
+      "endLocationID" : 60004420,
+      "expiresInHours" : 306,
+      "issuedHoursAgo" : 30,
+      "issuerCorporationID" : 8000000000004002,
+      "issuerID" : 8000000000001003,
+      "items" : [
+        { "isIncluded" : true, "quantity" : 2, "typeID" : 519 },
+        { "isIncluded" : true, "quantity" : 5000, "typeID" : 21896 }
+      ],
+      "price" : 2950000,
+      "startLocationID" : 60004420,
+      "status" : "outstanding",
+      "title" : "Gyrostabilizers and ammunition",
+      "type" : "item_exchange",
+      "volume" : 72.5
+    }
+  ],
+  "fittings" : {
+    "dropPatterns" : ["test", "тест", "^\\*simulated", "copy \\d+$", "new setup"],
+    "maxCount" : 8,
+    "names" : {
+      "11971" : "Lachesis – Heavy Ion Blasters",
+      "12021" : "Phobos – Bubble and Blasters",
+      "12023" : "Deimos – Railguns",
+      "16227" : "Ferox – Blasters",
+      "17738" : "Machariel – Autocannons",
+      "17740" : "Vindicator – Neutron Blasters"
+    }
+  },
+  "industryJobs" : [
+    {
+      "activityID" : 1,
+      "blueprintID" : 8000000000006101,
+      "blueprintTypeID" : 971,
+      "cost" : 412350,
+      "durationHours" : 5.667,
+      "jobID" : 8000000000006001,
+      "productTypeID" : 626,
+      "runs" : 2,
+      "startedHoursAgo" : 2,
+      "stationID" : 60004420,
+      "status" : "active"
+    },
+    {
+      "activityID" : 4,
+      "blueprintID" : 8000000000006102,
+      "blueprintTypeID" : 2184,
+      "cost" : 58200,
+      "durationHours" : 12.9,
+      "jobID" : 8000000000006002,
+      "productTypeID" : 2184,
+      "runs" : 2,
+      "startedHoursAgo" : 5,
+      "stationID" : 60004420,
+      "status" : "active"
+    },
+    {
+      "activityID" : 1,
+      "blueprintID" : 8000000000006103,
+      "blueprintTypeID" : 2487,
+      "cost" : 61800,
+      "durationHours" : 3,
+      "jobID" : 8000000000006003,
+      "productTypeID" : 2486,
+      "runs" : 40,
+      "startedHoursAgo" : 12,
+      "stationID" : 60004420,
+      "status" : "ready"
+    }
+  ],
   "mail" : {
     "labels" : [
       { "color" : "#ffffff", "labelID" : 1, "name" : "[Inbox]" },
@@ -103,6 +222,25 @@
       { "id" : 8000000000001005, "name" : "Orvan Dekker" }
     ]
   },
+  "names" : [
+    { "category" : "corporation", "id" : 8000000000004001, "name" : "Northline Logistics" },
+    { "category" : "corporation", "id" : 8000000000004002, "name" : "Quiet Orbit Traders" },
+    { "category" : "station", "id" : 60003760, "name" : "Jita IV - Moon 4 - Caldari Navy Assembly Plant" }
+  ],
+  "orders" : {
+    "history" : [
+      { "duration" : 90, "isBuyOrder" : false, "issuedHoursAgo" : 290, "locationID" : 60003760, "orderID" : 8000000000005101, "price" : 3.98, "range" : "region", "regionID" : 10000002, "state" : "expired", "typeID" : 34, "volumeRemain" : 0, "volumeTotal" : 1000000 },
+      { "duration" : 30, "isBuyOrder" : true, "issuedHoursAgo" : 220, "locationID" : 60003760, "minVolume" : 1, "orderID" : 8000000000005102, "price" : 61.5, "range" : "station", "regionID" : 10000002, "state" : "cancelled", "typeID" : 36, "volumeRemain" : 80000, "volumeTotal" : 200000 },
+      { "duration" : 90, "isBuyOrder" : false, "issuedHoursAgo" : 150, "locationID" : 60004420, "orderID" : 8000000000005103, "price" : 15900000, "range" : "region", "regionID" : 10000016, "state" : "expired", "typeID" : 626, "volumeRemain" : 0, "volumeTotal" : 1 }
+    ],
+    "open" : [
+      { "duration" : 90, "isBuyOrder" : false, "issuedHoursAgo" : 50, "locationID" : 60003760, "orderID" : 8000000000005001, "price" : 4.12, "range" : "region", "regionID" : 10000002, "typeID" : 34, "volumeRemain" : 312500, "volumeTotal" : 500000 },
+      { "duration" : 30, "isBuyOrder" : true, "issuedHoursAgo" : 26, "locationID" : 60003760, "minVolume" : 1, "orderID" : 8000000000005002, "price" : 7.85, "range" : "station", "regionID" : 10000002, "typeID" : 35, "volumeRemain" : 640000, "volumeTotal" : 1000000 },
+      { "duration" : 90, "isBuyOrder" : false, "issuedHoursAgo" : 74, "locationID" : 60003760, "orderID" : 8000000000005003, "price" : 1349000, "range" : "region", "regionID" : 10000002, "typeID" : 519, "volumeRemain" : 6, "volumeTotal" : 10 },
+      { "duration" : 30, "isBuyOrder" : false, "issuedHoursAgo" : 9, "locationID" : 60004420, "orderID" : 8000000000005004, "price" : 148.9, "range" : "region", "regionID" : 10000016, "typeID" : 21896, "volumeRemain" : 3200, "volumeTotal" : 5000 },
+      { "duration" : 30, "isBuyOrder" : true, "issuedHoursAgo" : 6, "locationID" : 60004420, "minVolume" : 1, "orderID" : 8000000000005005, "price" : 14250000, "range" : "solarsystem", "regionID" : 10000016, "typeID" : 626, "volumeRemain" : 2, "volumeTotal" : 2 }
+    ]
+  },
   "pilot" : {
     "corporationID" : 1000044,
     "corporationName" : "School of Applied Knowledge",
@@ -112,15 +250,26 @@
     "name" : "Demo Pilot"
   },
   "plan" : [
-    { "level" : 4, "skillID" : 3426 },
-    { "level" : 4, "skillID" : 3413 },
-    { "level" : 3, "skillID" : 3330 },
-    { "level" : 3, "skillID" : 3301 },
-    { "level" : 3, "skillID" : 3449 },
-    { "level" : 3, "skillID" : 3436 },
-    { "level" : 3, "skillID" : 3380 }
+    { "level" : 4, "skillID" : 3388 },
+    { "level" : 5, "skillID" : 3387 },
+    { "level" : 5, "skillID" : 3444 },
+    { "level" : 5, "skillID" : 16598 },
+    { "level" : 3, "skillID" : 3385 },
+    { "level" : 2, "skillID" : 22578 }
   ],
   "sizeBudget" : 1500000,
+  "skillQueue" : {
+    "attributeBonus" : { "charisma" : 4, "intelligence" : 4, "memory" : 4, "perception" : 4, "willpower" : 4 },
+    "entries" : [
+      { "level" : 3, "primary" : "memory", "rank" : 1, "secondary" : "intelligence", "skillID" : 3386 },
+      { "level" : 3, "primary" : "memory", "rank" : 3, "secondary" : "intelligence", "skillID" : 3388 },
+      { "level" : 4, "primary" : "memory", "rank" : 1, "secondary" : "intelligence", "skillID" : 3386 },
+      { "level" : 5, "primary" : "willpower", "rank" : 1, "secondary" : "charisma", "skillID" : 3443 },
+      { "level" : 5, "primary" : "intelligence", "rank" : 1, "secondary" : "memory", "skillID" : 3551 },
+      { "level" : 5, "primary" : "perception", "rank" : 5, "secondary" : "willpower", "skillID" : 12208 }
+    ],
+    "startedHoursAgo" : 0.5
+  },
   "syntheticCharacterNames" : [
     "Aldren Vask",
     "Mira Tolvaine",
