@@ -37,7 +37,8 @@ func fakeRecording() -> DemoRecording {
         entry("GetCharactersDetail", me, body: object([
             "name": .string("Real Capsuleer"), "corporation_id": .int(realCorp), "alliance_id": .int(realAlliance),
             "birthday": .string("2015-03-01T10:00:00Z"), "description": .string("I am Real Capsuleer"),
-            "security_status": .double(1.5), "title": .string("CEO"),
+            "security_status": .double(1.5), "title": .string("CEO"), "gender": .string("male"),
+            "race_id": .int(8), "bloodline_id": .int(7),
         ])),
         entry("GetCharactersCharacterIdAssets", me + "/assets", pages: 2, body: .array([
             object(["item_id": .int(ship), "location_id": .int(structure), "location_type": .string("item"),
@@ -59,7 +60,22 @@ func fakeRecording() -> DemoRecording {
               request: .array([.int(ship), .int(container), .int(1_040_000_000_003), .int(1_040_000_000_009)])),
         entry("GetCharactersCharacterIdClones", me + "/clones", body: object([
             "home_location": object(["location_id": .int(structure), "location_type": .string("structure")]),
-            "jump_clones": .array([]),
+            "jump_clones": .array([object(["jump_clone_id": .int(13_254_938), "location_id": .int(60_004_588),
+                                           "location_type": .string("station"), "implants": .array([])])]),
+            "last_clone_jump_date": .string("2015-03-30T18:55:21Z"),
+        ])),
+        entry("GetCharactersCharacterIdShip", me + "/ship", body: object([
+            "ship_item_id": .int(ship), "ship_name": .string("Real Capsuleer's Rifter"), "ship_type_id": .int(587),
+        ])),
+        entry("GetCharactersCharacterIdWallet", me + "/wallet", body: .double(92_183_471.74)),
+        entry("GetCharactersCharacterIdPlanetsPlanetId", me + "/planets/40159291", body: object([
+            "links": .array([object(["source_pin_id": .int(1_020_196_464_386), "destination_pin_id": .int(1_020_196_651_502),
+                                     "link_level": .int(0)])]),
+            "pins": .array([object(["pin_id": .int(1_020_196_464_386), "type_id": .int(2544)]),
+                            object(["pin_id": .int(1_020_196_651_502), "type_id": .int(2474)])]),
+            "routes": .array([object(["route_id": .int(714_009_219), "source_pin_id": .int(1_020_196_651_502),
+                                      "destination_pin_id": .int(1_020_196_464_386),
+                                      "waypoints": .array([.int(1_020_196_464_386)])])]),
         ])),
         entry("GetCharactersCharacterIdLocation", me + "/location", body: object([
             "solar_system_id": .int(30_000_142), "structure_id": .int(structure),
@@ -107,6 +123,7 @@ func fakeRecording() -> DemoRecording {
         entry("GetCharactersCharacterIdAttributes", me + "/attributes", body: object([
             "charisma": .int(20), "intelligence": .int(20), "memory": .int(20), "perception": .int(20),
             "willpower": .int(20), "bonus_remaps": .int(1),
+            "last_remap_date": .string("2015-11-13T05:28:55Z"), "accrued_remap_cooldown_date": .string("2016-11-12T05:28:55Z"),
         ])),
         entry("GetCharactersCharacterIdSkills", me + "/skills", body: object([
             "total_sp": .int(5_000_000), "skills": .array(queuedSkills.map { id, level, points in
@@ -166,12 +183,16 @@ func loadConfig() throws -> DemoConfig {
         let assets = try #require(body("GetCharactersCharacterIdAssets", demo + "/assets")?.array)
         #expect(assets[0]["location_id"] == .int(60_004_420))
         #expect(assets[0]["location_type"] == .string("station"))
-        #expect(assets[0]["item_id"] == .int(ship))
+        let shipID = try #require(assets[0]["item_id"]?.int)
+        let containerID = try #require(assets[1]["item_id"]?.int)
+        #expect(DemoIDs.contains(shipID) && DemoIDs.contains(containerID) && shipID < containerID)
         #expect(assets[1]["location_id"] == .int(60_003_760))
         let inner = try #require(body("GetCharactersCharacterIdAssets", demo + "/assets", query: "page=2")?.array)
-        #expect(inner[0]["location_id"] == .int(container))
+        let tritaniumID = try #require(inner[0]["item_id"]?.int)
+        #expect(inner[0]["location_id"] == .int(containerID))
         #expect(inner[0]["location_type"] == .string("item"))
-        #expect(archive.assetNames == [String(ship): "Demo Pilot's Rifter", "1040000000003": "Demo Pilot's Tritanium"])
+        #expect(archive.assetNames == [String(shipID): "Demo Pilot's Rifter", String(tritaniumID): "Demo Pilot's Tritanium"])
+        #expect(body("GetCharactersCharacterIdShip", demo + "/ship")?["ship_item_id"] == .int(shipID))
 
         let clones = try #require(body("GetCharactersCharacterIdClones", demo + "/clones"))
         #expect(clones["home_location"] == .object(["location_id": .int(60_004_420), "location_type": .string("station")]))
@@ -242,6 +263,61 @@ func loadConfig() throws -> DemoConfig {
         #expect(findings.count == 2)
     }
 
+    @Test func scrubsTheRecordedFingerprint() throws {
+        let config = try loadConfig()
+        let recording = fakeRecording()
+        let exporter = DemoExporter(config: config)
+        let archive = try exporter.export(recording)
+        let demo = "/characters/\(DemoIDs.characterID)"
+        func body(_ operationID: String, _ path: String) -> DemoJSON? {
+            archive.entries.first { $0.operationID == operationID && $0.path == path }?.body
+        }
+
+        let profile = try #require(body("GetCharactersDetail", demo))
+        #expect(profile["birthday"] == .string(config.pilot.birthday))
+        #expect(profile["security_status"] == .double(config.pilot.securityStatus))
+        #expect(profile["gender"] == .string(config.pilot.gender))
+        #expect(profile["race_id"] == .int(config.pilot.raceID))
+        #expect(profile["bloodline_id"] == .int(config.pilot.bloodlineID))
+
+        let attributes = try #require(body("GetCharactersCharacterIdAttributes", demo + "/attributes"))
+        #expect(attributes["last_remap_date"] != .string("2015-11-13T05:28:55Z"))
+        #expect(attributes["accrued_remap_cooldown_date"] != .string("2016-11-12T05:28:55Z"))
+        #expect(body("GetCharactersCharacterIdWallet", demo + "/wallet") == .double(config.pilot.walletBalance))
+
+        let clones = try #require(body("GetCharactersCharacterIdClones", demo + "/clones"))
+        #expect(clones["last_clone_jump_date"] != .string("2015-03-30T18:55:21Z"))
+        let clone = try #require(clones["jump_clones"]?.array?.first?["jump_clone_id"]?.int)
+        #expect(DemoIDs.contains(clone))
+
+        let colony = try #require(body("GetCharactersCharacterIdPlanetsPlanetId", demo + "/planets/40159291"))
+        let pins = try #require(colony["pins"]?.array?.compactMap { $0["pin_id"]?.int })
+        let link = try #require(colony["links"]?.array?.first)
+        #expect(pins.allSatisfy(DemoIDs.contains))
+        #expect(link["source_pin_id"]?.int == pins[0] && link["destination_pin_id"]?.int == pins[1])
+        let route = try #require(colony["routes"]?.array?.first)
+        #expect(route["waypoints"] == .array([.int(pins[0])]))
+        #expect(route["route_id"]?.int.map(DemoIDs.contains) == true)
+
+        let data = try exporter.encode(archive, recording: recording)
+        let identity = try DemoRealIdentity(recording: recording)
+        #expect(identity.birthday == "2015-03-01T10:00:00Z" && identity.walletBalance == 92_183_471.74)
+        #expect(identity.recordedIDs.isSuperset(of: [ship, container, 13_254_938, 7_445_440_502, 1_020_196_464_386]))
+        #expect(DemoExporter.leaks(in: data, identity: identity).isEmpty)
+    }
+
+    @Test func leakCheckFindsTheRecordedFingerprint() throws {
+        let identity = try DemoRealIdentity(recording: fakeRecording())
+        func leaks(_ text: String) -> [String] { DemoExporter.leaks(in: Data(text.utf8), identity: identity) }
+        #expect(leaks("\"birthday\": \"2015-03-01T10:00:00Z\"").count == 1)
+        #expect(leaks("\"wallet\": 92183471.74").count == 1)
+        #expect(leaks("\"wallet\": 192183471.74, \"x\": 92183471.745").isEmpty)
+        #expect(leaks("\"item_id\": \(container)").count == 1)
+        #expect(leaks("\"jump_clone_id\": 13254938").count == 1)
+        #expect(leaks("\"order_id\": 7445440502").count == 1)
+        #expect(leaks("\"item_id\": \(container)1, \"x\": 0.\(container)").isEmpty)
+    }
+
     @Test func trimsToTheBudget() throws {
         var config = try loadConfig()
         let recording = fakeRecording()
@@ -280,7 +356,11 @@ func loadConfig() throws -> DemoConfig {
         }
         let history = try #require(body("GetCharactersCharacterIdOrdersHistory", demo + "/orders/history"))
         #expect(history.count == 1 + config.orders.history.count)
-        #expect(history.first?["order_id"] == .int(7_445_440_502))
+        let recordedOrder = try #require(history.first)
+        #expect(recordedOrder["order_id"]?.int.map(DemoIDs.contains) == true)
+        #expect(recordedOrder["type_id"] == .int(3446))
+        #expect(recordedOrder["issued"] != .string("2026-10-15T08:28:49Z"))
+        #expect(try #require(date(recordedOrder["issued"])) < recordedAt)
         #expect(history.allSatisfy { keys($0).isSuperset(of: orderKeys.union(["state"])) })
 
         let jobs = try #require(body("GetCharactersCharacterIdIndustryJobs", demo + "/industry/jobs",

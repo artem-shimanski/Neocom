@@ -67,6 +67,7 @@ final class AccountStore {
     private static let accountsKey = "accounts"
     private static let currentAccountKey = "currentAccountID"
     private static let demoActiveKey = "demoPilotActive"
+    private static let demoPilotKey = "demoPilot"
 
     /// Dependencies are optional so the defaults are created on the main actor.
     init(keychain: Keychain? = nil,
@@ -104,7 +105,7 @@ final class AccountStore {
         ESICache().removeAll(characterID: account.id)
         LocalNotifications.shared.removeAll(characterID: account.id)
         if currentAccountID == account.id {
-            currentAccountID = accounts.first?.id
+            currentAccountID = pickerAccounts.first?.id
         }
         save()
         WidgetSnapshotWriter.shared.setNeedsUpdate()
@@ -129,21 +130,41 @@ final class AccountStore {
     // MARK: - Demo
 
     /// Selects the demo pilot, starting from a clean cache; no-op when the app has no demo data.
-    func enterDemo() {
-        guard let archive = DemoPilot.archive else { return }
+    func enterDemo() async {
+        guard let archive = await DemoPilot.archive() else { return }
         if demoAccount == nil {
             ESICache().removeAll(characterID: archive.pilot.id)
             demoAccount = Account(demo: archive.pilot)
-            defaults.set(true, forKey: Self.demoActiveKey)
+            storeDemoPilot(archive.pilot)
         }
         currentAccountID = archive.pilot.id
+    }
+
+    /// Remembers the demo pilot, so a launch restores it without reading the demo data.
+    private func storeDemoPilot(_ pilot: DemoArchive.Pilot?) {
+        defaults.set(pilot != nil, forKey: Self.demoActiveKey)
+        defaults.set(pilot.flatMap { try? JSONEncoder().encode($0) }, forKey: Self.demoPilotKey)
+    }
+
+    /// Brings a restored demo pilot in line with the bundled data, which an update may have changed.
+    private func verifyRestoredDemo() async {
+        let archive = await DemoPilot.archive()
+        guard let demoAccount else { return }
+        guard let archive else {
+            exitDemo()
+            return
+        }
+        if archive.pilot.name != demoAccount.characterName {
+            self.demoAccount = Account(demo: archive.pilot)
+            storeDemoPilot(archive.pilot)
+        }
     }
 
     /// Ends the demo and drops everything it cached; selects the first signed-in character.
     func exitDemo() {
         guard let demoAccount else { return }
         self.demoAccount = nil
-        defaults.set(false, forKey: Self.demoActiveKey)
+        storeDemoPilot(nil)
         dropState(of: demoAccount.id)
         demoPlanContainer = nil
         ESICache().removeAll(characterID: demoAccount.id)
@@ -347,25 +368,27 @@ final class AccountStore {
         currentAccount.flatMap(plan(for:))
     }
 
-    /// The demo pilot's plan in an in-memory container, seeded from the demo data.
+    /// The demo pilot's plan in an in-memory container, seeded from the demo data once it is read.
     private func demoPlan(for account: Account) -> TrainingPlanStore? {
         let configuration = ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         guard let container = try? ModelContainer(for: TrainingPlanEntry.self, configurations: configuration)
         else { return nil }
         demoPlanContainer = container
         let plan = TrainingPlanStore(context: container.mainContext, characterID: account.id)
-        let items = DemoPilot.archive?.plan ?? []
-        plan.add(items.map { SkillCatalog.Requirement(skillID: TypeID(rawValue: UInt32(clamping: $0.skillID)),
-                                                      level: $0.level) })
         plans[account.id] = plan
+        Task { [weak plan] in
+            let items = await DemoPilot.archive()?.plan ?? []
+            plan?.add(items.map { SkillCatalog.Requirement(skillID: TypeID(rawValue: UInt32(clamping: $0.skillID)),
+                                                           level: $0.level) })
+        }
         return plan
     }
 
     private func session(for account: Account) -> AccountSession {
         if let session = sessions[account.id] { return session }
 
-        let session = if account.isDemo, let archive = DemoPilot.archive {
-            AccountSession(demoClient: ESIService.demoClient(archive: archive))
+        let session = if account.isDemo {
+            AccountSession(demoClient: ESIService.demoClient())
         } else {
             AccountSession(account: account) { [weak self] token in
                 await self?.replaceToken(token, of: account.id)
@@ -401,12 +424,15 @@ final class AccountStore {
             accounts = stored
         }
         if defaults.bool(forKey: Self.demoActiveKey) {
-            if let archive = DemoPilot.archive {
-                // Recorded dates are rebased on every fetch; nothing cached survives a launch.
-                ESICache().removeAll(characterID: archive.pilot.id)
-                demoAccount = Account(demo: archive.pilot)
+            if DemoPilot.isAvailable,
+               let data = defaults.data(forKey: Self.demoPilotKey),
+               let pilot = try? JSONDecoder().decode(DemoArchive.Pilot.self, from: data) {
+                // Dates are rebased to the launch; nothing cached survives it.
+                ESICache().removeAll(characterID: pilot.id)
+                demoAccount = Account(demo: pilot)
+                Task { await verifyRestoredDemo() }
             } else {
-                defaults.set(false, forKey: Self.demoActiveKey)
+                storeDemoPilot(nil)
             }
         }
         let storedID = (defaults.object(forKey: Self.currentAccountKey) as? NSNumber)?.int64Value

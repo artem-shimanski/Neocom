@@ -78,8 +78,10 @@ struct AccountsView: View {
                 } else if DemoPilot.isAvailable {
                     HUDListSection {
                         Button {
-                            accounts.enterDemo()
-                            dismiss()
+                            Task {
+                                await accounts.enterDemo()
+                                dismiss()
+                            }
                         } label: {
                             HStack(spacing: 12) {
                                 Image(systemName: "play.circle")
@@ -92,7 +94,7 @@ struct AccountsView: View {
                         }
                         .hudRowButton()
                     } footer: {
-                        HUDFootnote("No sign-in needed. Recorded data; nothing is sent to EVE.")
+                        HUDFootnote("No sign-in needed. Recorded data; nothing in EVE is changed.")
                     }
                 }
             }

@@ -307,6 +307,7 @@ private struct OrderRow: View {
                     .padding(.top, 2)
             }
         }
+        .hudRow(Self.rowStyle)
     }
 
     /// `RENS 0.9 · 3D 04H LEFT · RANGE STATION`, or for history `SELL · 2026.09.28 · 14D`.

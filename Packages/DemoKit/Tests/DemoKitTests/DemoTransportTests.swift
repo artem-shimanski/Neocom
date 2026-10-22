@@ -53,8 +53,22 @@ private func archive() -> DemoArchive {
             ),
             DemoArchive.Entry(
                 operationID: "GetCharactersCharacterIdAssets", method: "GET", path: "/characters/\(demo)/assets",
-                query: "page=2", headers: DemoArchive.Headers(xPages: 2), body: .array([])
+                query: "page=2", headers: DemoArchive.Headers(xPages: 2, lastModified: "Tue, 20 Oct 2026 11:58:00 GMT"),
+                body: .array([])
             ),
+            DemoArchive.Entry(operationID: "GetCharactersCharacterIdMail", method: "GET", path: "/characters/\(demo)/mail",
+                              body: .array([mail(1, labels: [1], read: false), mail(2, labels: [1, 16], read: true)])),
+            DemoArchive.Entry(operationID: "GetCharactersCharacterIdMail", method: "GET", path: "/characters/\(demo)/mail",
+                              query: "labels=16", body: .array([mail(2, labels: [1, 16], read: true)])),
+            DemoArchive.Entry(operationID: "GetCharactersCharacterIdMailMailId", method: "GET",
+                              path: "/characters/\(demo)/mail/1",
+                              body: .object(["subject": .string("One"), "read": .bool(false), "labels": .array([.int(1)])])),
+            DemoArchive.Entry(operationID: "GetCharactersCharacterIdMailLabels", method: "GET",
+                              path: "/characters/\(demo)/mail/labels",
+                              body: .object(["total_unread_count": .int(1), "labels": .array([
+                                  .object(["label_id": .int(1), "unread_count": .int(1)]),
+                                  .object(["label_id": .int(16), "unread_count": .int(0)]),
+                              ])])),
             DemoArchive.Entry(
                 operationID: "GetCharactersCharacterIdIndustryJobs", method: "GET",
                 path: "/characters/\(demo)/industry/jobs", query: "include_completed=true",
@@ -67,6 +81,11 @@ private func archive() -> DemoArchive {
         ],
         assetNames: ["1040000000001": "Demo Rifter"]
     )
+}
+
+private func mail(_ id: Int64, labels: [Int64], read: Bool) -> DemoJSON {
+    .object(["mail_id": .int(id), "subject": .string("Mail \(id)"), "timestamp": .string("2026-10-20T10:00:00Z"),
+             "labels": .array(labels.map(DemoJSON.int)), "is_read": .bool(read)])
 }
 
 private func transport(_ upstream: StubUpstream, onMiss: (@Sendable (DemoRequestKey, DemoTransport.Miss) -> Void)? = nil)
@@ -91,7 +110,7 @@ private func send(_ transport: DemoTransport, _ method: HTTPRequest.Method, _ pa
                                               operationID: "GetCharactersCharacterIdAssets")
         #expect(response.status.code == 200)
         #expect(response.headerFields[HTTPField.Name("X-Pages")!] == "2")
-        #expect(response.headerFields[.lastModified] == "Thu, 22 Oct 2026 11:58:00 GMT")
+        #expect(response.headerFields[.lastModified] == "Tue, 20 Oct 2026 11:58:00 GMT")
         #expect(body?.array?.first?["item_id"] == .int(1_040_000_000_001))
 
         let (_, jobs) = try await send(transport, .get, "/characters/\(demo)/industry/jobs?include_completed=true",
@@ -118,8 +137,68 @@ private func send(_ transport: DemoTransport, _ method: HTTPRequest.Method, _ pa
         )
         guard case let .ok(page) = first else { Issue.record("unexpected \(first)"); return }
         #expect(try page.body.json.first?.locationId == 60_004_420)
-        #expect(page.headers.lastModified == "Thu, 22 Oct 2026 11:58:00 GMT")
+        #expect(page.headers.lastModified == "Tue, 20 Oct 2026 11:58:00 GMT")
         #expect(upstream.paths.isEmpty)
+    }
+
+    @Test func rebasesEveryResponseByTheSameDelta() async throws {
+        let upstream = StubUpstream()
+        let clock = Mutex(now)
+        let transport = DemoTransport(archive: archive(), writeRejectionMessage: message, upstream: upstream,
+                                      now: { clock.withLock { $0 } })
+        let (first, _) = try await send(transport, .get, "/characters/\(demo)/assets",
+                                        operationID: "GetCharactersCharacterIdAssets")
+        clock.withLock { $0 = $0.addingTimeInterval(1.5) }
+        let (second, _) = try await send(transport, .get, "/characters/\(demo)/assets?page=2",
+                                         operationID: "GetCharactersCharacterIdAssets")
+        let (_, jobs) = try await send(transport, .get, "/characters/\(demo)/industry/jobs?include_completed=true",
+                                       operationID: "GetCharactersCharacterIdIndustryJobs")
+        #expect(first.headerFields[.lastModified] != nil)
+        #expect(first.headerFields[.lastModified] == second.headerFields[.lastModified])
+        #expect(jobs?.array?.first?["end_date"] == .string("2026-10-22T18:00:00Z"))
+    }
+
+    @Test func loadsTheArchiveLazily() async throws {
+        let loads = Mutex(0)
+        let transport = DemoTransport(loadArchive: {
+            loads.withLock { $0 += 1 }
+            return archive()
+        }, writeRejectionMessage: message, upstream: StubUpstream(), now: { now })
+        for _ in 0 ..< 2 {
+            let (response, _) = try await send(transport, .get, "/characters/\(demo)/assets",
+                                               operationID: "GetCharactersCharacterIdAssets")
+            #expect(response.status.code == 200)
+        }
+        #expect(loads.withLock { $0 } == 1)
+    }
+
+    @Test func keepsMailUpdates() async throws {
+        let updated = transport(StubUpstream())
+        let base = "/characters/\(demo)/mail"
+        let (put, _) = try await send(updated, .put, base + "/1", operationID: "PutCharactersCharacterIdMailMailId",
+                                      body: #"{"read":true,"labels":[1,16]}"#)
+        #expect(put.status.code == 204)
+
+        let (_, inbox) = try await send(updated, .get, base, operationID: "GetCharactersCharacterIdMail")
+        let first = try #require(inbox?.array?.first)
+        #expect(first["is_read"] == .bool(true) && first["labels"] == .array([.int(1), .int(16)]))
+        let (_, market) = try await send(updated, .get, base + "?labels=16", operationID: "GetCharactersCharacterIdMail")
+        #expect(market?.array?.compactMap { $0["mail_id"]?.int } == [1, 2])
+        let (_, detail) = try await send(updated, .get, base + "/1", operationID: "GetCharactersCharacterIdMailMailId")
+        #expect(detail?["read"] == .bool(true) && detail?["subject"] == .string("One"))
+        let (_, labels) = try await send(updated, .get, base + "/labels", operationID: "GetCharactersCharacterIdMailLabels")
+        #expect(labels?["total_unread_count"] == .int(0))
+        #expect(labels?["labels"]?.array?.compactMap { $0["unread_count"]?.int } == [0, 0])
+
+        let (_, unread) = try await send(updated, .put, base + "/2", operationID: "PutCharactersCharacterIdMailMailId",
+                                         body: #"{"read":false}"#)
+        #expect(unread == nil)
+        let (_, after) = try await send(updated, .get, base, operationID: "GetCharactersCharacterIdMail")
+        #expect(after?.array?.map { $0["is_read"] } == [.bool(true), .bool(false)])
+        #expect(after?.array?.last?["labels"] == .array([.int(1), .int(16)]))
+
+        let (_, fresh) = try await send(transport(StubUpstream()), .get, base, operationID: "GetCharactersCharacterIdMail")
+        #expect(fresh?.array?.first?["is_read"] == .bool(false))
     }
 
     @Test func mergesNamesWithUpstream() async throws {
@@ -202,6 +281,9 @@ private func send(_ transport: DemoTransport, _ method: HTTPRequest.Method, _ pa
         let (route, _) = try await send(transport, .post, "/route/30000142/30001407", operationID: "PostRoute",
                                         body: #"{"preference":"Shorter"}"#)
         #expect(route.status.code == 200)
+        let (structure, _) = try await send(transport, .get, "/universe/structures/1035000000001",
+                                            operationID: "GetUniverseStructuresStructureId")
+        #expect(structure.status.code == 403)
         #expect(upstream.paths == ["/markets/prices", "/route/30000142/30001407"])
         #expect(upstream.calls.withLock { $0.last?.2 } == Data(#"{"preference":"Shorter"}"#.utf8))
     }

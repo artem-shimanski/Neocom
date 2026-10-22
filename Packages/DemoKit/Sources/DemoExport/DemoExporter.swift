@@ -8,6 +8,7 @@ public enum DemoExportError: Error, CustomStringConvertible {
     case leaks([String])
     case inconsistentSkillQueue(String)
     case notSynthetic(Int64)
+    case syntheticRangeExhausted(Int)
 
     public var description: String {
         switch self {
@@ -21,6 +22,8 @@ public enum DemoExportError: Error, CustomStringConvertible {
             "The configured skill queue does not follow the recorded skills: \(reason)."
         case let .notSynthetic(id):
             "The configured id \(id) is outside the synthetic range."
+        case let .syntheticRangeExhausted(count):
+            "\(count) recorded ids do not fit into the synthetic range."
         }
     }
 }
@@ -32,13 +35,22 @@ public struct DemoRealIdentity: Sendable {
     public var corporationID: Int64?
     public var allianceID: Int64?
     public var ownerHash: String?
+    /// The recorded birthday, as ESI wrote it.
+    public var birthday: String?
+    public var walletBalance: Double?
+    /// Item, order, clone and other per-pilot ids of the recording; see `DemoExporter.recordedIDKeys`.
+    public var recordedIDs: Set<Int64>
 
-    public init(characterID: Int64, name: String, corporationID: Int64?, allianceID: Int64?, ownerHash: String?) {
+    public init(characterID: Int64, name: String, corporationID: Int64?, allianceID: Int64?, ownerHash: String?,
+                birthday: String? = nil, walletBalance: Double? = nil, recordedIDs: Set<Int64> = []) {
         self.characterID = characterID
         self.name = name
         self.corporationID = corporationID
         self.allianceID = allianceID
         self.ownerHash = ownerHash
+        self.birthday = birthday
+        self.walletBalance = walletBalance
+        self.recordedIDs = recordedIDs
     }
 
     /// Read from the recorded `GET /characters/{id}` of the pilot.
@@ -50,8 +62,19 @@ public struct DemoRealIdentity: Sendable {
         guard let name = profile?["name"]?.string else {
             throw DemoExportError.missingPilotProfile(recording.pilotID)
         }
+        let pilotEntries = recording.entries.filter {
+            (200 ..< 300).contains($0.status) && DemoExporter.ids(inPath: $0.path).contains(recording.pilotID)
+        }
+        let wallet = pilotEntries.first { $0.operationID == "GetCharactersCharacterIdWallet" }?.body
+        let walletBalance: Double? = switch wallet {
+        case let .double(value): value
+        case let .int(value): Double(value)
+        default: nil
+        }
         self.init(characterID: recording.pilotID, name: name, corporationID: profile?["corporation_id"]?.int,
-                  allianceID: profile?["alliance_id"]?.int, ownerHash: recording.ownerHash)
+                  allianceID: profile?["alliance_id"]?.int, ownerHash: recording.ownerHash,
+                  birthday: profile?["birthday"]?.string, walletBalance: walletBalance,
+                  recordedIDs: DemoExporter.recordedIDs(in: pilotEntries))
     }
 }
 
@@ -77,6 +100,17 @@ public struct DemoExporter {
         "client_id": "character", "installer_id": "character", "completed_character_id": "character",
         "issuer_corporation_id": "corporation",
     ]
+
+    /// Keys whose values are ids of the real pilot's items, orders, clones and jobs. They move
+    /// into the synthetic range, keeping every reference between them (a container's `item_id`
+    /// is its contents' `location_id`).
+    public static let recordedIDKeys: Set<String> = [
+        "item_id", "ship_item_id", "jump_clone_id", "order_id", "pin_id", "source_pin_id", "destination_pin_id",
+        "blueprint_id", "job_id", "contract_id", "record_id", "route_id", "waypoints",
+    ]
+
+    /// Where the replacements of recorded ids start; parties and killmails are allocated below.
+    static let recordedIDOffset: Int64 = 200_000
 
     /// Replaced by synthetic content or folded into the archive tables.
     static func isDropped(_ operationID: String) -> Bool {
@@ -130,6 +164,9 @@ public struct DemoExporter {
             structures.formUnion(locations.filter { $0 >= Self.structureThreshold && !itemIDs.contains($0) })
         }
         rewriter.structures = structures
+        try rewriter.mapRecordedIDs(Self.recordedIDs(in: succeeded.filter {
+            Self.ids(inPath: $0.path).contains(identity.characterID)
+        }).union(assetNames.keys.compactMap { Int64($0) }))
 
         for entry in succeeded where entry.operationID == "GetCharactersCharacterIdKillmailsRecent" {
             for item in entry.body?.array ?? [] {
@@ -151,13 +188,11 @@ public struct DemoExporter {
                 output.bodyDigest = DemoRequestKey.digest(of: rewriter.rewrite(requestBody, operationID: entry.operationID))
             }
             output.body = entry.body.map { rewriter.rewrite($0, operationID: entry.operationID) }
-            if entry.operationID == "GetCharactersDetail" {
-                output.body?["description"] = .string("")
-                output.body?["title"] = nil
-                output.body?["corporation_title"] = nil
-            }
             if entry.operationID == "GetCharactersCharacterIdFittings", let body = output.body {
                 output.body = cleanFittings(body)
+            }
+            if let body = output.body {
+                output.body = scrub(body, operationID: entry.operationID, recordedAt: recording.recordedAt)
             }
             entries.append(output)
         }
@@ -194,7 +229,9 @@ public struct DemoExporter {
                                      corporationID: config.pilot.corporationID),
             entries: entries.sorted { ($0.path, $0.operationID, $0.query, $0.method) < ($1.path, $1.operationID, $1.query, $1.method) },
             names: names,
-            assetNames: cleanAssetNames(assetNames.mapValues { rewriter.rewrite(string: $0) }),
+            assetNames: cleanAssetNames(Dictionary(assetNames.map { key, name in
+                (Int64(key).flatMap { rewriter.recordedIDs[$0] }.map(String.init) ?? key, rewriter.rewrite(string: name))
+            }, uniquingKeysWith: { first, _ in first })),
             plan: config.plan
         )
         try Self.trim(&archive, budget: config.sizeBudget)
@@ -227,7 +264,67 @@ public struct DemoExporter {
             search(NSRegularExpression.escapedPattern(for: hash), "owner hash")
         }
         search("eyJ[A-Za-z0-9_-]{8,}", "token-like string")
+        if let birthday = identity.birthday, !birthday.isEmpty {
+            search(NSRegularExpression.escapedPattern(for: birthday), "birthday")
+        }
+        if let wallet = identity.walletBalance, wallet != 0 {
+            search("(?<![0-9.])\(NSRegularExpression.escapedPattern(for: String(wallet)))(?![0-9])", "wallet balance")
+        }
+        if !identity.recordedIDs.isEmpty, let regex = try? NSRegularExpression(pattern: "(?<![0-9.])[0-9]+(?![0-9.])") {
+            var survivors = Set<Int64>()
+            regex.enumerateMatches(in: text, range: NSRange(text.startIndex..., in: text)) { match, _, _ in
+                // Small numbers are counts, levels and dates far more often than ids.
+                guard let match, let range = Range(match.range, in: text), let id = Int64(text[range]),
+                      id >= 100_000, identity.recordedIDs.contains(id) else { return }
+                survivors.insert(id)
+            }
+            if !survivors.isEmpty {
+                let sample = survivors.sorted().prefix(5).map(String.init).joined(separator: ", ")
+                findings.append("recorded item, order or clone id: \(survivors.count) id(s), e.g. \(sample)")
+            }
+        }
         return findings
+    }
+
+    /// Values under `recordedIDKeys` in the bodies of `entries`.
+    public static func recordedIDs(in entries: [DemoArchive.Entry]) -> Set<Int64> {
+        var ids = Set<Int64>()
+        for entry in entries {
+            guard let body = entry.body else { continue }
+            for key in recordedIDKeys {
+                collect(key: key, in: body, into: &ids)
+            }
+        }
+        return ids
+    }
+
+    /// Replaces the profile fields, dates and balances that identify the real pilot.
+    func scrub(_ body: DemoJSON, operationID: String, recordedAt: Date) -> DemoJSON {
+        var body = body
+        func daysAgo(_ days: Double) -> DemoJSON { Self.timestamp(recordedAt, hours: -days * 24) }
+        switch operationID {
+        case "GetCharactersDetail":
+            body["description"] = .string("")
+            body["title"] = nil
+            body["corporation_title"] = nil
+            body["birthday"] = .string(config.pilot.birthday)
+            body["security_status"] = .double(config.pilot.securityStatus)
+            body["gender"] = .string(config.pilot.gender)
+            body["race_id"] = .int(config.pilot.raceID)
+            body["bloodline_id"] = .int(config.pilot.bloodlineID)
+            if body["ancestry_id"] != nil { body["ancestry_id"] = nil }
+        case "GetCharactersCharacterIdAttributes":
+            if body["last_remap_date"] != nil { body["last_remap_date"] = daysAgo(430) }
+            if body["accrued_remap_cooldown_date"] != nil { body["accrued_remap_cooldown_date"] = daysAgo(65) }
+        case "GetCharactersCharacterIdClones":
+            if body["last_clone_jump_date"] != nil { body["last_clone_jump_date"] = daysAgo(19) }
+            if body["last_station_change_date"] != nil { body["last_station_change_date"] = daysAgo(47) }
+        case "GetCharactersCharacterIdWallet":
+            body = .double(config.pilot.walletBalance)
+        default:
+            break
+        }
+        return body
     }
 
     // MARK: - Synthetic content
@@ -347,7 +444,10 @@ public struct DemoExporter {
         switch json {
         case let .object(object):
             for (name, value) in object {
-                if name == key, let id = value.int { ids.insert(id) }
+                if name == key {
+                    if let id = value.int { ids.insert(id) }
+                    ids.formUnion(value.array?.compactMap(\.int) ?? [])
+                }
                 collect(key: key, in: value, into: &ids)
             }
         case let .array(values):
@@ -373,6 +473,8 @@ struct Rewriter {
     private(set) var killmails: [Int64: Int64] = [:]
     private(set) var killmailHashes: [String: String] = [:]
     private(set) var synthetic: [Int64: Synthetic] = [:]
+    /// Replacements of the ids under `DemoExporter.recordedIDKeys`.
+    private(set) var recordedIDs: [Int64: Int64] = [:]
     private var nextID = DemoIDs.syntheticRange.lowerBound + 100_000
     private var characterCount = 0
     private var corporationCount = 0
@@ -385,6 +487,15 @@ struct Rewriter {
     mutating func allocate() -> Int64 {
         defer { nextID += 1 }
         return nextID
+    }
+
+    /// Maps `ids` in ascending order onto consecutive synthetic ids, so their order is kept.
+    mutating func mapRecordedIDs(_ ids: Set<Int64>) throws {
+        let base = DemoIDs.syntheticRange.lowerBound + DemoExporter.recordedIDOffset
+        guard Int64(ids.count) <= DemoIDs.syntheticRange.upperBound - base else {
+            throw DemoExportError.syntheticRangeExhausted(ids.count)
+        }
+        recordedIDs = Dictionary(uniqueKeysWithValues: ids.sorted().enumerated().map { ($1, base + Int64($0)) })
     }
 
     mutating func mapKillmail(id: Int64, hash: String) {
@@ -478,6 +589,8 @@ struct Rewriter {
         if value == identity.corporationID { return config.pilot.corporationID }
         guard let key else { return value }
         if Self.locationKeys.contains(key), structures.contains(value) { return config.pilot.homeStationID }
+        if DemoExporter.recordedIDKeys.contains(key) || Self.locationKeys.contains(key),
+           let id = recordedIDs[value] { return id }
         if key == "killmail_id", let killmail = killmails[value] { return killmail }
         if let category = DemoExporter.partyKeys[key], isThirdParty(value) {
             return party(value, category: category)

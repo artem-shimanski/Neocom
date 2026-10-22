@@ -28,6 +28,14 @@ public struct DemoConfig: Codable, Sendable {
         public var homeStationID: Int64
         public var homeStationName: String
         public var homeSolarSystemID: Int64
+        /// Replaces the recorded profile fields that identify the real pilot.
+        public var birthday: String
+        public var securityStatus: Double
+        public var gender: String
+        public var raceID: Int64
+        public var bloodlineID: Int64
+        /// ISK in the wallet.
+        public var walletBalance: Double
     }
 
     public struct Mail: Codable, Sendable {

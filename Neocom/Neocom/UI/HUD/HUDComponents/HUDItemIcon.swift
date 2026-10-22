@@ -8,8 +8,11 @@ struct HUDItemIcon: View {
     var size: CGFloat = 40
 
     var body: some View {
-        HUDImagePlate(url: EVEImage.icon(typeID: Int64(typeID.rawValue), size: size > 32 ? 128 : 64),
-                      size: size)
+        let pixels = size > 32 ? 128 : 64
+        // Blueprints have no `icon` on the image server, only `bp` and `bpc`.
+        HUDImagePlate(url: EVEImage.icon(typeID: Int64(typeID.rawValue), size: pixels),
+                      size: size,
+                      fallbackURL: EVEImage.blueprint(typeID: Int64(typeID.rawValue), size: pixels))
     }
 }
 

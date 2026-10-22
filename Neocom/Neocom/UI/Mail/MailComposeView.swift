@@ -1,3 +1,4 @@
+import DemoFixtures
 import MailKit
 import SwiftUI
 
@@ -357,6 +358,13 @@ private struct MailComposeForm: View {
         }
     }
 
+    /// `message` trimmed, ending in a full stop unless it already ends a sentence.
+    private static func sentence(_ message: String) -> String {
+        let message = message.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let last = message.last, !".!?…。".contains(last) else { return message }
+        return message + "."
+    }
+
     private func readout<Value: View>(_ label: Text, @ViewBuilder value: () -> Value) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             label
@@ -377,8 +385,13 @@ private struct MailComposeForm: View {
             VStack(alignment: .leading, spacing: 8) {
                 caption(Text("Not sent"), systemImage: "exclamationmark.circle", color: .hudDanger)
                 Group {
-                    if let message, !message.isEmpty {
-                        Text("EVE refused the mail: \(message). Your mail is kept as written — send it again when you are ready.")
+                    if let message = message.map(Self.sentence), !message.isEmpty {
+                        if DemoIDs.contains(sheet.characterID) {
+                            // The demo's own rejection, not EVE's.
+                            Text("\(message) Your mail is kept as written.")
+                        } else {
+                            Text("EVE refused the mail: \(message) Your mail is kept as written — send it again when you are ready.")
+                        }
                     } else {
                         Text("EVE did not take the mail. Your mail is kept as written — send it again when you are ready.")
                     }

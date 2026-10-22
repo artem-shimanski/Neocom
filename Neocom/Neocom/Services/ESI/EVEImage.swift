@@ -41,6 +41,13 @@ nonisolated enum EVEImage {
             .appending(queryItems: [URLQueryItem(name: "size", value: "\(size)")])
     }
 
+    /// The icon of a blueprint type, which has no `icon` on the image server.
+    static func blueprint(typeID: Int64, size: Int = 64) -> URL {
+        baseURL
+            .appending(path: "types/\(typeID)/bp")
+            .appending(queryItems: [URLQueryItem(name: "size", value: "\(size)")])
+    }
+
     /// The 3D render of a ship or structure. Types without a model return `404`, so the caller
     /// needs a fallback.
     static func render(typeID: Int64, size: Int = 512) -> URL {

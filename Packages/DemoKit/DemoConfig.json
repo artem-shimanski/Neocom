@@ -242,12 +242,18 @@
     ]
   },
   "pilot" : {
+    "birthday" : "2019-06-12T14:20:00Z",
+    "bloodlineID" : 2,
     "corporationID" : 1000044,
     "corporationName" : "School of Applied Knowledge",
     "homeSolarSystemID" : 30001407,
     "homeStationID" : 60004420,
     "homeStationName" : "Todaki VI - Moon 1 - School of Applied Knowledge",
-    "name" : "Demo Pilot"
+    "gender" : "female",
+    "name" : "Demo Pilot",
+    "raceID" : 1,
+    "securityStatus" : 1.2,
+    "walletBalance" : 48250000
   },
   "plan" : [
     { "level" : 4, "skillID" : 3388 },

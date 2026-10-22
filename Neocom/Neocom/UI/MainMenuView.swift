@@ -159,7 +159,7 @@ private struct HomeView: View {
                                   placeholderSystemImage: "lock.open") {
                         if DemoPilot.isAvailable {
                             Button("Explore with a demo pilot") {
-                                accounts.enterDemo()
+                                Task { await accounts.enterDemo() }
                             }
                             .hudProminentButton()
                         }

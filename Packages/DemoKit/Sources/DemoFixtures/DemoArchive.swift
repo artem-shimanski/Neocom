@@ -92,6 +92,20 @@ public struct DemoArchive: Codable, Sendable, Equatable {
             self.requestBody = requestBody
         }
 
+        init(json: DemoJSON) throws {
+            let headers = json["headers"]
+            self.init(operationID: try json.required("operationID", \.string),
+                      method: try json.required("method", \.string),
+                      path: try json.required("path", \.string),
+                      query: json["query"]?.string ?? "",
+                      bodyDigest: json["bodyDigest"]?.string,
+                      status: Int(json["status"]?.int ?? 200),
+                      headers: Headers(xPages: headers?["xPages"]?.int.map(Int.init),
+                                       lastModified: headers?["lastModified"]?.string),
+                      body: json["body"].flatMap { $0 == .null ? nil : $0 },
+                      requestBody: json["requestBody"].flatMap { $0 == .null ? nil : $0 })
+        }
+
         public var key: DemoRequestKey {
             DemoRequestKey(method: method, operationID: operationID, path: path, query: query, bodyDigest: bodyDigest)
         }
@@ -114,8 +128,25 @@ public struct DemoArchive: Codable, Sendable, Equatable {
         }
     }
 
+    /// Reads through `DemoJSON` rather than `Decodable`: the bodies are most of the file.
     public static func decode(from data: Data) throws -> DemoArchive {
-        try makeDecoder().decode(DemoArchive.self, from: data)
+        let json = try DemoJSON(data: data)
+        return DemoArchive(
+            version: Int(try json.required("version", \.int)),
+            recordedAt: try json.date("recordedAt"),
+            compatibilityDate: try json.required("compatibilityDate", \.string),
+            pilot: Pilot(id: try json["pilot"].required("id", \.int),
+                         name: try json["pilot"].required("name", \.string),
+                         corporationID: try json["pilot"].required("corporationID", \.int)),
+            entries: try (json["entries"]?.array ?? []).map(Entry.init(json:)),
+            names: try (json["names"]?.object ?? [:]).mapValues { name in
+                Name(name: try name.required("name", \.string), category: try name.required("category", \.string))
+            },
+            assetNames: (json["assetNames"]?.object ?? [:]).compactMapValues(\.string),
+            plan: try (json["plan"]?.array ?? []).map { item in
+                PlanItem(skillID: try item.required("skillID", \.int), level: Int(try item.required("level", \.int)))
+            }
+        )
     }
 
     /// Pretty-printed, sorted keys: the bundled file is reviewed as a diff.
@@ -164,5 +195,38 @@ public struct DemoRecording: Codable, Sendable, Equatable {
 
     public func encoded() throws -> Data {
         try DemoArchive.makeEncoder().encode(self)
+    }
+}
+
+private extension Optional where Wrapped == DemoJSON {
+    func required<T>(_ key: String, _ value: KeyPath<DemoJSON, T?>) throws -> T {
+        guard let field = self?[key], let result = field[keyPath: value] else {
+            throw DecodingError.keyNotFound(DemoArchive.Key(key), .init(codingPath: [], debugDescription: "Missing or mistyped \(key)"))
+        }
+        return result
+    }
+}
+
+private extension DemoJSON {
+    func required<T>(_ key: String, _ value: KeyPath<DemoJSON, T?>) throws -> T {
+        try Optional(self).required(key, value)
+    }
+
+    func date(_ key: String) throws -> Date {
+        let string = try required(key, \.string)
+        guard let date = try? Date(string, strategy: .iso8601) else {
+            throw DecodingError.dataCorrupted(.init(codingPath: [DemoArchive.Key(key)], debugDescription: "Not an ISO-8601 date"))
+        }
+        return date
+    }
+}
+
+extension DemoArchive {
+    struct Key: CodingKey {
+        var stringValue: String
+        var intValue: Int? { nil }
+        init(_ string: String) { stringValue = string }
+        init?(stringValue: String) { self.stringValue = stringValue }
+        init?(intValue: Int) { nil }
     }
 }

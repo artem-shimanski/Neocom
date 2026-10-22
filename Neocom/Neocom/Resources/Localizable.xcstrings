@@ -1,6 +1,16 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ Your mail is kept as written." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Текст сохранён как есть."
+          }
+        }
+      }
+    },
     "· %lld online" : {
       "localizations" : {
         "ru" : {
@@ -9235,12 +9245,12 @@
         }
       }
     },
-    "EVE refused the mail: %@. Your mail is kept as written — send it again when you are ready." : {
+    "EVE refused the mail: %@ Your mail is kept as written — send it again when you are ready." : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "EVE отклонил письмо: %@. Текст сохранён как есть — отправьте его ещё раз, когда будете готовы."
+            "value" : "EVE отклонил письмо: %@ Текст сохранён как есть — отправьте его ещё раз, когда будете готовы."
           }
         }
       }
@@ -14674,12 +14684,12 @@
         }
       }
     },
-    "No sign-in needed. Recorded data; nothing is sent to EVE." : {
+    "No sign-in needed. Recorded data; nothing in EVE is changed." : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Вход не нужен. Записанные данные; в EVE ничего не отправляется."
+            "value" : "Вход не нужен. Записанные данные; в EVE ничего не меняется."
           }
         }
       }

@@ -10,8 +10,34 @@ public enum DemoJSON: Sendable, Hashable {
     case array([DemoJSON])
     case object([String: DemoJSON])
 
+    /// Parses with `JSONSerialization`, which is much faster on large documents than
+    /// `Decodable`, where every node would try each case in turn.
     public init(data: Data) throws {
-        self = try JSONDecoder().decode(DemoJSON.self, from: data)
+        self = try DemoJSON(jsonObject: JSONSerialization.jsonObject(with: data, options: [.fragmentsAllowed]))
+    }
+
+    /// Converts a `JSONSerialization` value.
+    public init(jsonObject value: Any) throws {
+        switch value {
+        case is NSNull:
+            self = .null
+        case let string as String:
+            self = .string(string)
+        case let number as NSNumber:
+            if CFGetTypeID(number) == CFBooleanGetTypeID() {
+                self = .bool(number.boolValue)
+            } else if CFNumberIsFloatType(number) {
+                self = .double(number.doubleValue)
+            } else {
+                self = .int(number.int64Value)
+            }
+        case let array as [Any]:
+            self = .array(try array.map(DemoJSON.init(jsonObject:)))
+        case let object as [String: Any]:
+            self = .object(try object.mapValues(DemoJSON.init(jsonObject:)))
+        default:
+            throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "Unsupported JSON value \(type(of: value))"))
+        }
     }
 
     /// Compact encoding with sorted keys.
@@ -30,6 +56,18 @@ public enum DemoJSON: Sendable, Hashable {
             guard case var .object(object) = self else { return }
             object[key] = newValue
             self = .object(object)
+        }
+    }
+
+    public var bool: Bool? {
+        if case let .bool(value) = self { value } else { nil }
+    }
+
+    public var double: Double? {
+        switch self {
+        case let .double(value): value
+        case let .int(value): Double(value)
+        default: nil
         }
     }
 

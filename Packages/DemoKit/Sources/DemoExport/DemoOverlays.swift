@@ -29,7 +29,12 @@ extension DemoExporter {
             entries[orders].body = .array(config.orders.open.map { Self.json(order: $0, recordedAt: recordedAt) })
         }
         if let history = index(Self.orderHistoryOperation, base + "/orders/history") {
-            let recorded = entries[history].body?.array ?? []
+            // Recorded orders keep their contents; when they were issued is made up.
+            let recorded = (entries[history].body?.array ?? []).enumerated().map { index, order in
+                var order = order
+                order["issued"] = Self.timestamp(recordedAt, hours: -(260 + 31 * Double(index)))
+                return order
+            }
             entries[history].body = .array(recorded + config.orders.history.map { Self.json(order: $0, recordedAt: recordedAt) })
         }
         if let jobs = index(Self.industryJobsOperation, base + "/industry/jobs", query: "include_completed=true") {

@@ -1,3 +1,4 @@
+import DemoFixtures
 import DogmaKit
 import LiteRow
 import LiteRowUI
@@ -282,7 +283,10 @@ private struct InGameFittingsList: View {
                                         name: fitting.name,
                                         document: document,
                                         notes: fitting.fittingDescription)
-        fittingStore.link(newID, esiFittingID: fitting.id, characterID: sheet.characterID)
+        // The store syncs through iCloud; a demo fitting stays an unlinked copy.
+        if !DemoIDs.contains(sheet.characterID) {
+            fittingStore.link(newID, esiFittingID: fitting.id, characterID: sheet.characterID)
+        }
         if !warnings.isEmpty {
             copyWarnings = warnings
         }

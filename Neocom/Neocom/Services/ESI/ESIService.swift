@@ -45,11 +45,14 @@ nonisolated enum ESIService {
         ))
     }
 
-    /// A client for the demo pilot: answers from `archive`, sends public requests upstream
-    /// without a token, and rejects every write.
-    static func demoClient(archive: DemoArchive) -> Client {
+    /// A client for the demo pilot: answers from the bundled demo data, sends public requests
+    /// upstream without a token, and rejects every write. Dates are rebased to its creation.
+    static func demoClient() -> Client {
         let transport = DemoTransport(
-            archive: archive,
+            loadArchive: {
+                guard let archive = await DemoPilot.archive() else { throw DemoDataUnavailable() }
+                return archive
+            },
             writeRejectionMessage: String(localized: "The demo pilot can't change anything in EVE. Sign in with your character to do this."),
             onMiss: logMiss
         )
@@ -75,3 +78,6 @@ nonisolated enum ESIService {
     private static let logMiss: (@Sendable (DemoRequestKey, DemoTransport.Miss) -> Void)? = nil
     #endif
 }
+
+/// The app ships without readable demo data.
+private struct DemoDataUnavailable: Error {}
