@@ -57,7 +57,7 @@ nonisolated enum ESIService {
                 return archive
             },
             writeRejectionMessage: String(localized: "The demo pilot can't change anything in EVE. Sign in with your character to do this."),
-            upstreamMiddlewares: [ESIErrorLimitMiddleware(limiter: errorLimiter), ESIReplayedLimitMiddleware()],
+            upstreamMiddlewares: [ESIErrorLimitMiddleware(limiter: errorLimiter)],
             onMiss: logMiss
         )
         var demoConfiguration = configuration
@@ -70,7 +70,7 @@ nonisolated enum ESIService {
     static let demoRecorder: DemoRecorder? = UserDefaults.standard.bool(forKey: "NeocomRecordDemo") ? DemoRecorder() : nil
 
     private static var additionalMiddlewares: [any ClientMiddleware] {
-        [ESIReplayedLimitMiddleware()] + (demoRecorder.map { [$0] } ?? [])
+        demoRecorder.map { [$0] } ?? []
     }
 
     private static let demoLog = Logger(subsystem: Bundle.main.bundleIdentifier ?? "Neocom", category: "Demo")
@@ -80,7 +80,7 @@ nonisolated enum ESIService {
         demoLog.notice("Demo fixture miss (\(String(describing: miss), privacy: .public)): \(key.description, privacy: .public)")
     }
     #else
-    private static let additionalMiddlewares: [any ClientMiddleware] = [ESIReplayedLimitMiddleware()]
+    private static let additionalMiddlewares: [any ClientMiddleware] = []
     private static let logMiss: (@Sendable (DemoRequestKey, DemoTransport.Miss) -> Void)? = nil
     #endif
 }

@@ -1,5 +1,5 @@
 {
-  "originHash" : "a498f881f12cc1e9027c674e44b206cdbd3f21c63016493ea9240787c3def700",
+  "originHash" : "c34028651196fe03b9be03cdb850fbe3a154b74ff9e8b10f6516d4ae3eede4e5",
   "pins" : [
     {
       "identity" : "bitfield",
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/artem-shimanski/EveAPIKit.git",
       "state" : {
-        "revision" : "d9ce59c2e5366571293aae5d6bda17d255c134aa",
-        "version" : "0.1.0"
+        "revision" : "c7248f3672075b3b8b3d38716c3ad38a0f701a08",
+        "version" : "0.1.1"
       }
     },
     {
