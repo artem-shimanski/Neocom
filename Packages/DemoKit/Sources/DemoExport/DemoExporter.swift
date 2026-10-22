@@ -403,11 +403,22 @@ public struct DemoExporter {
 
     // MARK: - Budget
 
-    /// Drops trailing pages of paged routes, then halves the largest arrays, until the archive fits.
+    static let assetsOperationID = "GetCharactersCharacterIdAssets"
+    /// Items per page of `/characters/{id}/assets`, as ESI pages it.
+    static let assetsPageSize = 1000
+
+    /// Thins the assets first, then drops trailing pages of other paged routes and halves the largest
+    /// arrays, until the archive fits.
     static func trim(_ archive: inout DemoArchive, budget: Int) throws {
         var size = try archive.encoded().count
+        if size > budget {
+            try trimAssets(&archive, budget: budget)
+            size = try archive.encoded().count
+        }
         while size > budget {
-            let paged = archive.entries.indices.filter { (archive.entries[$0].headers.xPages ?? 1) > 1 }
+            let paged = archive.entries.indices.filter {
+                (archive.entries[$0].headers.xPages ?? 1) > 1 && archive.entries[$0].operationID != assetsOperationID
+            }
             let groups = Dictionary(grouping: paged) { index in
                 let entry = archive.entries[index]
                 return [entry.method, entry.operationID, entry.path,
@@ -425,12 +436,71 @@ public struct DemoExporter {
                     (index, archive.entries[index].body?.array?.count ?? 0,
                      (try? archive.entries[index].body?.data().count) ?? 0)
                 }
-                guard let (index, count, _) = sizes.filter({ $0.1 > 1 }).max(by: { $0.2 < $1.2 }) else {
+                let candidates = sizes.filter { $0.1 > 1 && archive.entries[$0.0].operationID != assetsOperationID }
+                guard let (index, count, _) = candidates.max(by: { $0.2 < $1.2 }) else {
                     throw DemoExportError.overBudget(size: size, budget: budget)
                 }
                 archive.entries[index].body = .array(Array(archive.entries[index].body!.array!.prefix(count / 2)))
             }
             size = try archive.encoded().count
+        }
+    }
+
+    /// Drops assets until the archive fits, halving the largest group of leaves (items nothing is
+    /// located in) under one location each time, so no remaining item loses its container.
+    static func trimAssets(_ archive: inout DemoArchive, budget: Int) throws {
+        let pages = archive.entries.indices
+            .filter { archive.entries[$0].operationID == assetsOperationID }
+            .sorted { archive.entries[$0].page < archive.entries[$1].page }
+        guard let first = pages.first else { return }
+        let template = archive.entries[first]
+        var items = pages.flatMap { archive.entries[$0].body?.array ?? [] }
+        archive.entries.removeAll { $0.operationID == assetsOperationID }
+        let assetItemIDs = Set(items.compactMap { $0["item_id"]?.int })
+        var remaining = assetItemIDs
+
+        func assembled() -> DemoArchive {
+            var output = archive
+            output.entries.append(contentsOf: assetPages(items, template: template))
+            output.assetNames = output.assetNames.filter { key, _ in
+                Int64(key).map { id in !assetItemIDs.contains(id) || remaining.contains(id) } ?? false
+            }
+            return output
+        }
+
+        while try assembled().encoded().count > budget {
+            let parents = Set(items.compactMap { $0["location_id"]?.int })
+            var groups: [Int64: [Int]] = [:]
+            for (index, item) in items.enumerated() {
+                guard let id = item["item_id"]?.int, !parents.contains(id),
+                      let location = item["location_id"]?.int else { continue }
+                groups[location, default: []].append(index)
+            }
+            guard let group = groups.max(by: { ($0.value.count, $1.key) < ($1.value.count, $0.key) })?.value else {
+                throw DemoExportError.overBudget(size: try assembled().encoded().count, budget: budget)
+            }
+            let dropped = Set(group.suffix(max(1, group.count / 2)))
+            for index in dropped {
+                if let id = items[index]["item_id"]?.int { remaining.remove(id) }
+            }
+            items = items.enumerated().filter { !dropped.contains($0.offset) }.map(\.element)
+        }
+        archive = assembled()
+    }
+
+    /// `items` paged as ESI pages them, every page carrying the new page count.
+    static func assetPages(_ items: [DemoJSON], template: DemoArchive.Entry) -> [DemoArchive.Entry] {
+        let chunks = stride(from: 0, to: max(items.count, 1), by: assetsPageSize).map {
+            Array(items[$0 ..< min($0 + assetsPageSize, items.count)])
+        }
+        let otherQuery = template.query.split(separator: "&").filter { !$0.hasPrefix("page=") }
+        return chunks.enumerated().map { index, chunk in
+            var entry = template
+            let page = index == 0 ? [] : ["page=\(index + 1)"]
+            entry.query = (otherQuery.map(String.init) + page).sorted().joined(separator: "&")
+            entry.headers.xPages = chunks.count
+            entry.body = .array(chunk)
+            return entry
         }
     }
 

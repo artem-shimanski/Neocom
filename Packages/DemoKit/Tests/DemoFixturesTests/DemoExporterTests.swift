@@ -333,6 +333,49 @@ func loadConfig() throws -> DemoConfig {
         #expect(throws: DemoExportError.self) { try DemoExporter(config: config).export(recording) }
     }
 
+    @Test func trimsAssetsByWholeSubtrees() throws {
+        var recording = fakeRecording()
+        recording.entries.removeAll { $0.operationID == "GetCharactersCharacterIdAssets" }
+        func asset(_ id: Int64, in location: Int64, type: String = "item", flag: String = "Hangar",
+                   typeID: Int64 = 1130) -> DemoJSON {
+            object(["item_id": .int(id), "location_id": .int(location), "location_type": .string(type),
+                    "location_flag": .string(flag), "type_id": .int(typeID), "quantity": .int(-2),
+                    "is_singleton": .bool(true)])
+        }
+        let wrap: Int64 = 1_040_000_100_000
+        let crate: Int64 = 1_040_000_100_001
+        var items = [asset(wrap, in: 60_003_760, type: "station", flag: "AssetSafety", typeID: 60),
+                     asset(crate, in: wrap, flag: "AssetSafety", typeID: 3297)]
+        items += (0 ..< 2500).map { asset(1_040_000_200_000 + $0, in: crate) }
+        items += (0 ..< 20).map { asset(1_040_000_300_000 + $0, in: 60_003_760, type: "station", typeID: 587) }
+        let chunks = stride(from: 0, to: items.count, by: 1000).map { Array(items[$0 ..< min($0 + 1000, items.count)]) }
+        for (index, chunk) in chunks.enumerated() {
+            recording.entries.append(entry("GetCharactersCharacterIdAssets", "/characters/\(realID)/assets",
+                                           query: index == 0 ? "" : "page=\(index + 1)", pages: chunks.count,
+                                           body: .array(chunk)))
+        }
+
+        var config = try loadConfig()
+        let size = try DemoExporter(config: config).export(recording).encoded().count
+        config.sizeBudget = size * 2 / 3
+        let archive = try DemoExporter(config: config).export(recording)
+        #expect(try archive.encoded().count <= config.sizeBudget)
+
+        let pages = archive.entries.filter { $0.operationID == "GetCharactersCharacterIdAssets" }
+            .sorted { $0.page < $1.page }
+        #expect(pages.map(\.page) == Array(1 ... pages.count))
+        #expect(pages.allSatisfy { $0.headers.xPages == pages.count && ($0.body?.array?.count ?? 0) <= 1000 })
+        let kept = pages.flatMap { $0.body?.array ?? [] }
+        #expect(kept.count < items.count)
+        let ids = Set(kept.compactMap { $0["item_id"]?.int })
+        let orphans = kept.filter { item in
+            item["location_type"]?.string == "item" && !(item["location_id"]?.int.map(ids.contains) ?? false)
+        }
+        #expect(orphans.isEmpty)
+        #expect(kept.filter { $0["type_id"]?.int == 587 }.count == 20)
+        #expect(kept.contains { $0["type_id"]?.int == 60 } && kept.contains { $0["type_id"]?.int == 3297 })
+    }
+
     @Test func overlaysReplaceTheBusinessRoutes() throws {
         let config = try loadConfig()
         let archive = try DemoExporter(config: config).export(fakeRecording())

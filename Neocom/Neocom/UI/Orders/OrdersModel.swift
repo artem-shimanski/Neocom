@@ -116,7 +116,9 @@ final class OrdersModel {
         let systemIDs = Set(orders.compactMap(systemID(of:))).filter { systems[$0] == nil }.map(MarketFormat.systemID)
         let regionIDs = Set(orders.map(\.regionID)).filter { regions[$0] == nil }.map(MarketFormat.regionID)
         if !(typeIDs.isEmpty && systemIDs.isEmpty && regionIDs.isEmpty) {
-            let read = try? await database.database.read { reader -> ([AssetTypeRow], [GroupHeader], [MarketSystemRow], [MarketRegionRow]) in
+            // Unstructured: the list's task is cancelled whenever a revision lands, and a read
+            // cancelled with it would leave the names unresolved.
+            let read = try? await Task { try await database.database.read { reader -> ([AssetTypeRow], [GroupHeader], [MarketSystemRow], [MarketRegionRow]) in
                 let typeRows = try stride(from: 0, to: typeIDs.count, by: 500).flatMap {
                     try reader.fetchAll(AssetsBrowser.types(Array(typeIDs[$0..<min($0 + 500, typeIDs.count)])))
                 }
@@ -125,7 +127,7 @@ final class OrdersModel {
                 let systemRows = systemIDs.isEmpty ? [] : try reader.fetchAll(MarketBrowser.systems(systemIDs))
                 let regionRows = regionIDs.isEmpty ? [] : try reader.fetchAll(MarketBrowser.regions(regionIDs))
                 return (typeRows, groups, systemRows, regionRows)
-            }
+            } }.value
             if let (typeRows, groups, systemRows, regionRows) = read {
                 let groupNames = Dictionary(groups.map { ($0.id, $0.name) }, uniquingKeysWith: { first, _ in first })
                 for row in typeRows {
