@@ -265,7 +265,6 @@
   ],
   "sizeBudget" : 1500000,
   "skillQueue" : {
-    "attributeBonus" : { "charisma" : 4, "intelligence" : 4, "memory" : 4, "perception" : 4, "willpower" : 4 },
     "entries" : [
       { "level" : 3, "primary" : "memory", "rank" : 1, "secondary" : "intelligence", "skillID" : 3386 },
       { "level" : 3, "primary" : "memory", "rank" : 3, "secondary" : "intelligence", "skillID" : 3388 },

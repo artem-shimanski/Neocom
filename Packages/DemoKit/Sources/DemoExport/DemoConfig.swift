@@ -99,8 +99,6 @@ public struct DemoConfig: Codable, Sendable {
     /// `startedHoursAgo` before the recording.
     public struct SkillQueue: Codable, Sendable {
         public var startedHoursAgo: Double
-        /// Implant bonus per attribute, added to the recorded attributes.
-        public var attributeBonus: [String: Int]
         public var entries: [QueuedSkill]
     }
 

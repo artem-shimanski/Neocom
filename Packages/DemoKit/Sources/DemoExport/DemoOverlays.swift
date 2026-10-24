@@ -76,7 +76,7 @@ extension DemoExporter {
             guard let value = attributes?[name]?.int else {
                 throw DemoExportError.inconsistentSkillQueue("no recorded attribute \(name)")
             }
-            return Int(value) + (queue.attributeBonus[name] ?? 0)
+            return Int(value)
         }
 
         var start = recordedAt.addingTimeInterval(-queue.startedHoursAgo * 3600)

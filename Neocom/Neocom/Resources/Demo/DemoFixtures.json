@@ -2331,7 +2331,7 @@
     {
       "body" : [
         {
-          "finish_date" : "2026-10-22T19:53:15Z",
+          "finish_date" : "2026-10-22T20:19:23Z",
           "finished_level" : 3,
           "level_end_sp" : 8000,
           "level_start_sp" : 1415,
@@ -2341,53 +2341,53 @@
           "training_start_sp" : 1415
         },
         {
-          "finish_date" : "2026-10-23T03:43:39Z",
+          "finish_date" : "2026-10-23T05:28:11Z",
           "finished_level" : 3,
           "level_end_sp" : 24000,
           "level_start_sp" : 4243,
           "queue_position" : 1,
           "skill_id" : 3388,
-          "start_date" : "2026-10-22T19:53:15Z",
+          "start_date" : "2026-10-22T20:19:23Z",
           "training_start_sp" : 4243
         },
         {
-          "finish_date" : "2026-10-23T18:30:40Z",
+          "finish_date" : "2026-10-23T22:43:03Z",
           "finished_level" : 4,
           "level_end_sp" : 45255,
           "level_start_sp" : 8000,
           "queue_position" : 2,
           "skill_id" : 3386,
-          "start_date" : "2026-10-23T03:43:39Z",
+          "start_date" : "2026-10-23T05:28:11Z",
           "training_start_sp" : 8000
         },
         {
-          "finish_date" : "2026-10-27T07:08:52Z",
+          "finish_date" : "2026-10-28T01:39:32Z",
           "finished_level" : 5,
           "level_end_sp" : 256000,
           "level_start_sp" : 45255,
           "queue_position" : 3,
           "skill_id" : 3443,
-          "start_date" : "2026-10-23T18:30:40Z",
+          "start_date" : "2026-10-23T22:43:03Z",
           "training_start_sp" : 45255
         },
         {
-          "finish_date" : "2026-10-30T18:46:36Z",
+          "finish_date" : "2026-11-01T03:13:34Z",
           "finished_level" : 5,
           "level_end_sp" : 256000,
           "level_start_sp" : 45255,
           "queue_position" : 4,
           "skill_id" : 3551,
-          "start_date" : "2026-10-27T07:08:52Z",
+          "start_date" : "2026-10-28T01:39:32Z",
           "training_start_sp" : 45255
         },
         {
-          "finish_date" : "2026-11-17T04:55:17Z",
+          "finish_date" : "2026-11-21T11:03:42Z",
           "finished_level" : 5,
           "level_end_sp" : 1280000,
           "level_start_sp" : 226275,
           "queue_position" : 5,
           "skill_id" : 12208,
-          "start_date" : "2026-10-30T18:46:36Z",
+          "start_date" : "2026-11-01T03:13:34Z",
           "training_start_sp" : 226275
         }
       ],

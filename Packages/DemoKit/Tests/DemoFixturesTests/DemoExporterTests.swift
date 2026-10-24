@@ -469,8 +469,7 @@ func loadConfig() throws -> DemoConfig {
             let finish = try #require(entry["finish_date"]?.string.flatMap { try? Date($0, strategy: .iso8601) })
             if let previousFinish { #expect(start == previousFinish) }
             previousFinish = finish
-            let attribute = { (name: String) in Double(20 + (config.skillQueue.attributeBonus[name] ?? 0)) }
-            let rate = (attribute(source.primary) + attribute(source.secondary) / 2) / 60
+            let rate = (20.0 + 20.0 / 2) / 60
             #expect(abs(finish.timeIntervalSince(start) - Double(endPoints - startPoints) / rate) <= 1)
             if position == 0 {
                 #expect(start < recordedAt && finish > recordedAt)
