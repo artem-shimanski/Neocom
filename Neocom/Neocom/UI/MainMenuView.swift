@@ -53,6 +53,10 @@ struct MainMenuView: View {
                         .navigationDestination(for: MainMenuSection.self) { section in
                             SectionDetailView(section: section)
                         }
+                        // A new section starts from its own root. The root is keyed, not the
+                        // stack: a stack replaced while collapsed reports its root disappeared
+                        // right after it appears, and the root's tasks stay cancelled.
+                        .id(selection)
                 } else {
                     // Seen only while expanded: collapsed, nothing selected means the home screen.
                     ContentUnavailableView(
@@ -63,9 +67,6 @@ struct MainMenuView: View {
                     .hudScreen()
                 }
             }
-            // A new section starts from its own root. Keyed on the selection alone, so a width
-            // change keeps the stack.
-            .id(selection)
         }
         .sheet(isPresented: $isShowingAccounts) {
             AccountsView()
