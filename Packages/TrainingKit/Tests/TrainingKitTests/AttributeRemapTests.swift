@@ -98,6 +98,60 @@ struct AttributeRemapTests {
         #expect(other.optimal.intelligence == 21)
     }
 
+    @Test("a pilot's plan is optimised from the base attributes, not from ESI's implant-inclusive ones")
+    func pilotPlan() throws {
+        let implantIDs = (1...5).map { TypeID(rawValue: UInt32(100 + $0)) }
+        let implantBonuses = Dictionary(uniqueKeysWithValues: zip(implantIDs, [
+            CharacterAttributes(charisma: 4), CharacterAttributes(intelligence: 4),
+            CharacterAttributes(memory: 4), CharacterAttributes(perception: 4),
+            CharacterAttributes(willpower: 4),
+        ]))
+        let skills: [(CharacterAttribute, CharacterAttribute, Double)] = [
+            (.intelligence, .memory, 12), (.intelligence, .memory, 8), (.memory, .intelligence, 10),
+            (.memory, .intelligence, 6), (.perception, .willpower, 5), (.willpower, .perception, 4),
+        ]
+        var catalogSkills: [TypeID: SkillCatalog.Skill] = [:]
+        for (index, skill) in skills.enumerated() {
+            catalogSkills[TypeID(rawValue: UInt32(index + 1))] = .init(rank: skill.2, primaryAttribute: skill.0,
+                                                                        secondaryAttribute: skill.1)
+        }
+        let catalog = SkillCatalog(skills: catalogSkills, implantBonuses: implantBonuses)
+        // ESI reports base 19/20/20/20/20 plus five +4 implants.
+        let snapshot = CharacterSnapshot(
+            attributes: CharacterAttributes(charisma: 23, intelligence: 24, memory: 24,
+                                            perception: 24, willpower: 24),
+            implants: implantIDs, skills: [], queue: [], totalSkillPoints: 0)
+        var queue = TrainingQueue(pilot: Pilot(snapshot: snapshot, catalog: catalog), catalog: catalog)
+        queue.add(requirements: catalogSkills.keys.map { .init(skillID: $0, level: 5) })
+
+        let remap = try #require(queue.optimalRemap())
+        #expect(remap.current == Self.current)
+        #expect(abs(remap.currentTime - queue.totalTime) < 1e-3)
+
+        // Brute force over every valid distribution.
+        let implants = CharacterAttributes(charisma: 4, intelligence: 4, memory: 4, perception: 4, willpower: 4)
+        var bestTime = TimeInterval.infinity
+        var best = Self.current
+        for c in 17...27 { for i in 17...27 { for m in 17...27 { for p in 17...27 {
+            let w = 99 - c - i - m - p
+            guard (17...27).contains(w) else { continue }
+            let base = CharacterAttributes(charisma: c, intelligence: i, memory: m, perception: p, willpower: w)
+            let total = base + implants
+            let time = queue.items.reduce(0) {
+                $0 + TrainingMath.trainingTime(skillPoints: $1.skillPoints,
+                                               primary: total[$1.primaryAttribute],
+                                               secondary: total[$1.secondaryAttribute])
+            }
+            if time < bestTime { bestTime = time; best = base }
+        }}}}
+
+        #expect(remap.isChanged)
+        #expect(abs(remap.optimalTime - bestTime) < 1e-3)
+        #expect(remap.optimal == best)
+        #expect(remap.optimal.charisma == 17)
+        #expect(remap.optimal.intelligence > remap.optimal.perception)
+    }
+
     @Test("remap availability follows the bank and the date")
     func availability() {
         let now = Date(timeIntervalSinceReferenceDate: 1_000_000)

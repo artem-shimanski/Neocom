@@ -18,7 +18,7 @@ extension WidgetSnapshot.Training {
     public init(snapshot: CharacterSnapshot, fetchedAt: Date, catalog: SkillCatalog?,
                 previous: WidgetSnapshot.Training? = nil, name: (TypeID) -> String) {
         let records = Dictionary(snapshot.skills.map { ($0.skillID, $0) }, uniquingKeysWith: { first, _ in first })
-        let attributes = snapshot.attributes + (catalog?.attributes(ofImplants: snapshot.implants) ?? .zero)
+        let attributes = snapshot.attributes
         var seen = Set<TypeID>()
 
         let queue = snapshot.queue.sorted { $0.position < $1.position }.map { entry in

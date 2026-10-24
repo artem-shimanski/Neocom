@@ -37,7 +37,7 @@ struct PilotTests {
 
     private static let snapshot = CharacterSnapshot(
         attributes: CharacterAttributes(charisma: 19, intelligence: 20, memory: 20,
-                                        perception: 20, willpower: 20),
+                                        perception: 23, willpower: 20),
         implants: [implant],
         skills: [.init(skillID: skillA, trainedLevel: 2, activeLevel: 2, skillPoints: 1414)],
         queue: [
@@ -58,7 +58,7 @@ struct PilotTests {
 
     // MARK: - Rule 1: implants
 
-    @Test("implant bonus is added to the base attributes")
+    @Test("implant bonus is taken out of the ESI attributes")
     func implantsAddUp() {
         #expect(Self.pilot.baseAttributes.perception == 20)
         #expect(Self.pilot.implantBonus == CharacterAttributes(perception: 3))

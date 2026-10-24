@@ -40,7 +40,8 @@ struct TrainingQueueTests {
     /// the way through IV — so C stands at III.
     private static let pilot = Pilot(
         snapshot: CharacterSnapshot(
-            attributes: baseAttributes,
+            // ESI reports the implant's +3 perception in the attributes.
+            attributes: baseAttributes + CharacterAttributes(perception: 3),
             implants: [implant],
             skills: [.init(skillID: skillA, trainedLevel: 2, activeLevel: 2, skillPoints: 1414)],
             queue: [

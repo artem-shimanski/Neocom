@@ -45,7 +45,7 @@ public struct CharacterSnapshot: Codable, Sendable, Hashable {
         }
     }
 
-    public var attributes: CharacterAttributes   // base, without implants
+    public var attributes: CharacterAttributes   // as ESI reports them: implants included
     public var implants: [TypeID]
     public var skills: [SkillRecord]
     public var queue: [QueueEntry]

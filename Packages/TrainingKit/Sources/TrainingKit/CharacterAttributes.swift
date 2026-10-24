@@ -58,6 +58,16 @@ public struct CharacterAttributes: Hashable, Sendable, Codable {
         )
     }
 
+    public static func - (lhs: Self, rhs: Self) -> Self {
+        Self(
+            charisma: lhs.charisma - rhs.charisma,
+            intelligence: lhs.intelligence - rhs.intelligence,
+            memory: lhs.memory - rhs.memory,
+            perception: lhs.perception - rhs.perception,
+            willpower: lhs.willpower - rhs.willpower
+        )
+    }
+
     public static let zero = Self()
 
     /// Placeholder shown before ESI returns the actual attributes.

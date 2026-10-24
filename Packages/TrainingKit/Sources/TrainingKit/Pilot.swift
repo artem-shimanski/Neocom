@@ -31,10 +31,11 @@ public struct Pilot: Sendable {
     public var totalSkillPoints: Int64
 
     public init(snapshot: CharacterSnapshot, catalog: SkillCatalog, now: Date = .now) {
-        baseAttributes = snapshot.attributes
-        // Rule 1: ESI attributes exclude implants; the bonus comes from the catalog.
+        // Rule 1: ESI attributes include implants; the base is what is left without the
+        // catalog's implant bonus.
+        attributes = snapshot.attributes
         implantBonus = catalog.attributes(ofImplants: snapshot.implants)
-        attributes = baseAttributes + implantBonus
+        baseAttributes = attributes - implantBonus
         totalSkillPoints = snapshot.totalSkillPoints
 
         var skills: [TypeID: TrainedSkill] = [:]
