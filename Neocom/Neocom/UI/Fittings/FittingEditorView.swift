@@ -69,6 +69,8 @@ struct FittingEditorView: View {
 
     @State private var isRenameAlertPresented = false
     @State private var copyError: String?
+    /// Bumped by each successful copy; drives the haptic.
+    @State private var copyCount = 0
     /// Set by the menu's "Delete"; the record goes only from the dialog's button.
     @State private var isNotesSheetPresented = false
     @State private var isSkillsSheetPresented = false
@@ -274,6 +276,7 @@ struct FittingEditorView: View {
         } message: {
             Text(copyError ?? "")
         }
+        .sensoryFeedback(.success, trigger: copyCount)
     }
 
     private enum CopyFormat { case eft, dna }
@@ -298,6 +301,7 @@ struct FittingEditorView: View {
                 case .dna: Self.chatLinks(of: document, exporter: exporter)
                 }
                 UIPasteboard.general.string = result.text
+                copyCount += 1
             } catch {
                 copyError = error.localizedDescription
             }
