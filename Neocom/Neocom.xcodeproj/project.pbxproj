@@ -22,6 +22,7 @@
 		16AC7992304F1200007A8447 /* BusinessKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7991304F1200007A8447 /* BusinessKit */; };
 		16AC79A2304F1300007A8447 /* MailKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC79A1304F1300007A8447 /* MailKit */; };
 		16AC79B2304F1400007A8447 /* DogmaKitIO in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC79B1304F1400007A8447 /* DogmaKitIO */; };
+		16AC79B4304F1400007A8447 /* DogmaText in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC79B3304F1400007A8447 /* DogmaText */; };
 		16AC79C2304F1500007A8447 /* KillmailKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC79C1304F1500007A8447 /* KillmailKit */; };
 		16AC79D2304F1600007A8447 /* ZKillKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC79D1304F1600007A8447 /* ZKillKit */; };
 		16AC7A01304F1600007A8447 /* SDEDataDE in Frameworks */ = {isa = PBXBuildFile; productRef = 16AC7A00304F1600007A8447 /* SDEDataDE */; };
@@ -119,6 +120,7 @@
 				16AC7960304F0F00007A8447 /* DogmaKit in Frameworks */,
 				16AC7962304F0F00007A8447 /* DogmaPlanetary in Frameworks */,
 				16AC79B2304F1400007A8447 /* DogmaKitIO in Frameworks */,
+				16AC79B4304F1400007A8447 /* DogmaText in Frameworks */,
 			);
 		};
 		000000000000000230000000 /* Frameworks */ = {
@@ -201,6 +203,7 @@
 				16AC7961304F0F00007A8447 /* DogmaKit */,
 				16AC7963304F0F00007A8447 /* DogmaPlanetary */,
 				16AC79B1304F1400007A8447 /* DogmaKitIO */,
+				16AC79B3304F1400007A8447 /* DogmaText */,
 			);
 			productName = MyApp;
 			productReference = 000000000000000000000120 /* Neocom.app */;
@@ -795,6 +798,10 @@
 		16AC79B1304F1400007A8447 /* DogmaKitIO */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DogmaKitIO;
+		};
+		16AC79B3304F1400007A8447 /* DogmaText */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DogmaText;
 		};
 		16AC79C1304F1500007A8447 /* KillmailKit */ = {
 			isa = XCSwiftPackageProductDependency;

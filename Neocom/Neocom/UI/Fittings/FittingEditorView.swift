@@ -1,4 +1,6 @@
 import DogmaKit
+import DogmaKitIO
+import DogmaText
 import LiteRow
 import LiteRowUI
 import SDEKit
@@ -66,6 +68,7 @@ struct FittingEditorView: View {
     @State private var savedNotes = ""
 
     @State private var isRenameAlertPresented = false
+    @State private var copyError: String?
     /// Set by the menu's "Delete"; the record goes only from the dialog's button.
     @State private var isNotesSheetPresented = false
     @State private var isSkillsSheetPresented = false
@@ -180,6 +183,11 @@ struct FittingEditorView: View {
                     Button("Notes", systemImage: "square.and.pencil") {
                         isNotesSheetPresented = true
                     }
+                    Menu("Copy", systemImage: "doc.on.doc") {
+                        Button("EFT") { copyShownFit(.eft) }
+                        Button("In-Game Link (DNA)") { copyShownFit(.dna) }
+                    }
+                    .disabled(shownFittingID == nil || model?.snapshot == nil)
                     if accounts.currentFittings != nil {
                         uploadButton
                     }
@@ -260,6 +268,59 @@ struct FittingEditorView: View {
         // Not while the implants sheet is up: it carries the same alert.
         .fitCommandAlert(isImplantsSheetPresented ? nil : model)
         .fitUploadFlow(uploader)
+        .alert("Could Not Copy", isPresented: Binding(get: { copyError != nil },
+                                                       set: { if !$0 { copyError = nil } })) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(copyError ?? "")
+        }
+    }
+
+    private enum CopyFormat { case eft, dna }
+
+    /// English names whatever the app's language: EFT and the game's chat only understand English.
+    /// Built once; the catalog is memory-mapped.
+    private static let exporter = Result { try FitExporter(names: TextCatalog.english()) }
+
+    /// Puts the ship on screen, as the engine holds it now, on the pasteboard.
+    private func copyShownFit(_ format: CopyFormat) {
+        guard let fittingID = shownFittingID, let model else { return }
+        let fitName = name
+        Task {
+            do {
+                guard var document = await model.currentDocument(of: fittingID) else {
+                    throw FittingEngineError.noShip
+                }
+                document.name = fitName.isEmpty ? nil : fitName
+                let exporter = try Self.exporter.get()
+                let result = switch format {
+                case .eft: exporter.export(document, as: .eft)
+                case .dna: Self.chatLinks(of: document, exporter: exporter)
+                }
+                UIPasteboard.general.string = result.text
+            } catch {
+                copyError = error.localizedDescription
+            }
+        }
+    }
+
+    /// The game's chat link, `<url=fitting:DNA>Name</url>`, one line per ship; the exporter writes the bare DNA.
+    private static func chatLinks(of document: FitDocument, exporter: FitExporter) -> ExportResult {
+        var result = exporter.export(document, as: .dna)
+        let ships = document.pilots.compactMap { pilot in pilot.ship.map { (pilot, $0.type) } }
+        let lines = result.text.split(separator: "\n", omittingEmptySubsequences: false)
+        result.text = zip(lines, ships).map { dna, ship in
+            let title = (ship.0.name ?? document.name ?? "")
+                .filter { $0 != "<" && $0 != ">" }
+                .map { $0.isNewline ? " " : String($0) }
+                .joined()
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            let label = title.isEmpty
+                ? (exporter.names.name(of: ship.1) ?? String(ship.1.rawValue))
+                : title
+            return "<url=fitting:\(dna)>\(label)</url>"
+        }.joined(separator: "\n")
+        return result
     }
 
     private var isStatsColumnShown: Bool {
