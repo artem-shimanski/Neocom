@@ -1,16 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "%@ Your mail is kept as written." : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Текст сохранён как есть."
-          }
-        }
-      }
-    },
     "· %lld online" : {
       "localizations" : {
         "ru" : {
@@ -690,6 +680,16 @@
         }
       }
     },
+    "%@ bonuses (per skill level):" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бонусы навыка «%@» (за уровень):"
+          }
+        }
+      }
+    },
     "%@ bought" : {
       "localizations" : {
         "ru" : {
@@ -1265,6 +1265,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@: объект отключён%@. Работа возобновится сама, когда объект снова заработает."
+          }
+        }
+      }
+    },
+    "%@ Your mail is kept as written." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Текст сохранён как есть."
           }
         }
       }
@@ -7690,6 +7700,16 @@
         }
       }
     },
+    "Copy Fit" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Копировать фит"
+          }
+        }
+      }
+    },
     "Copy Name" : {
       "localizations" : {
         "ru" : {
@@ -7807,6 +7827,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Не удалось смоделировать"
+          }
+        }
+      }
+    },
+    "Could Not Copy" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось скопировать"
           }
         }
       }
@@ -8800,6 +8830,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Изменить мутацию…"
+          }
+        }
+      }
+    },
+    "EFT" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EFT"
           }
         }
       }
@@ -11570,6 +11610,16 @@
         }
       }
     },
+    "In-Game Link (DNA)" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ссылка для игры (DNA)"
+          }
+        }
+      }
+    },
     "Inbox" : {
       "localizations" : {
         "ru" : {
@@ -13582,6 +13632,16 @@
         }
       }
     },
+    "Misc Bonus:" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прочие бонусы:"
+          }
+        }
+      }
+    },
     "Missile flight time" : {
       "localizations" : {
         "ru" : {
@@ -13608,6 +13668,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Скорость ракет"
+          }
+        }
+      }
+    },
+    "Missing Skills" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Недостающие навыки"
           }
         }
       }
@@ -16722,36 +16792,6 @@
         }
       }
     },
-    "%@ bonuses (per skill level):" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Бонусы навыка «%@» (за уровень):"
-          }
-        }
-      }
-    },
-    "Role Bonus:" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Профильный бонус:"
-          }
-        }
-      }
-    },
-    "Misc Bonus:" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Прочие бонусы:"
-          }
-        }
-      }
-    },
     "Rank %@" : {
       "localizations" : {
         "ru" : {
@@ -17639,6 +17679,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Восставшие дроны"
+          }
+        }
+      }
+    },
+    "Role Bonus:" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Профильный бонус:"
           }
         }
       }

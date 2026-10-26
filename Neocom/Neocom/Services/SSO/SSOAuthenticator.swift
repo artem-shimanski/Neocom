@@ -76,7 +76,7 @@ final class SSOAuthenticator: NSObject {
                 }
             }
             session.presentationContextProvider = self
-            // A shared cookie jar persists the user's session, allowing for multiple characters to 
+            // A shared cookie jar persists the user's session, allowing for multiple characters to
             // be added without re-authenticating.
             session.prefersEphemeralWebBrowserSession = false
 

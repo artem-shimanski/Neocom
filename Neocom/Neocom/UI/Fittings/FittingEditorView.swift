@@ -183,7 +183,7 @@ struct FittingEditorView: View {
                     Button("Notes", systemImage: "square.and.pencil") {
                         isNotesSheetPresented = true
                     }
-                    Menu("Copy", systemImage: "doc.on.doc") {
+                    Menu("Copy Fit", systemImage: "doc.on.doc") {
                         Button("EFT") { copyShownFit(.eft) }
                         Button("In-Game Link (DNA)") { copyShownFit(.dna) }
                     }
