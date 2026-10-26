@@ -89,6 +89,22 @@ extension TypeSummary {
     var isOnMarket: Bool { marketGroupID != nil }
 }
 
+/// One ship bonus line. `skillName` is set for `.skill` rows only.
+@Projection
+struct TypeTraitRow: Sendable, Identifiable {
+    var kind: TraitKind
+    var skillID: TypeID
+    var skillName: String?
+    var index: Int
+    /// Raw SDE markup, converted by `EVEMarkup`.
+    var text: String
+    var bonus: Double?
+    var unitID: UnitID?
+    var unitName: String?
+
+    var id: String { "\(kind.rawValue)/\(skillID.rawValue)/\(index)" }
+}
+
 /// A group with its category: the heading of the type list and the type screen.
 @Projection
 struct GroupHeader: Sendable, Identifiable {
@@ -392,6 +408,35 @@ enum SDEBrowser {
                 )
             }
             .limit(1)
+            .query()
+    }
+
+    /// Ship bonuses of a type, unordered; `TraitSection.sections` arranges them.
+    static func traits(of type: TypeID) -> SQLQuery<TypeTraitRow> {
+        let withText = TypeTrait.all()
+            .join(DescriptionRow.self) { row, text in row.textID == text.id }
+        let withUnit = withText
+            .leftJoin(DogmaUnitInfo.self) { row, _, unit in row.unitID == unit.id }
+        let withUnitName = withUnit
+            .leftJoin(NameRow.self) { _, _, unit, unitName in unit.displayNameID == unitName.id }
+        let withSkill = withUnitName
+            .leftJoin(TypeInfo.self) { row, _, _, _, skill in row.skillID == skill.id }
+        let withSkillName = withSkill
+            .leftJoin(NameRow.self) { _, _, _, _, skill, skillName in skill.nameID == skillName.id }
+        return withSkillName
+            .filter { row, _, _, _, _, _ in row.typeID == type }
+            .select { row, text, unit, unitName, _, skillName in
+                TypeTraitRow.projection(
+                    kind: row.kind,
+                    skillID: row.skillID,
+                    skillName: skillName.text,
+                    index: row.index,
+                    text: text.text,
+                    bonus: row.bonus,
+                    unitID: unit.id,
+                    unitName: unitName.text
+                )
+            }
             .query()
     }
 

@@ -1,19 +1,59 @@
 import SwiftUI
 
-/// A panel of running text: an item's or a certificate's description.
+/// A titled group of bonus lines under a description: a ship's traits.
+struct HUDTraitSection: Identifiable {
+    struct Line: Identifiable {
+        var id: String
+        var figure: String?
+        var text: AttributedString
+    }
+
+    var id: String
+    var title: Text
+    var lines: [Line]
+}
+
+/// A panel of running text: an item's or a certificate's description, optionally followed by
+/// titled bonus lines.
 struct HUDDescriptionPanel: View {
-    let text: AttributedString
+    let text: AttributedString?
+    var traits: [HUDTraitSection] = []
+
+    private let font = HUDFont.display(15, weight: .regular, relativeTo: .body)
 
     var body: some View {
         HUDPanel {
-            Text(text)
-                .font(HUDFont.display(15, weight: .regular, relativeTo: .body))
-                .lineSpacing(4)
-                .foregroundStyle(Color.hudInkBodyMuted)
-                .padding(.horizontal, HUDMetrics.gutter)
-                .padding(.vertical, 14)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .textSelection(.enabled)
+            VStack(alignment: .leading, spacing: 14) {
+                if let text {
+                    Text(text)
+                        .font(font)
+                        .foregroundStyle(Color.hudInkBodyMuted)
+                }
+                ForEach(traits) { section in
+                    VStack(alignment: .leading, spacing: 6) {
+                        section.title
+                            .font(HUDFont.display(15, weight: .semibold, relativeTo: .body))
+                            .foregroundStyle(Color.hudInkBodyMuted)
+                        ForEach(section.lines) { line in
+                            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                                if let figure = line.figure {
+                                    Text(verbatim: figure)
+                                        .font(HUDFont.mono(14, weight: .semibold, relativeTo: .body))
+                                        .foregroundStyle(Color.hudAccent)
+                                }
+                                Text(line.text)
+                                    .font(font)
+                                    .foregroundStyle(Color.hudInkBodyMuted)
+                            }
+                        }
+                    }
+                }
+            }
+            .lineSpacing(4)
+            .padding(.horizontal, HUDMetrics.gutter)
+            .padding(.vertical, 14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .textSelection(.enabled)
         }
     }
 }

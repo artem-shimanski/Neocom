@@ -60,6 +60,7 @@ private struct TypeInfoBody: View {
     @State private var showsFit = true
 
     @LiteQuery private var group: GroupHeader?
+    @LiteQuery private var traitRows: [TypeTraitRow]
     @LiteQuery private var attributes: [TypeAttributeRow]
     @LiteQuery private var referencedTypes: [TypeReference]
     @LiteQuery private var referencedGroups: [GroupReference]
@@ -70,6 +71,7 @@ private struct TypeInfoBody: View {
         self.fitValues = fitValues
         self.fitContext = fitContext
         _group = LiteQuery(SDEBrowser.header(ofGroup: summary.groupID))
+        _traitRows = LiteQuery(SDEBrowser.traits(of: summary.id))
         _attributes = LiteQuery(SDEBrowser.attributes(of: summary.id))
         _referencedTypes = LiteQuery(SDEBrowser.referencedTypes(of: summary.id))
         _referencedGroups = LiteQuery(SDEBrowser.referencedGroups(of: summary.id))
@@ -118,9 +120,9 @@ private struct TypeInfoBody: View {
                 MarketPriceCard(typeID: summary.id)
             }
 
-            if let description = summary.descriptionText, !description.isEmpty {
+            if hasDescription || !traitRows.isEmpty {
                 Section {
-                    HUDDescriptionPanel(text: EVEMarkup.attributedString(from: description))
+                    HUDDescriptionPanel(text: descriptionText, traits: traitSections)
                         .hudBareRow()
                 } header: {
                     HUDSectionHeader(Text("Description")).hudListHeader()
@@ -172,6 +174,30 @@ private struct TypeInfoBody: View {
                     .frame(width: 200)
                 }
             }
+        }
+    }
+
+    private var hasDescription: Bool {
+        summary.descriptionText.map { !$0.isEmpty } ?? false
+    }
+
+    private var descriptionText: AttributedString? {
+        guard hasDescription, let text = summary.descriptionText else { return nil }
+        return EVEMarkup.attributedString(from: text)
+    }
+
+    private var traitSections: [HUDTraitSection] {
+        TraitSection.sections(from: traitRows).map { section in
+            let title: Text = switch section.kind {
+            case .skill: Text("\(section.skillName ?? "") bonuses (per skill level):")
+            case .role: Text("Role Bonus:")
+            case .misc: Text("Misc Bonus:")
+            }
+            return HUDTraitSection(
+                id: section.id, title: title,
+                lines: section.lines.map {
+                    .init(id: $0.id, figure: $0.figure, text: EVEMarkup.attributedString(from: $0.text))
+                })
         }
     }
 

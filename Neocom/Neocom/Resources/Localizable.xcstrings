@@ -16722,6 +16722,36 @@
         }
       }
     },
+    "%@ bonuses (per skill level):" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бонусы навыка «%@» (за уровень):"
+          }
+        }
+      }
+    },
+    "Role Bonus:" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Профильный бонус:"
+          }
+        }
+      }
+    },
+    "Misc Bonus:" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прочие бонусы:"
+          }
+        }
+      }
+    },
     "Rank %@" : {
       "localizations" : {
         "ru" : {
