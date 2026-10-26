@@ -77,7 +77,7 @@ final class SSOAuthenticator: NSObject {
             }
             session.presentationContextProvider = self
             // A shared cookie jar would silently sign the user back into the previous EVE account.
-            session.prefersEphemeralWebBrowserSession = true
+            session.prefersEphemeralWebBrowserSession = false
 
             self.session = session
             guard session.start() else {
