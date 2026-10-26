@@ -171,6 +171,7 @@ private struct FitSkillsBody: View {
     var body: some View {
         HUDList {
             presets
+            FitMissingSkillsSection(requirements: directRequirements)
             FitSkillsList(
                 skillIDs: skillIDs,
                 skills: skills,
@@ -186,13 +187,20 @@ private struct FitSkillsBody: View {
     /// before expanding. The order is by id: it keys the names query and must be stable across
     /// rebuilds. Without a catalog the direct requirements are listed as they are.
     private var skillIDs: [TypeID] {
+        let direct = directRequirements
+        let expanded = catalog?.expand(direct) ?? direct
+        return expanded.map(\.skillID).sorted { $0.rawValue < $1.rawValue }
+    }
+
+    /// The fit's direct requirements, one per skill at the highest level any item asks for.
+    private var directRequirements: [SkillCatalog.Requirement] {
         var levels: [TypeID: Int] = [:]
         for row in requirementRows {
             levels[row.id] = max(levels[row.id] ?? 0, row.level)
         }
-        let direct = levels.map { SkillCatalog.Requirement(skillID: $0.key, level: $0.value) }
-        let expanded = catalog?.expand(direct) ?? direct
-        return expanded.map(\.skillID).sorted { $0.rawValue < $1.rawValue }
+        return levels
+            .map { SkillCatalog.Requirement(skillID: $0.key, level: $0.value) }
+            .sorted { $0.skillID.rawValue < $1.skillID.rawValue }
     }
 
     // MARK: Presets
@@ -233,6 +241,29 @@ private struct FitSkillsBody: View {
         } header: {
             HUDSectionHeader("Preset")
                 .hudListHeader()
+        }
+    }
+}
+
+// MARK: - Missing skills
+
+/// What the selected character still has to train to use the fit, as one row that adds it to the
+/// plan. Measured against the signed-in character, whatever set the fit is calculated with; hidden
+/// without a character or when nothing is missing.
+private struct FitMissingSkillsSection: View {
+    let requirements: [SkillCatalog.Requirement]
+
+    @Environment(\.trainingContext) private var trainingContext
+    @Environment(AccountStore.self) private var accounts
+
+    var body: some View {
+        if let queue = trainingContext?.queue(forRequirements: requirements), !queue.isEmpty {
+            let unplanned = trainingContext?.unplanned(in: queue) ?? []
+            HUDListSection("Missing Skills") {
+                AddToPlanRow(time: queue.totalTime, isPlanned: unplanned.isEmpty) {
+                    accounts.currentPlan?.add(unplanned)
+                }
+            }
         }
     }
 }
