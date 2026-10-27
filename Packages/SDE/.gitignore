@@ -1,16 +1,11 @@
 .DS_Store
 /.build
-/Packages
 xcuserdata/
 DerivedData/
 .swiftpm/configuration/registries.json
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
 
-# Результат сборки базы: сотни мегабайт, воспроизводится из .SDE
 build/
 
-# Файлы базы в ресурсных таргетах: их кладёт плагин build-sde, весят ~170 МБ на билд
-# и воспроизводятся из .SDE. Каталоги остаются (`.gitkeep`) — без них не открывается
-# Package.swift, где ресурс объявлен каталогом.
 Sources/SDEData*/Data/*.sqlite
