@@ -53,6 +53,9 @@ struct HUDDescriptionPanel: View {
             .padding(.horizontal, HUDMetrics.gutter)
             .padding(.vertical, 14)
             .frame(maxWidth: .infinity, alignment: .leading)
+            // A long panel can be offered less than its height as a List row; the text would then
+            // truncate instead of the row growing.
+            .fixedSize(horizontal: false, vertical: true)
             .textSelection(.enabled)
         }
     }
