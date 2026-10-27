@@ -10,7 +10,7 @@ struct HUDLeader: View {
             .accessibilityHidden(true)
     }
 
-    private struct HorizontalLine: Shape {
+    nonisolated private struct HorizontalLine: Shape {
         func path(in rect: CGRect) -> Path {
             Path { path in
                 path.move(to: CGPoint(x: rect.minX, y: rect.midY))

@@ -6,9 +6,9 @@ import SwiftUI
 ///
 /// Not stored in the fit; it lives on the open editor (`FittingEditorModel.damagePattern`).
 /// Weights are percentages; only their proportions matter.
-struct FitDamagePattern: Hashable, Sendable {
+nonisolated struct FitDamagePattern: Hashable, Sendable {
     /// Named patterns.
-    enum Preset: String, CaseIterable, Identifiable, Sendable {
+    nonisolated enum Preset: String, CaseIterable, Identifiable, Sendable {
         case uniform, em, thermal, kinetic, explosive
         case angelCartel, bloodRaiders, guristas, sanshasNation, serpentis, rogueDrones
 
@@ -65,7 +65,7 @@ struct FitDamagePattern: Hashable, Sendable {
     }
 
     /// An ammo charge or drone whose damage split defines the pattern.
-    struct Item: Hashable, Sendable {
+    nonisolated struct Item: Hashable, Sendable {
         var typeID: TypeID
         var name: String
     }

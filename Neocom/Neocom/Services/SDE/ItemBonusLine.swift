@@ -54,7 +54,7 @@ enum ItemBonusLine {
 
 /// An attribute's value formatted as in the attribute list (`TypeAttributeRow`), signed:
 /// `+10%`, `-20%`.
-private func signed(_ text: String) -> String {
+nonisolated private func signed(_ text: String) -> String {
     guard let first = text.first, first.isNumber else { return text }
     return "+" + text
 }

@@ -11,7 +11,7 @@ struct TraitSection: Identifiable {
 
     static func sections(from rows: [TypeTraitRow]) -> [TraitSection] {
         func lines(_ rows: [TypeTraitRow]) -> [TraitLine] {
-            rows.sorted { $0.index < $1.index }.map(TraitLine.init)
+            rows.sorted { $0.index < $1.index }.map { TraitLine($0) }
         }
         let skillRows = Dictionary(grouping: rows.filter { $0.kind == .skill }, by: \.skillID)
         let skills = skillRows.values

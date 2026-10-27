@@ -92,7 +92,7 @@ struct TypeListSection: Identifiable {
 }
 
 /// How a meta group is written and tinted wherever it is drawn as a badge.
-enum MetaTier {
+nonisolated enum MetaTier {
     static let techI: MetaGroupID = 1
 
     /// The tier as a badge writes it. Tech I to III are `T1`, `T2`, `T3` by id, as the names are

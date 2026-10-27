@@ -110,12 +110,9 @@ enum NotificationBackgroundCheck {
         await withDeadline(budget - flushBudget - (clock.now - started)) {
             await withTaskGroup(of: Void.self) { group in
                 for account in accounts.accounts {
-                    group.addTask { @MainActor in
-                        if widgetsOnly {
-                            await accounts.sheet(for: account).ensureFresh()
-                        } else {
-                            await check(account, accounts: accounts, settings: settings, run: run)
-                        }
+                    group.addTask {
+                        await refresh(account, accounts: accounts, settings: settings, run: run,
+                                      widgetsOnly: widgetsOnly)
                     }
                 }
             }
@@ -129,6 +126,15 @@ enum NotificationBackgroundCheck {
     }
 
     // MARK: - Pilot
+
+    private static func refresh(_ account: Account, accounts: AccountStore, settings: NotificationSettings,
+                                run: Date, widgetsOnly: Bool) async {
+        if widgetsOnly {
+            await accounts.sheet(for: account).ensureFresh()
+        } else {
+            await check(account, accounts: accounts, settings: settings, run: run)
+        }
+    }
 
     private static func check(_ account: Account, accounts: AccountStore, settings: NotificationSettings,
                               run: Date) async {

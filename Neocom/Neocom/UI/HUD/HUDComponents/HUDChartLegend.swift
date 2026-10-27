@@ -64,7 +64,7 @@ struct HUDChartLegend: View {
         }
     }
 
-    private struct DashedLine: Shape {
+    nonisolated private struct DashedLine: Shape {
         func path(in rect: CGRect) -> Path {
             Path { path in
                 path.move(to: CGPoint(x: rect.minX, y: rect.midY))

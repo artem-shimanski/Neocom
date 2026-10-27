@@ -268,7 +268,7 @@ private struct ResourceBar: Identifiable {
     }
 }
 
-extension Double {
+nonisolated extension Double {
     /// A resource amount as the editor prints it, with at most one decimal; shared by the header
     /// bars, the drone bay's free volume and the stats screen's rows.
     var resourceFigure: String {

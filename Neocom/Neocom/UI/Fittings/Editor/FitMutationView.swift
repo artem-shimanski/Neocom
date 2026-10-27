@@ -260,7 +260,7 @@ private struct FitMutationBody: View {
                                     uniquingKeysWith: { first, _ in first })
         ForEach(Array(mutation.rolls.enumerated()), id: \.element.attributeID) { index, roll in
             let card = FitRollCard(roll: roll,
-                                   attribute: attributes[roll.attributeID].map(Self.attributeRow)
+                                   attribute: attributes[roll.attributeID].map { Self.attributeRow($0) }
                                        ?? Self.attributeRow(id: roll.attributeID),
                                    onSet: { onSetRoll(roll.attributeID, $0) })
             if index == 0 {

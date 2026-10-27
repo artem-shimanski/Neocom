@@ -53,7 +53,7 @@ struct AssetsSearchView: View {
     }
 
     @concurrent
-    nonisolated private static func search(_ index: AssetIndex, query: String) async -> [AssetSearchResult] {
+    private static func search(_ index: AssetIndex, query: String) async -> [AssetSearchResult] {
         index.search(query, limit: limit)
     }
 

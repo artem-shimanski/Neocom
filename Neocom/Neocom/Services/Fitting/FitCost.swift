@@ -1,14 +1,14 @@
 import DogmaKit
 
 /// The fit's value under a price table, summed over the snapshot.
-struct FitCost: Sendable, Equatable {
+nonisolated struct FitCost: Sendable, Equatable {
     /// A breakdown line, in editor order.
-    enum Group: Int, Sendable, CaseIterable, Identifiable {
+    nonisolated enum Group: Int, Sendable, CaseIterable, Identifiable {
         case hull, modules, charges, drones, implants, boosters
         var id: Int { rawValue }
     }
 
-    struct Line: Sendable, Equatable, Identifiable {
+    nonisolated struct Line: Sendable, Equatable, Identifiable {
         var group: Group
         /// Item count; drone stacks and charge loads count each piece.
         var quantity: Int

@@ -43,7 +43,7 @@ nonisolated enum ISK {
 }
 
 /// Skill points. Grouped, never abbreviated: "123 456 789 SP" is the number the game shows.
-enum SkillPoints {
+nonisolated enum SkillPoints {
     static func string(_ value: Int64) -> String {
         String(localized: "\(value.formatted(.number)) SP", comment: "Skill points: a number and the abbreviation of skill points")
     }
@@ -53,7 +53,7 @@ enum SkillPoints {
 ///
 /// A system runs -1…1 and is written with one decimal, a character runs -10…10 with two; the colour
 /// bands are shared.
-enum SecurityStatus {
+nonisolated enum SecurityStatus {
     /// `signed` is for a character's standing, which the game always writes with its sign:
     /// "+2.60". A system's security is written without one.
     static func string(_ value: Double, fractionLength: Int = 1, signed: Bool = false) -> String {
@@ -64,7 +64,7 @@ enum SecurityStatus {
 
     /// Coloured from the raw value, not the rounded string: a 0.45 system prints as "0.5" and is
     /// still low security.
-    static func color(_ value: Double) -> Color {
+    @MainActor static func color(_ value: Double) -> Color {
         if value >= 0.5 { return .hudOk }
         if value > 0 { return .hudWarn }
         return .hudDanger

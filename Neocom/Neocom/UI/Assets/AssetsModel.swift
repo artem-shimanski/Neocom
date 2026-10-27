@@ -172,9 +172,9 @@ final class AssetsModel {
     private static let chunk = 500
 
     @concurrent
-    nonisolated private static func index(_ value: ESIAssets,
-                                          types: [Int64: AssetTypeInfo],
-                                          systems: [Int64: AssetSolarSystem]) async -> AssetIndex {
+    private static func index(_ value: ESIAssets,
+                                types: [Int64: AssetTypeInfo],
+                                systems: [Int64: AssetSolarSystem]) async -> AssetIndex {
         AssetIndex(records: value.records,
                    customNames: value.names,
                    locations: value.locations,
@@ -183,7 +183,7 @@ final class AssetsModel {
     }
 }
 
-extension ESIFitting {
+nonisolated extension ESIFitting {
     /// An assembled hangar ship as a game fitting for `FitDocument(_:catalog:warnings:)`. The id is
     /// the ship's item id, not a saved fitting's id.
     init(_ fitting: AssetFitting) {

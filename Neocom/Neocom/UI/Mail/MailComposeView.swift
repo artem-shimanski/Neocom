@@ -385,7 +385,7 @@ private struct MailComposeForm: View {
             VStack(alignment: .leading, spacing: 8) {
                 caption(Text("Not sent"), systemImage: "exclamationmark.circle", color: .hudDanger)
                 Group {
-                    if let message = message.map(Self.sentence), !message.isEmpty {
+                    if let message = message.map({ Self.sentence($0) }), !message.isEmpty {
                         if DemoIDs.contains(sheet.characterID) {
                             // The demo's own rejection, not EVE's.
                             Text("\(message) Your mail is kept as written.")

@@ -51,7 +51,7 @@ enum MailText {
     }
 
     static func color(hex: String) -> Color? {
-        MailColor(hex: hex).map(color(_:))
+        MailColor(hex: hex).map { color($0) }
     }
 
     static func color(_ color: MailColor) -> Color {

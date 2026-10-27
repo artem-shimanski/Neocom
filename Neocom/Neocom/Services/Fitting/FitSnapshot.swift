@@ -7,8 +7,8 @@ import Foundation
 /// engine's own `Sendable` value types (`Resource`, `SlotCapacity`, the stats) are carried as
 /// is. Each field costs an attribute read per entity per snapshot, so only drawn values are
 /// included.
-struct FitSnapshot: Sendable {
-    struct Module: Sendable, Identifiable {
+nonisolated struct FitSnapshot: Sendable {
+    nonisolated struct Module: Sendable, Identifiable {
         var id: ModuleID
         var typeID: TypeID
         var slot: Entity.Module.Slot
@@ -36,14 +36,14 @@ struct FitSnapshot: Sendable {
 
     /// A mutated module: the mutaplasmid, its base type and every roll the mutaplasmid has a
     /// range for.
-    struct Mutation: Sendable {
+    nonisolated struct Mutation: Sendable {
         var mutaplasmidTypeID: TypeID
         var baseTypeID: TypeID
         /// Rolls in attribute id order.
         var rolls: [MutationRoll]
     }
 
-    struct Drone: Sendable, Identifiable {
+    nonisolated struct Drone: Sendable, Identifiable {
         var id: DroneID
         var typeID: TypeID
         var count: Int
@@ -67,8 +67,8 @@ struct FitSnapshot: Sendable {
     ///
     /// Every aimed module or stack is listed; the amounts are set only where the engine
     /// computes one (a web or a disruptor has none).
-    struct Incoming: Sendable, Identifiable {
-        enum Source: Sendable, Hashable {
+    nonisolated struct Incoming: Sendable, Identifiable {
+        nonisolated enum Source: Sendable, Hashable {
             case module(ModuleID)
             case drone(DroneID)
         }
@@ -99,7 +99,7 @@ struct FitSnapshot: Sendable {
 
     /// An implant, keyed by its engine `slot`; the editor's commands address implants by slot.
     /// Type data (name, bonuses) is read from the SDE on screen.
-    struct Implant: Sendable, Identifiable {
+    nonisolated struct Implant: Sendable, Identifiable {
         var id: ImplantID
         var typeID: TypeID
         /// `implantness`. Implants from external documents can lie outside slots 1…10.
@@ -107,7 +107,7 @@ struct FitSnapshot: Sendable {
     }
 
     /// A booster, keyed by `boosterness`.
-    struct Booster: Sendable, Identifiable {
+    nonisolated struct Booster: Sendable, Identifiable {
         var id: BoosterID
         var typeID: TypeID
         var slot: UInt16
@@ -115,7 +115,7 @@ struct FitSnapshot: Sendable {
 
     /// What the fit uses and the hull provides. All values are engine stats except
     /// `dronesInSpace`, which counts ordinary drones only; the engine's count includes fighters.
-    struct Resources: Sendable {
+    nonisolated struct Resources: Sendable {
         var cpu: Resource
         var powerGrid: Resource
         var calibration: Resource
@@ -158,8 +158,8 @@ struct FitSnapshot: Sendable {
 ///
 /// Read in the same engine pass as the selected ship's `FitSnapshot`, since a command on one
 /// ship can change the others' figures.
-struct FleetSnapshot: Sendable {
-    struct Ship: Sendable, Identifiable {
+nonisolated struct FleetSnapshot: Sendable {
+    nonisolated struct Ship: Sendable, Identifiable {
         var id: PilotID
         var shipTypeID: TypeID
         var stats: FitStatsSummary
@@ -172,7 +172,7 @@ struct FleetSnapshot: Sendable {
     var effects: [FitSnapshot.Incoming] = []
 }
 
-extension FitSnapshot {
+nonisolated extension FitSnapshot {
     /// Every type the fit references (hull, modules, charges, drones, implants, boosters), once
     /// each, sorted.
     ///

@@ -71,7 +71,7 @@ struct SkillsReader<Content: View>: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .refreshableCommand {
+        .refreshableCommand { [accounts] in
             await accounts.currentSheet?.refresh()
         }
         .task(id: accounts.currentAccountID) {

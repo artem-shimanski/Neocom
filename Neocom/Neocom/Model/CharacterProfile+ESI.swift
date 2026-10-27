@@ -20,7 +20,7 @@ nonisolated extension CharacterProfile {
         let detail = try await client.character(id: characterID)
 
         // A local function, since `async let` cannot be conditional.
-        func allianceDetail() async -> Components.Schemas.AllianceDetail? {
+        @Sendable func allianceDetail() async -> Components.Schemas.AllianceDetail? {
             guard let allianceID = detail.allianceId else { return nil }
             return try? await client.alliance(id: allianceID)
         }

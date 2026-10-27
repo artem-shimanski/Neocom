@@ -31,7 +31,7 @@ struct FittingEditorView: View {
     /// The narrowest screen area that shows the stats as a trailing column instead of a pushed
     /// screen: the column (380) plus about 420 for the modules. Measured on the area, not on the
     /// size class, which stays `.regular` on an iPad in portrait with the sidebar up.
-    private static let statsColumnMinimumWidth: CGFloat = 800
+    nonisolated private static let statsColumnMinimumWidth: CGFloat = 800
 
     private static let statsColumnWidth: CGFloat = 380
 

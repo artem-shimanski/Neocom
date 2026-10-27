@@ -39,8 +39,7 @@ final class FittingStore {
         observeChangesFromElsewhere()
     }
 
-    deinit {
-        // Not actor-isolated, but `NotificationCenter` is thread-safe.
+    isolated deinit {
         for observer in observers {
             NotificationCenter.default.removeObserver(observer)
         }

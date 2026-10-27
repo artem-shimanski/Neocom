@@ -5,7 +5,7 @@ import SwiftUI
 // notifications.
 
 /// Figures of the section.
-enum PlanetaryFormat {
+nonisolated enum PlanetaryFormat {
     /// `1 571/h`, `1.9/h`: a tenth below ten, whole above.
     static func rate(_ perHour: Double) -> String {
         String(localized: "\(number(perHour))/h", comment: "Rate per hour")

@@ -3,9 +3,9 @@ import DogmaKit
 /// The fit's full stats, as shown on the stats screen and in the header summary.
 ///
 /// Read once per snapshot; `sustainedTank` reuses the `capacitor` simulation result.
-struct FitStatsSummary: Sendable {
+nonisolated struct FitStatsSummary: Sendable {
     /// Damage by type.
-    struct Damage: Sendable {
+    nonisolated struct Damage: Sendable {
         /// All sources, fighters included.
         var dps: DamageVector
         /// Alpha strike: everything fired at once, cycle times ignored.
@@ -36,7 +36,7 @@ struct FitStatsSummary: Sendable {
     var fuel: FitFuel?
 }
 
-extension FitStatsSummary {
+nonisolated extension FitStatsSummary {
     /// Effective hit points by layer against `pattern`; only the weights' proportions matter.
     func effectiveHitPoints(against pattern: DamageVector) -> HitPoints {
         hitPoints.effective(resonance: resonance, damagePattern: pattern)

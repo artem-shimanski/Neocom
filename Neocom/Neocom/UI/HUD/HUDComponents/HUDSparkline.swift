@@ -18,7 +18,7 @@ struct HUDSparkline: View {
     }
 }
 
-private struct SparklineShape: Shape {
+nonisolated private struct SparklineShape: Shape {
     var values: [Double]
     /// Half the stroke, kept clear at the top and the bottom so the extremes are not cut.
     var inset: CGFloat

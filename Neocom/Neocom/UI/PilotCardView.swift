@@ -71,11 +71,11 @@ struct PilotCardView: View {
         return [
             HUDStatStrip.Item(id: 0,
                               label: Text("ISK"),
-                              value: Text(verbatim: profile?.balance.map(Self.compact) ?? "—")),
+                              value: Text(verbatim: profile?.balance.map { Self.compact($0) } ?? "—")),
             HUDStatStrip.Item(id: 1,
                               label: Text("Sec"),
                               value: Text(verbatim: securityStatus.map { SecurityStatus.string($0, fractionLength: 2, signed: true) } ?? "—"),
-                              color: securityStatus.map(SecurityStatus.color) ?? .hudInk),
+                              color: securityStatus.map { SecurityStatus.color($0) } ?? .hudInk),
             HUDStatStrip.Item(id: 2,
                               label: Text("SP"),
                               value: Text(verbatim: sheet?.snapshot.map { Self.compact(Double($0.totalSkillPoints)) } ?? "—")),

@@ -27,7 +27,7 @@ nonisolated struct ESIFitting: Codable, Sendable, Identifiable, Hashable {
     }
 }
 
-extension ESIFitting {
+nonisolated extension ESIFitting {
     init(_ payload: Components.Schemas.CharactersCharacterIdFittingsGetPayload) {
         id = payload.fittingId
         name = payload.name

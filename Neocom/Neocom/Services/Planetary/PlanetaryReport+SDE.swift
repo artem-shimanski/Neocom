@@ -24,8 +24,8 @@ extension PlanetaryReport {
     }
 
     @concurrent
-    nonisolated private static func simulate(colonies: [ESIColony], catalog: PlanetaryCatalog,
-                                             names: PlanetaryNames, now: Date) async -> PlanetaryReport {
+    private static func simulate(colonies: [ESIColony], catalog: PlanetaryCatalog,
+                                       names: PlanetaryNames, now: Date) async -> PlanetaryReport {
         PlanetaryAnalysis.report(colonies: colonies, catalog: catalog, names: names, now: now)
     }
 }

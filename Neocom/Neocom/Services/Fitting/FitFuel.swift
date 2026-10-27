@@ -6,8 +6,8 @@ import DogmaKit
 /// `nil` for non-structure hulls. Figures are the engine's modified values (role bonuses
 /// applied). Offline modules are omitted. The fuel bay is not modeled: the SDE gives Upwell
 /// structures no fuel capacity.
-struct FitFuel: Sendable {
-    struct Service: Sendable, Identifiable {
+nonisolated struct FitFuel: Sendable {
+    nonisolated struct Service: Sendable, Identifiable {
         var id: ModuleID
         var typeID: TypeID
         /// Fuel blocks per hour.
@@ -26,7 +26,7 @@ struct FitFuel: Sendable {
     var perThirtyDays: Double { perHour * 24 * 30 }
 }
 
-extension FitFuel {
+nonisolated extension FitFuel {
     /// `nil` for anything but a structure.
     init?(_ hull: borrowing FitStats.Hull) {
         guard hull.categoryID == .structure else { return nil }

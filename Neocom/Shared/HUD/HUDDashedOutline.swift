@@ -7,7 +7,7 @@ import SwiftUI
 /// midpoint of the next: the pattern is stretched to a whole number of periods per side and
 /// starts half a dash in, so each side begins and ends with half a dash, and the two halves of
 /// neighbouring sides meet as one dash centred on the corner. Inset like `strokeBorder`.
-struct HUDDashedOutline: Shape {
+nonisolated struct HUDDashedOutline: Shape {
     var cornerRadii: RectangleCornerRadii
     var lineWidth: CGFloat = 1
     /// The dash and the gap the pattern is stretched from.
