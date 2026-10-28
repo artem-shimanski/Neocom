@@ -188,6 +188,7 @@ struct FittingEditorView: View {
                     Menu("Copy Fit", systemImage: "doc.on.doc") {
                         Button("EFT") { copyShownFit(.eft) }
                         Button("In-Game Link (DNA)") { copyShownFit(.dna) }
+                        Button("Web Link") { copyShownFit(.webLink) }
                     }
                     .disabled(shownFittingID == nil || model?.snapshot == nil)
                     if accounts.currentFittings != nil {
@@ -279,7 +280,7 @@ struct FittingEditorView: View {
         .sensoryFeedback(.success, trigger: copyCount)
     }
 
-    private enum CopyFormat { case eft, dna }
+    private enum CopyFormat { case eft, dna, webLink }
 
     /// English names whatever the app's language: EFT and the game's chat only understand English.
     /// Built once; the catalog is memory-mapped.
@@ -299,6 +300,7 @@ struct FittingEditorView: View {
                 let result = switch format {
                 case .eft: exporter.export(document, as: .eft)
                 case .dna: Self.chatLinks(of: document, exporter: exporter)
+                case .webLink: Self.webLink(of: document, exporter: exporter)
                 }
                 UIPasteboard.general.string = result.text
                 copyCount += 1
@@ -306,6 +308,19 @@ struct FittingEditorView: View {
                 copyError = error.localizedDescription
             }
         }
+    }
+
+    private static let webPage = "https://artem-shimanski.github.io/DogmaBot/"
+
+    /// The fit page in a browser; the EFT text rides in the fragment as unpadded base64url.
+    private static func webLink(of document: FitDocument, exporter: FitExporter) -> ExportResult {
+        var result = exporter.export(document, as: .eft)
+        let payload = Data(result.text.utf8).base64EncodedString()
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "=", with: "")
+        result.text = "\(webPage)#eft=\(payload)"
+        return result
     }
 
     /// The game's chat link, `<url=fitting:DNA>Name</url>`, one line per ship; the exporter writes the bare DNA.

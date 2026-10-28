@@ -22541,6 +22541,16 @@
         }
       }
     },
+    "Web Link" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ссылка для браузера"
+          }
+        }
+      }
+    },
     "What you have written is not kept anywhere." : {
       "localizations" : {
         "ru" : {
