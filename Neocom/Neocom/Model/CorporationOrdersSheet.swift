@@ -8,8 +8,8 @@ import Observation
 /// of history.
 ///
 /// The only owner of `/corporations/{id}/orders` and `/corporations/{id}/orders/history`. Cached
-/// per viewing character, with the corporation id in the kind. Nothing here reaches
-/// notifications or widgets.
+/// per viewing character, with the corporation id in the kind. Read by the background check
+/// for the corporation's notifications; nothing reaches widgets.
 @Observable
 @MainActor
 final class CorporationOrdersSheet {

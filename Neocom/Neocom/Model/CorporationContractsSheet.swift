@@ -9,7 +9,8 @@ import Observation
 ///
 /// The only owner of `/corporations/{id}/contracts`, `/corporations/{id}/contracts/{contract_id}/items`
 /// and `/corporations/{id}/contracts/{contract_id}/bids`. Cached per viewing character, with the
-/// corporation id in the kind. Nothing here reaches notifications or widgets.
+/// corporation id in the kind. A new list reschedules the corporation's notifications; nothing
+/// reaches widgets.
 @Observable
 @MainActor
 final class CorporationContractsSheet {
@@ -51,7 +52,7 @@ final class CorporationContractsSheet {
         let cache = ESICache()
         cache.removeFiles(of: .character(characterID), prefix: Self.perContractPrefix,
                           writtenBefore: Date.now.addingTimeInterval(-Self.perContractRetention))
-        snapshot = ESISnapshot(kind: "corp-\(corporationID)-contracts", characterID: characterID, ttl: Self.ttl, cache: cache) {
+        snapshot = ESISnapshot(kind: Self.cacheKind(corporationID), characterID: characterID, ttl: Self.ttl, cache: cache) {
             let payload = try await ESIParallel.allPages { page in
                 let answer = try await client.corporationContracts(corporationID: corporationID, page: page)
                 return (answer.contracts, answer.pages)
@@ -65,7 +66,12 @@ final class CorporationContractsSheet {
             return ESIContracts(contracts: contracts, locations: await locations, names: await names)
         }
         memory.seed(locations: snapshot.value?.locations ?? [:], names: snapshot.value?.names ?? [:])
+        snapshot.didUpdate = { _ in
+            NotificationPlanner.shared.reschedule(.corporationContracts, corporationID: corporationID)
+        }
     }
+
+    nonisolated static func cacheKind(_ corporationID: Int64) -> String { "corp-\(corporationID)-contracts" }
 
     /// Refreshes the list if missing or past the TTL.
     func ensureFresh() async {

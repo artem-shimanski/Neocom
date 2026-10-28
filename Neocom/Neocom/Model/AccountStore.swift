@@ -100,6 +100,8 @@ final class AccountStore {
         upsert(account)
         currentAccountID = account.id
         signInGeneration += 1
+        // New scopes may change who sees the corporation.
+        NotificationPlanner.shared.rescheduleCorporations()
         return account
     }
 
@@ -110,6 +112,7 @@ final class AccountStore {
         dropState(of: account.id)
         ESICache().removeAll(characterID: account.id)
         LocalNotifications.shared.removeAll(characterID: account.id)
+        NotificationPlanner.shared.rescheduleCorporations()
         if currentAccountID == account.id {
             currentAccountID = pickerAccounts.first?.id
         }
@@ -422,6 +425,17 @@ final class AccountStore {
         let sheet = make()
         store[account.id] = sheet
         return sheet
+    }
+
+    /// The corporation sheets of `account` created so far for `corporationID`, without creating
+    /// any.
+    func existingCorporationSheets(for account: Account, corporationID: Int64)
+        -> (corporation: CorporationSheet?, industry: CorporationIndustrySheet?, contracts: CorporationContractsSheet?) {
+        func bound<Sheet: CorporationBound>(_ sheet: Sheet?) -> Sheet? {
+            sheet?.boundCorporationID == corporationID ? sheet : nil
+        }
+        return (bound(corporationSheets[account.id]), bound(corporationIndustrySheets[account.id]),
+                bound(corporationContractSheets[account.id]))
     }
 
     /// Invalidates and drops every corporation sheet of the viewing character.

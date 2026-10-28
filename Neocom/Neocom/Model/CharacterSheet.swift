@@ -20,6 +20,7 @@ final class CharacterSheet {
     private static let trainingTTL: TimeInterval = 60
 
     nonisolated static let trainingCacheKind = "sheet"
+    nonisolated static let profileCacheKind = "profile"
 
     /// The cache time of `/wallet` and `/clones`. `/location` and `/ship` are cached for only
     /// 5 s, but are not worth refetching that often.
@@ -76,7 +77,7 @@ final class CharacterSheet {
             )
         }
 
-        profileSnapshot = ESISnapshot(kind: "profile",
+        profileSnapshot = ESISnapshot(kind: Self.profileCacheKind,
                                       characterID: characterID,
                                       ttl: Self.profileTTL,
                                       cache: cache) {
@@ -87,6 +88,10 @@ final class CharacterSheet {
         training.didUpdate = { _ in
             NotificationPlanner.shared.reschedule(.training, characterID: characterID)
             WidgetSnapshotWriter.shared.setNeedsUpdate()
+        }
+        // A move to another corporation moves its notifications.
+        profileSnapshot.didUpdate = { profile in
+            NotificationPlanner.shared.corporationSeen(profile.corporationID, characterID: characterID)
         }
     }
 

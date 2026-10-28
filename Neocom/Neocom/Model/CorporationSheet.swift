@@ -52,8 +52,8 @@ struct CorporationAccess: Sendable, Hashable {
 /// The viewing character's corporation: their roles in it and its division names.
 ///
 /// The only owner of `/characters/{id}/roles` and `/corporations/{id}/divisions`. Cached per
-/// viewing character, with the corporation id in the kind. Nothing here reaches notifications
-/// or widgets.
+/// viewing character, with the corporation id in the kind. Nothing here reaches widgets; the
+/// corporation notifications read the roles to pick a viewer.
 @Observable
 @MainActor
 final class CorporationSheet {
@@ -71,7 +71,7 @@ final class CorporationSheet {
         self.characterID = characterID
         self.corporationID = corporationID
         scopes = Set(SSOConfiguration.Scope.corporation.filter(hasScope))
-        roles = ESISnapshot(kind: "corp-\(corporationID)-roles", characterID: characterID, ttl: Self.ttl, cache: ESICache()) {
+        roles = ESISnapshot(kind: Self.rolesCacheKind(corporationID), characterID: characterID, ttl: Self.ttl, cache: ESICache()) {
             let payload = try await client.characterRoles(characterID: characterID)
             return ESICorporationRoles(roles: Set((payload.roles ?? []).map(\.rawValue)))
         }
@@ -79,6 +79,10 @@ final class CorporationSheet {
             let payload = try await client.corporationDivisions(corporationID: corporationID)
             return ESICorporationDivisions(hangar: Self.names(payload.hangar?.map { ($0.division, $0.name) }),
                                            wallet: Self.names(payload.wallet?.map { ($0.division, $0.name) }))
+        }
+        // The roles decide who may see the corporation's jobs.
+        roles.didUpdate = { _ in
+            NotificationPlanner.shared.reschedule(.corporationIndustry, corporationID: corporationID)
         }
     }
 
@@ -89,6 +93,8 @@ final class CorporationSheet {
         }
         return names
     }
+
+    nonisolated static func rolesCacheKind(_ corporationID: Int64) -> String { "corp-\(corporationID)-roles" }
 
     nonisolated static func isPlayerCorporation(_ id: Int64) -> Bool {
         !(1_000_000..<2_000_000).contains(id)
@@ -104,7 +110,11 @@ final class CorporationSheet {
     /// Section availability by scope and role; `false` until the roles are known, except for
     /// contracts, which need no role.
     var access: CorporationAccess {
-        let roles = roles.value
+        Self.access(roles: roles.value, hasScope: hasScope)
+    }
+
+    /// Section availability for `roles` (`nil` while unknown) and the account's scopes.
+    nonisolated static func access(roles: ESICorporationRoles?, hasScope: (String) -> Bool) -> CorporationAccess {
         func allowed(_ scope: String, _ role: String...) -> Bool {
             hasScope(scope) && (roles.map { value in role.contains { value.has($0) } } ?? false)
         }

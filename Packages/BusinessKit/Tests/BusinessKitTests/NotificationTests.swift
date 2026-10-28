@@ -7,6 +7,8 @@ private let hour: TimeInterval = 3600
 private let day: TimeInterval = 86_400
 private let me: Int64 = 90_000_001
 private let other: Int64 = 90_000_002
+private let corp: Int64 = 98_000_001
+private let otherCorp: Int64 = 98_000_002
 
 private func job(_ id: Int64, end: TimeInterval, status: String = "active") -> IndustryJob {
     IndustryJob(id: id, activityID: 1, blueprintTypeID: 1, runs: 1, startDate: now.addingTimeInterval(-day),
@@ -17,6 +19,16 @@ private func contract(_ id: Int64, type: String = "item_exchange", status: Strin
                       issuer: Int64 = me, assignee: Int64 = 0, acceptor: Int64 = 0,
                       expires: TimeInterval = 5 * day, accepted: TimeInterval? = nil, days: Int? = nil) -> Contract {
     Contract(id: id, type: type, status: status, issuerID: issuer, assigneeID: assignee, acceptorID: acceptor,
+             dateIssued: now.addingTimeInterval(-day), dateExpired: now.addingTimeInterval(expires),
+             dateAccepted: accepted.map(now.addingTimeInterval), daysToComplete: days)
+}
+
+private func corporationContract(_ id: Int64, type: String = "item_exchange", status: String = "outstanding",
+                                  issuerCorporation: Int64 = corp, forCorporation: Bool = true,
+                                  assignee: Int64 = 0, acceptor: Int64 = 0, expires: TimeInterval = 5 * day,
+                                  accepted: TimeInterval? = nil, days: Int? = nil) -> Contract {
+    Contract(id: id, type: type, status: status, issuerID: other, issuerCorporationID: issuerCorporation,
+             assigneeID: assignee, acceptorID: acceptor, forCorporation: forCorporation,
              dateIssued: now.addingTimeInterval(-day), dateExpired: now.addingTimeInterval(expires),
              dateAccepted: accepted.map(now.addingTimeInterval), daysToComplete: days)
 }
@@ -50,6 +62,19 @@ private func order(_ id: Int64, remain: Int64 = 5, state: CharacterOrder.State =
         #expect(plan.map(\.id) == ["expires.2", "courierDue.4", "expires.1"])
         #expect(plan[0].fireDate == now.addingTimeInterval(2 * hour))
         #expect(plan[1].eventDate == now.addingTimeInterval(2 * day))
+    }
+
+    @Test func corporationExpiriesAndDeadlines() {
+        let contracts = [
+            corporationContract(1, expires: 4 * day),                                       // issued for the corporation
+            corporationContract(2, issuerCorporation: otherCorp, assignee: corp, expires: 3 * hour), // offered to it
+            corporationContract(3, forCorporation: false, expires: day),                    // a member's own
+            corporationContract(4, type: "courier", status: "in_progress", issuerCorporation: otherCorp,
+                                acceptor: corp, expires: 10 * day, accepted: -day, days: 3), // it carries
+            corporationContract(5, issuerCorporation: otherCorp, expires: day),             // someone else's
+        ]
+        let plan = ContractReminders.plan(contracts, corporationID: corp, now: now)
+        #expect(plan.map(\.id) == ["expires.2", "courierDue.4", "expires.1"])
     }
 }
 
@@ -94,5 +119,18 @@ private func order(_ id: Int64, remain: Int64 = 5, state: CharacterOrder.State =
         let result = ContractWatch.check(contracts, characterID: me, baseline: baseline)
         #expect(result.finished.map(\.id) == [1, 2])
         #expect(result.baseline == [4: "in_progress"])
+    }
+
+    @Test func corporationFinishedSinceTheLastCheck() {
+        let contracts = [
+            corporationContract(1, status: "finished"),
+            corporationContract(2, status: "finished", issuerCorporation: otherCorp, assignee: corp),
+            corporationContract(3, status: "finished", forCorporation: false),          // a member's own
+            corporationContract(4, status: "outstanding"),
+        ]
+        let baseline: ContractWatch.Baseline = [1: "outstanding", 2: "outstanding", 3: "outstanding"]
+        let result = ContractWatch.check(contracts, corporationID: corp, baseline: baseline)
+        #expect(result.finished.map(\.id) == [1, 2])
+        #expect(result.baseline == [4: "outstanding"])
     }
 }

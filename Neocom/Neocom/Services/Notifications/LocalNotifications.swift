@@ -3,7 +3,7 @@ import Observation
 import UserNotifications
 
 /// Every kind of notification the app posts. Identifiers have the form
-/// `<kind>.<characterID>.<id>`.
+/// `<kind>.<characterID>.<id>`, or `<kind>.<corporationID>.<id>` for the corporation kinds.
 nonisolated enum NotificationKind: String, CaseIterable, Sendable {
     case planetary
     case training
@@ -11,11 +11,30 @@ nonisolated enum NotificationKind: String, CaseIterable, Sendable {
     case contracts
     case orders
     case mail
+    case corporationIndustry
+    case corporationContracts
+    case corporationOrders
 
     var prefix: String { "\(rawValue)." }
 
+    var isCorporation: Bool {
+        switch self {
+        case .corporationIndustry, .corporationContracts, .corporationOrders: true
+        default: false
+        }
+    }
+
     /// The identifier prefix of one character's notifications of this kind.
     func scope(characterID: Int64) -> String { "\(rawValue).\(characterID)." }
+
+    /// The identifier prefix of one corporation's notifications of this kind.
+    func scope(corporationID: Int64) -> String { "\(rawValue).\(corporationID)." }
+
+    /// The corporation a scope of this kind belongs to.
+    func corporationID(ofScope scope: String) -> Int64? {
+        guard isCorporation, scope.hasPrefix(prefix) else { return nil }
+        return scope.dropFirst(prefix.count).split(separator: ".").first.flatMap { Int64($0) }
+    }
 }
 
 /// A notification scheduled for a fixed date.
@@ -105,7 +124,7 @@ final class LocalNotifications {
 
     /// Removes every planned and pending notification of one character, of every kind.
     func removeAll(characterID: Int64) {
-        let scopes = NotificationKind.allCases.map { $0.scope(characterID: characterID) }
+        let scopes = NotificationKind.allCases.filter { !$0.isCorporation }.map { $0.scope(characterID: characterID) }
         for scope in scopes { plans[scope] = [] }
         enqueue { await self.apply(replacing: scopes) }
     }
@@ -117,6 +136,13 @@ final class LocalNotifications {
             .flatMap(\.value)
             .filter { $0.fireDate > now }
             .sorted { ($0.fireDate, $0.id) < ($1.fireDate, $1.id) }
+    }
+
+    /// The scopes starting with `prefix` that hold planned or pending requests.
+    func scopes(prefix: String) async -> Set<String> {
+        let pending = await UNUserNotificationCenter.current().pendingNotificationRequests()
+            .map(\.identifier).filter { $0.hasPrefix(prefix) }.map(Self.scope(of:))
+        return Set(plans.filter { $0.key.hasPrefix(prefix) && !$0.value.isEmpty }.keys).union(pending)
     }
 
     /// Pending iOS requests with identifiers starting with `prefix`, soonest first.

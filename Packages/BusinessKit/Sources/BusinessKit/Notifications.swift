@@ -45,17 +45,31 @@ public enum ContractReminders {
     /// the couriers they issued or carry, before the deadline — soonest first. Moments whose
     /// reminder would already be past are left out.
     public static func plan(_ contracts: [Contract], characterID: Int64, now: Date) -> [ContractReminder] {
+        plan(contracts, now: now,
+             expires: { $0.isIssued(by: characterID) || $0.isOfferedTo(characterID) },
+             courierDue: { $0.isIssued(by: characterID) || $0.acceptorID == characterID })
+    }
+
+    /// The same moments for a corporation: the outstanding contracts it issued or was offered,
+    /// and the couriers it issued or carries.
+    public static func plan(_ contracts: [Contract], corporationID: Int64, now: Date) -> [ContractReminder] {
+        plan(contracts, now: now,
+             expires: { $0.isIssuedByCorporation(corporationID) || $0.assigneeID == corporationID },
+             courierDue: { $0.isIssuedByCorporation(corporationID) || $0.acceptorID == corporationID })
+    }
+
+    private static func plan(_ contracts: [Contract], now: Date, expires: (Contract) -> Bool,
+                             courierDue: (Contract) -> Bool) -> [ContractReminder] {
         var reminders: [ContractReminder] = []
         for contract in contracts {
             switch contract.status {
             case .outstanding:
-                guard contract.isIssued(by: characterID) || contract.isOfferedTo(characterID) else { continue }
+                guard expires(contract) else { continue }
                 reminders.append(ContractReminder(contract: contract, kind: .expires,
                                                   fireDate: contract.dateExpired.addingTimeInterval(-lead),
                                                   eventDate: contract.dateExpired))
             case .inProgress:
-                guard let deadline = contract.deadline,
-                      contract.isIssued(by: characterID) || contract.acceptorID == characterID else { continue }
+                guard let deadline = contract.deadline, courierDue(contract) else { continue }
                 reminders.append(ContractReminder(contract: contract, kind: .courierDue,
                                                   fireDate: deadline.addingTimeInterval(-lead), eventDate: deadline))
             default:
@@ -110,7 +124,19 @@ public enum ContractWatch {
     /// doing and say nothing.
     public static func check(_ contracts: [Contract], characterID: Int64,
                              baseline: Baseline?) -> (finished: [Contract], baseline: Baseline) {
-        let mine = contracts.filter { !$0.roles(of: characterID).isEmpty }
+        check(contracts.filter { !$0.roles(of: characterID).isEmpty }, baseline: baseline)
+    }
+
+    /// The same for a corporation: the contracts it issued, was assigned or accepted.
+    public static func check(_ contracts: [Contract], corporationID: Int64,
+                             baseline: Baseline?) -> (finished: [Contract], baseline: Baseline) {
+        let ours = contracts.filter {
+            $0.isIssuedByCorporation(corporationID) || $0.assigneeID == corporationID || $0.acceptorID == corporationID
+        }
+        return check(ours, baseline: baseline)
+    }
+
+    private static func check(_ mine: [Contract], baseline: Baseline?) -> (finished: [Contract], baseline: Baseline) {
         let next = Dictionary(mine.filter { $0.status.isActive }.map { ($0.id, $0.statusRaw) },
                               uniquingKeysWith: { first, _ in first })
         guard let baseline else { return ([], next) }

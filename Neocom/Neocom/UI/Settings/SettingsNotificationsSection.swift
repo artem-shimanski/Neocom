@@ -4,8 +4,9 @@ import SwiftUI
 /// Settings › Notifications: what the app tells the player about, for every pilot on the device.
 ///
 /// Training and Planetary Interaction lead to screens of their own; the kinds only a check with EVE
-/// can learn about, and industry (scheduled from the jobs' end times), are a switch each. Offered
-/// only with a pilot signed in.
+/// can learn about, and industry (scheduled from the jobs' end times), are a switch each; the
+/// corporation switch adds the same kinds for the pilots' corporations. Offered only with a pilot
+/// signed in.
 ///
 /// While iOS does not allow notifications the section says so above itself and dims, but the
 /// choices stay editable.
@@ -30,6 +31,7 @@ struct SettingsNotificationsSection: View {
     @AppStorage(NotificationSettings.contractsKey) private var contracts = NotificationSettings.defaultContracts
     @AppStorage(NotificationSettings.ordersKey) private var orders = NotificationSettings.defaultOrders
     @AppStorage(NotificationSettings.mailKey) private var mail = NotificationSettings.defaultMail
+    @AppStorage(NotificationSettings.corporationKey) private var corporation = NotificationSettings.defaultCorporation
 
     private var isDenied: Bool { notifications.status == .denied }
     private var dim: Double { isDenied ? 0.55 : 1 }
@@ -71,6 +73,8 @@ struct SettingsNotificationsSection: View {
                        subtitle: Text("Finished or about to expire"), isOn: $contracts)
                 toggle(systemImage: "tag", title: Text("Market Orders"),
                        subtitle: Text("Filled or expired"), isOn: $orders)
+                toggle(systemImage: "building.2", title: Text("Corporation"),
+                       subtitle: Text("Jobs, contracts and orders of your corporation"), isOn: $corporation)
                 toggle(systemImage: "envelope", title: Text("Mail"),
                        subtitle: Text("New mail in the inbox"), isOn: $mail)
             } header: {
@@ -80,7 +84,7 @@ struct SettingsNotificationsSection: View {
             } footer: {
                 HUDFootnote(Self.scheduleNote)
             }
-            .onChange(of: [industry, contracts, orders, mail]) { old, new in
+            .onChange(of: [industry, contracts, orders, mail, corporation]) { old, new in
                 NotificationPlanner.shared.settingsChanged()
                 // The first switch turned on is when iOS is asked.
                 if zip(old, new).contains(where: { !$0 && $1 }) {

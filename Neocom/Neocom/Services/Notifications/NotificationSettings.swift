@@ -13,6 +13,9 @@ nonisolated struct NotificationSettings: Sendable, Equatable {
     var contracts: Bool
     var orders: Bool
     var mail: Bool
+    /// Industry, contracts and orders of the pilots' corporations, each also behind its own
+    /// switch.
+    var corporation: Bool
     /// Pilots excluded from training notifications.
     var mutedPilots: Set<Int64>
 
@@ -23,6 +26,7 @@ nonisolated struct NotificationSettings: Sendable, Equatable {
     static let contractsKey = "notifications.contracts"
     static let ordersKey = "notifications.orders"
     static let mailKey = "notifications.mail"
+    static let corporationKey = "notifications.corporation"
     /// Comma-separated character ids.
     static let mutedPilotsKey = "notifications.training.muted"
 
@@ -32,6 +36,7 @@ nonisolated struct NotificationSettings: Sendable, Equatable {
     static let defaultContracts = true
     static let defaultOrders = false
     static let defaultMail = false
+    static let defaultCorporation = false
 
     static func load(defaults: UserDefaults = .standard) -> Self {
         func flag(_ key: String, _ fallback: Bool) -> Bool { defaults.object(forKey: key) as? Bool ?? fallback }
@@ -42,6 +47,7 @@ nonisolated struct NotificationSettings: Sendable, Equatable {
                     contracts: flag(contractsKey, defaultContracts),
                     orders: flag(ordersKey, defaultOrders),
                     mail: flag(mailKey, defaultMail),
+                    corporation: flag(corporationKey, defaultCorporation),
                     mutedPilots: mutedPilots(defaults.string(forKey: mutedPilotsKey) ?? ""))
     }
 
@@ -49,8 +55,14 @@ nonisolated struct NotificationSettings: Sendable, Equatable {
         (skillTrained || queueEnding) && !mutedPilots.contains(characterID)
     }
 
+    var corporationIndustry: Bool { corporation && industry }
+    var corporationContracts: Bool { corporation && contracts }
+    var corporationOrders: Bool { corporation && orders }
+    var corporationAny: Bool { corporationIndustry || corporationContracts || corporationOrders }
+
     /// Whether any enabled kind needs a background check: those detected only by polling, and
-    /// scheduled ones whose times shift.
+    /// scheduled ones whose times shift. A corporation kind is on only with its personal
+    /// switch, which counts already.
     var needsBackgroundCheck: Bool {
         orders || mail || contracts || industry || skillTrained || queueEnding
     }

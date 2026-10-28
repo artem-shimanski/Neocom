@@ -12355,6 +12355,16 @@
         }
       }
     },
+    "Jobs, contracts and orders of your corporation" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Работы, контракты и заявки вашей корпорации"
+          }
+        }
+      }
+    },
     "Jump Clone" : {
       "localizations" : {
         "ru" : {
