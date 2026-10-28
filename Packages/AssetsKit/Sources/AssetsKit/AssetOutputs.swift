@@ -136,6 +136,20 @@ public enum AssetCapacity: Sendable, Hashable {
 public struct AssetPath: Sendable, Hashable {
     public var location: AssetLocation?
     public var parents: [AssetRow]
+    /// The corporation hangar division the item is in; `nil` outside a corporation office.
+    public var division: Int?
+}
+
+/// One hangar division of a corporation's offices at a location, counted through every ship
+/// and container.
+public struct AssetDivision: Identifiable, Sendable, Hashable {
+    /// 1...7.
+    public var number: Int
+    public var itemCount: Int
+    public var shipCount: Int64
+    public var containerCount: Int
+
+    public var id: Int { number }
 }
 
 /// The hits of one location.
@@ -151,6 +165,8 @@ public struct AssetSearchHit: Identifiable, Sendable, Hashable {
     /// The ships and containers around the row, outermost first; empty for a row lying in
     /// the location itself.
     public var parents: [AssetRow]
+    /// The corporation hangar division the row is in; `nil` outside a corporation office.
+    public var division: Int?
 
     public var id: Int64 { row.id }
 }

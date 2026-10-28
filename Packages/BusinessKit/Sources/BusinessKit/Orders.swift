@@ -38,11 +38,16 @@ public struct CharacterOrder: Codable, Sendable, Hashable, Identifiable {
     /// ISK held for a buy order. ESI leaves it out for sell orders.
     public var escrow: Double?
     public var state: State
+    /// Corporation orders: the wallet division (1...7) the order is paid from.
+    public var walletDivision: Int?
+    /// Corporation orders: the character who placed it, when ESI says.
+    public var issuedBy: Int64?
 
     public init(id: Int64, typeID: Int64, regionID: Int64, locationID: Int64, isBuyOrder: Bool,
                 isCorporation: Bool = false, price: Double, volumeRemain: Int64, volumeTotal: Int64,
                 minVolume: Int64 = 1, range: String = "region", duration: Int, issued: Date,
-                escrow: Double? = nil, state: State = .open) {
+                escrow: Double? = nil, state: State = .open, walletDivision: Int? = nil,
+                issuedBy: Int64? = nil) {
         self.id = id
         self.typeID = typeID
         self.regionID = regionID
@@ -58,6 +63,8 @@ public struct CharacterOrder: Codable, Sendable, Hashable, Identifiable {
         self.issued = issued
         self.escrow = escrow
         self.state = state
+        self.walletDivision = walletDivision
+        self.issuedBy = issuedBy
     }
 }
 

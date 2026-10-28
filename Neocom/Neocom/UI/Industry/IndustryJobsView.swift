@@ -7,13 +7,20 @@ import SwiftUI
 /// completed in the last 90 days. A job's state is derived from the clock
 /// (`IndustryJob.phase(at:)`), so it turns ready at its end date rather than on the next fetch.
 struct IndustryJobsView: View {
+    var scope: DataScope = .character
+
     var body: some View {
         SDESectionView { database in
-            IndustryJobsBody(database: database)
+            if scope == .corporation {
+                CorporationIndustryBody(database: database)
+            } else {
+                IndustryJobsBody(database: database)
+            }
         }
         .hudScreen()
         .navigationTitle("Industry")
         .navigationBarTitleDisplayMode(.inline)
+        .corporationSubtitle(scope)
     }
 }
 
@@ -42,25 +49,51 @@ private struct IndustryJobsBody: View {
     }
 }
 
+/// The corporation's jobs; its container names are read only if the corporation's assets are already loaded.
+private struct CorporationIndustryBody: View {
+    let database: SDEDatabase
+
+    @Environment(AccountStore.self) private var accounts
+
+    var body: some View {
+        if let sheet = accounts.currentCorporationIndustry {
+            let assets = accounts.currentAccount.flatMap { accounts.existingCorporationAssets(for: $0) }
+            IndustryJobsScreen(sheet: sheet, assets: assets, corporation: accounts.currentCorporation)
+                .id(ObjectIdentifier(sheet))
+                .navigationDestination(for: IndustryJobRoute.self) { route in
+                    switch route {
+                    case let .job(id):
+                        IndustryJobView(sheet: sheet, assets: assets, jobID: id)
+                            .liteDatabase(database.database)
+                    }
+                }
+        } else {
+            NoCorporationView()
+        }
+    }
+}
+
 private struct IndustryJobsScreen: View {
-    let sheet: IndustrySheet
+    let sheet: any IndustrySource
+    var assets: (any AssetsSource)?
+    var corporation: CorporationSheet?
 
     @Environment(AccountStore.self) private var accounts
 
     var body: some View {
         Group {
-            if sheet.isMissingScope {
+            if sheet.access != .granted {
                 HUDList {
                     Section {
-                        HUDGrantAccessPanel(title: Text("No Industry Access"),
-                                            message: Text("Your industry jobs need one more permission. Sign in to EVE again and allow Neocom to read your industry jobs."))
+                        accessPanel
                             .hudBareRow()
                     }
                 }
             } else if let value = sheet.value {
                 let jobs = value.jobs
                 IndustryContextReader(data: value, jobs: jobs, characterID: sheet.characterID,
-                                      assetNames: accounts.currentAssets?.value?.names ?? [:]) { context in
+                                      assetNames: assetNames(value),
+                                      isCorporation: sheet.corporationID != nil) { context in
                     // Progress is counted against the clock; EVE resends jobs every five minutes.
                     TimelineView(.periodic(from: .now, by: 15)) { clock in
                         IndustryJobsList(context: context, fetchedAt: sheet.fetchedAt,
@@ -87,7 +120,23 @@ private struct IndustryJobsScreen: View {
             }
         }
         .task { await sheet.ensureFresh() }
-        .refreshableCommand { await sheet.refresh() }
+        .refreshableCommand {
+            await corporation?.refresh()
+            await sheet.refresh()
+        }
+    }
+
+    private func assetNames(_ value: ESIIndustryJobs) -> [Int64: String] {
+        if sheet.corporationID != nil { return assets?.value?.names ?? [:] }
+        return accounts.currentAssets?.value?.names ?? [:]
+    }
+
+    @ViewBuilder private var accessPanel: some View {
+        HUDBusinessAccessPanel(access: sheet.access,
+                               title: Text(sheet.corporationID == nil ? "No Industry Access" : "No Corporation Industry Access"),
+                               message: Text(sheet.corporationID == nil
+                                             ? "Your industry jobs need one more permission. Sign in to EVE again and allow Neocom to read your industry jobs."
+                                             : "Corporation jobs need one more permission. Sign in to EVE again and allow Neocom to read your corporation's industry jobs."))
     }
 }
 

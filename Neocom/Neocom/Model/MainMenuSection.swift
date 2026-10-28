@@ -13,6 +13,10 @@ enum MainMenuSection: String, CaseIterable, Identifiable, Hashable {
     case marketOrders
     case industry
     case contracts
+    case corporationAssets
+    case corporationOrders
+    case corporationIndustry
+    case corporationContracts
     case planetaryInteraction
     case database
     case fittingTool
@@ -31,12 +35,12 @@ enum MainMenuSection: String, CaseIterable, Identifiable, Hashable {
         case .trainingQueue: "Training Queue"
         case .certificates: "Certificates"
         case .planetaryInteraction: "Planetary Interaction"
-        case .assets: "Assets"
+        case .assets, .corporationAssets: "Assets"
         case .mail: "Mail"
         case .killmails: "Killmails"
-        case .marketOrders: "Market Orders"
-        case .industry: "Industry"
-        case .contracts: "Contracts"
+        case .marketOrders, .corporationOrders: "Market Orders"
+        case .industry, .corporationIndustry: "Industry"
+        case .contracts, .corporationContracts: "Contracts"
         case .database: "Database"
         case .fittingTool: "Fitting Tool"
         case .zKillboard: "zKillboard"
@@ -52,12 +56,12 @@ enum MainMenuSection: String, CaseIterable, Identifiable, Hashable {
         case .trainingQueue: "clock.arrow.trianglehead.counterclockwise.rotate.90"
         case .certificates: "rosette"
         case .planetaryInteraction: "globe.europe.africa"
-        case .assets: "shippingbox"
+        case .assets, .corporationAssets: "shippingbox"
         case .mail: "envelope"
         case .killmails: "scope"
-        case .marketOrders: "tag"
-        case .industry: "hammer"
-        case .contracts: "doc.text"
+        case .marketOrders, .corporationOrders: "tag"
+        case .industry, .corporationIndustry: "hammer"
+        case .contracts, .corporationContracts: "doc.text"
         case .database: "square.stack.3d.up"
         case .fittingTool: "wrench.and.screwdriver"
         case .zKillboard: "magnifyingglass"
@@ -73,12 +77,12 @@ enum MainMenuSection: String, CaseIterable, Identifiable, Hashable {
         case .trainingQueue: .indigo
         case .certificates: .teal
         case .planetaryInteraction: .green
-        case .assets: .brown
+        case .assets, .corporationAssets: .brown
         case .mail: .gray
         case .killmails: .red
-        case .marketOrders: .mint
-        case .industry: .yellow
-        case .contracts: .purple
+        case .marketOrders, .corporationOrders: .mint
+        case .industry, .corporationIndustry: .yellow
+        case .contracts, .corporationContracts: .purple
         case .database: .orange
         case .fittingTool: .pink
         case .zKillboard: .red
@@ -93,6 +97,7 @@ enum MainMenuSection: String, CaseIterable, Identifiable, Hashable {
         case .characterSheet, .skills, .trainingQueue, .certificates, .planetaryInteraction, .assets, .mail: true
         case .killmails: true
         case .marketOrders, .industry, .contracts: true
+        case .corporationAssets, .corporationOrders, .corporationIndustry, .corporationContracts: true
         case .database, .fittingTool, .support, .settings: false
         case .zKillboard: false
         }
@@ -103,6 +108,7 @@ enum MainMenuSection: String, CaseIterable, Identifiable, Hashable {
         switch self {
         case .characterSheet, .skills, .trainingQueue, .certificates, .assets, .mail, .killmails: .character
         case .marketOrders, .industry, .contracts, .planetaryInteraction: .business
+        case .corporationAssets, .corporationOrders, .corporationIndustry, .corporationContracts: .corporation
         case .database, .fittingTool: .tools
         case .zKillboard: .tools
         case .support, .settings: nil
@@ -112,6 +118,7 @@ enum MainMenuSection: String, CaseIterable, Identifiable, Hashable {
     enum Group: String, CaseIterable, Identifiable {
         case character
         case business
+        case corporation
         case tools
 
         var id: Self { self }
@@ -120,6 +127,7 @@ enum MainMenuSection: String, CaseIterable, Identifiable, Hashable {
             switch self {
             case .character: "Character"
             case .business: "Business"
+            case .corporation: "Corporation"
             case .tools: "Tools"
             }
         }

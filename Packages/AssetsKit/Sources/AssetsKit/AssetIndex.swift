@@ -27,6 +27,8 @@ public struct AssetIndex: Sendable {
     private let descendants: [Int]
     /// Per record: whether it is its own row that opens.
     private let opens: [Bool]
+    /// Per record: whether it is a corporation Office, which is never shown as an item.
+    private let isOffice: [Bool]
     /// Per record: the root location it is in.
     private let rootOf: [Int64]
     private let locationByID: [Int64: AssetLocation]
@@ -78,8 +80,11 @@ public struct AssetIndex: Sendable {
         }
         self.children = children
 
+        let isOffice = unique.map(\.isOffice)
+        self.isOffice = isOffice
+
         var opens = [Bool](repeating: false, count: unique.count)
-        for (index, record) in unique.enumerated() where record.isSingleton {
+        for (index, record) in unique.enumerated() where record.isSingleton && !isOffice[index] {
             let info = type(record.typeID)
             opens[index] = info.categoryID == AssetCategory.ship
                 || AssetCategory.containerGroups.contains(info.groupID)
@@ -119,7 +124,7 @@ public struct AssetIndex: Sendable {
         var shipCount: [Int64: Int64] = [:]
         var containerCount: [Int64: Int] = [:]
         var summary = AssetSummary(locations: rootOrder.count)
-        for (index, record) in unique.enumerated() where visited[index] {
+        for (index, record) in unique.enumerated() where visited[index] && !isOffice[index] {
             let root = rootOf[index]
             let info = type(record.typeID)
             itemCount[root, default: 0] += 1
@@ -202,7 +207,8 @@ public struct AssetIndex: Sendable {
     /// Where an item is. `nil` for an id that is not an item.
     public func path(to itemID: Int64) -> AssetPath? {
         guard let index = indexByItem[itemID] else { return nil }
-        return AssetPath(location: locationByID[rootOf[index]], parents: parents(of: index))
+        return AssetPath(location: locationByID[rootOf[index]], parents: parents(of: index),
+                         division: division(of: index))
     }
 
     // MARK: - Contents
@@ -223,7 +229,7 @@ public struct AssetIndex: Sendable {
 
         var buckets: [AssetSection.Kind: [StackKey: [Int]]] = [:]
         var categoryNames: [Int64: String] = [:]
-        for index in children[id] ?? [] {
+        for index in contentIndices(of: id) {
             let (kind, key) = bucket(of: index)
             buckets[kind, default: [:]][key, default: []].append(index)
             if case let .category(categoryID) = kind {
@@ -231,6 +237,56 @@ public struct AssetIndex: Sendable {
             }
         }
 
+        return sections(of: buckets, categoryNames: categoryNames, isShip: isShip, hull: hull, ship: id)
+    }
+
+    /// The corporation hangar divisions at a root location, aggregated over all the corporation's
+    /// offices there, in order. Empty for a personal location.
+    public func divisions(at locationID: Int64) -> [AssetDivision] {
+        var result: [Int: AssetDivision] = [:]
+        for office in offices(at: locationID) {
+            for index in children[records[office].itemID] ?? [] {
+                guard let number = AssetFlag.division(of: records[index].locationFlag) else { continue }
+                var division = result[number] ?? AssetDivision(number: number, itemCount: 0, shipCount: 0, containerCount: 0)
+                var stack = [index]
+                var seen: Set<Int> = []
+                while let current = stack.popLast() {
+                    guard seen.insert(current).inserted else { continue }
+                    let record = records[current]
+                    division.itemCount += 1
+                    if type(record.typeID).categoryID == AssetCategory.ship {
+                        division.shipCount += max(record.quantity, 1)
+                    } else if opens[current] {
+                        division.containerCount += 1
+                    }
+                    stack.append(contentsOf: children[record.itemID] ?? [])
+                }
+                result[number] = division
+            }
+        }
+        return result.values.sorted { $0.number < $1.number }
+    }
+
+    /// What lies in one hangar division at a root location, sectioned like a hangar.
+    public func contents(ofDivision number: Int, at locationID: Int64) -> [AssetSection] {
+        var buckets: [AssetSection.Kind: [StackKey: [Int]]] = [:]
+        var categoryNames: [Int64: String] = [:]
+        for office in offices(at: locationID) {
+            for index in children[records[office].itemID] ?? []
+            where AssetFlag.division(of: records[index].locationFlag) == number {
+                let (kind, key) = bucket(of: index)
+                buckets[kind, default: [:]][key, default: []].append(index)
+                if case let .category(categoryID) = kind {
+                    categoryNames[categoryID] = type(records[index].typeID).categoryName
+                }
+            }
+        }
+        return sections(of: buckets, categoryNames: categoryNames, isShip: false, hull: nil, ship: 0)
+    }
+
+    private func sections(of buckets: [AssetSection.Kind: [StackKey: [Int]]], categoryNames: [Int64: String],
+                          isShip: Bool, hull: AssetTypeInfo?, ship id: Int64) -> [AssetSection] {
+        var buckets = buckets
         let slots = isShip ? hull?.slots.map { fittedSlots($0, ship: id) } : nil
         if let slots {
             let racks: [(AssetSection.Kind, Bool)] = [
@@ -326,7 +382,7 @@ public struct AssetIndex: Sendable {
             if matched != all, let custom = customKeys[index] { matched |= mask(custom) }
             guard matched == all else { continue }
             let (kind, stack) = bucket(of: index)
-            let key = HitKey(parent: record.locationID, kind: kind, stack: stack)
+            let key = HitKey(parent: record.locationID, kind: kind, stack: stack, division: division(of: index))
             if groups[rootOf[index], default: [:]][key] == nil {
                 if let limit, hitCount >= limit { continue }
                 hitCount += 1
@@ -337,7 +393,8 @@ public struct AssetIndex: Sendable {
         return locations.compactMap { location in
             guard let buckets = groups[location.id] else { return nil }
             let hits = buckets.values
-                .map { indices in AssetSearchHit(row: makeRow(indices), parents: parents(of: indices[0])) }
+                .map { indices in AssetSearchHit(row: makeRow(indices), parents: parents(of: indices[0]),
+                                                   division: division(of: indices[0])) }
                 .sorted { lhs, rhs in
                     if lhs.parents.count != rhs.parents.count { return lhs.parents.count < rhs.parents.count }
                     return Self.rowOrder(lhs.row, rhs.row)
@@ -359,6 +416,8 @@ public struct AssetIndex: Sendable {
         var parent: Int64
         var kind: AssetSection.Kind
         var stack: StackKey
+        /// Stacks of different corporation divisions stay apart.
+        var division: Int?
     }
 
     private struct FittingKey: Hashable {
@@ -385,7 +444,7 @@ public struct AssetIndex: Sendable {
         if let rack = AssetFlag.shipSection(record.locationFlag) {
             return (rack, key)
         }
-        guard AssetFlag.looseFlags.contains(record.locationFlag) else {
+        guard AssetFlag.isLoose(record.locationFlag) else {
             return (.flag(record.locationFlag), key)
         }
         if info.categoryID == AssetCategory.ship { return (.ships, key) }
@@ -418,13 +477,46 @@ public struct AssetIndex: Sendable {
                         nestedCount: opensAlone ? descendants[indices[0]] : 0)
     }
 
+    /// The Office records lying directly in a root location.
+    private func offices(at root: Int64) -> [Int] {
+        (children[root] ?? []).filter { isOffice[$0] }
+    }
+
+    /// The records a root, container or ship lists: its children, with each Office replaced by
+    /// what it holds outside the hangar divisions (Deliveries, Impounded, ...).
+    private func contentIndices(of id: Int64) -> [Int] {
+        var result: [Int] = []
+        for index in children[id] ?? [] {
+            if isOffice[index] {
+                result += (children[records[index].itemID] ?? []).filter {
+                    AssetFlag.division(of: records[$0].locationFlag) == nil
+                }
+            } else {
+                result.append(index)
+            }
+        }
+        return result
+    }
+
+    /// The hangar division of the record directly under an Office on the way up from `index`.
+    private func division(of index: Int) -> Int? {
+        var current = index
+        var seen: Set<Int> = []
+        while seen.insert(current).inserted {
+            guard let parent = indexByItem[records[current].locationID] else { return nil }
+            if isOffice[parent] { return AssetFlag.division(of: records[current].locationFlag) }
+            current = parent
+        }
+        return nil
+    }
+
     /// The ships and containers around a record, outermost first.
     private func parents(of index: Int) -> [AssetRow] {
         var result: [AssetRow] = []
         var seen: Set<Int64> = []
         var location = records[index].locationID
         while let parent = indexByItem[location], seen.insert(location).inserted {
-            result.append(makeRow([parent]))
+            if !isOffice[parent] { result.append(makeRow([parent])) }
             location = records[parent].locationID
         }
         return result.reversed()

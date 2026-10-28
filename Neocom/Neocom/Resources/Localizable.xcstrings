@@ -1818,6 +1818,22 @@
         }
       }
     },
+    "%lld active · %lld to corp" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld active · %2$lld to corp"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Активных: %lld · корпорации: %lld"
+          }
+        }
+      }
+    },
     "%lld active · %lld to you" : {
       "localizations" : {
         "en" : {
@@ -1954,6 +1970,58 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Можно изучать: %lld"
+          }
+        }
+      }
+    },
+    "%lld containers" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld container"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld containers"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld контейнер"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld контейнера"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld контейнеров"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld контейнера"
+                }
+              }
+            }
           }
         }
       }
@@ -5215,6 +5283,16 @@
         }
       }
     },
+    "All Divisions" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Все отделы"
+          }
+        }
+      }
+    },
     "All output" : {
       "localizations" : {
         "ru" : {
@@ -6571,6 +6649,16 @@
         }
       }
     },
+    "By %@" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автор: %@"
+          }
+        }
+      }
+    },
     "By Damage" : {
       "localizations" : {
         "ru" : {
@@ -7634,6 +7722,16 @@
         }
       }
     },
+    "Contracts your corporation issues, accepts or is offered show here: item exchanges, auctions and courier runs." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Здесь появляются контракты, которые ваша корпорация выставила, приняла или получила: обмен предметами, аукционы и курьерские перевозки."
+          }
+        }
+      }
+    },
     "contracts.filter.active" : {
       "comment" : "Segment: active contracts",
       "extractionState" : "extracted_with_value",
@@ -7807,6 +7905,56 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Корпорация"
+          }
+        }
+      }
+    },
+    "Corporation assets need one more permission. Sign in to EVE again and allow Neocom to read your corporation's assets." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для имущества корпорации нужно ещё одно разрешение. Войдите в EVE ещё раз и разрешите Neocom читать имущество вашей корпорации."
+          }
+        }
+      }
+    },
+    "Corporation contracts need one more permission. Sign in to EVE again and allow Neocom to read your corporation's contracts." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для контрактов корпорации нужно ещё одно разрешение. Войдите в EVE ещё раз и разрешите Neocom читать контракты вашей корпорации."
+          }
+        }
+      }
+    },
+    "Corporation hangar" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ангар корпорации"
+          }
+        }
+      }
+    },
+    "Corporation jobs need one more permission. Sign in to EVE again and allow Neocom to read your corporation's industry jobs." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для производственных работ корпорации нужно ещё одно разрешение. Войдите в EVE ещё раз и разрешите Neocom читать производственные работы вашей корпорации."
+          }
+        }
+      }
+    },
+    "Corporation orders need one more permission. Sign in to EVE again and allow Neocom to read your corporation's market orders." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для заявок корпорации нужно ещё одно разрешение. Войдите в EVE ещё раз и разрешите Neocom читать рыночные заявки вашей корпорации."
           }
         }
       }
@@ -8568,6 +8716,16 @@
         }
       }
     },
+    "Division %lld" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отдел %lld"
+          }
+        }
+      }
+    },
     "Docked" : {
       "localizations" : {
         "ru" : {
@@ -9271,6 +9429,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "EVE обновляет список имущества примерно раз в час. Поиск находит предметы во всех ангарах, кораблях и контейнерах."
+          }
+        }
+      }
+    },
+    "EVE refreshes the corporation's orders every 20 minutes. Undercut and outbid are checked against the order book of the order’s region, once you have opened that market or the order. Change or cancel orders in the EVE client." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EVE обновляет заявки корпорации каждые 20 минут. Перебитые цены и ставки проверяются по заявкам сектора, где выставлена заявка, — после того как вы откроете этот рынок или саму заявку. Изменить или отменить заявки можно в клиенте EVE."
           }
         }
       }
@@ -10115,6 +10283,16 @@
         }
       }
     },
+    "Filter by Wallet Division" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фильтр по отделу кошелька"
+          }
+        }
+      }
+    },
     "Filters" : {
       "localizations" : {
         "ru" : {
@@ -10408,6 +10586,16 @@
         }
       }
     },
+    "For Corporation · %lld" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для корпорации · %lld"
+          }
+        }
+      }
+    },
     "For Sale" : {
       "localizations" : {
         "ru" : {
@@ -10505,6 +10693,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "От %@"
+          }
+        }
+      }
+    },
+    "From %@ · to the corporation" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "От %@ · корпорации"
           }
         }
       }
@@ -10799,6 +10997,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Гуристас"
+          }
+        }
+      }
+    },
+    "Hangar Divisions" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отделы ангара"
           }
         }
       }
@@ -11334,6 +11542,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Вход %@ · выход %@ /ч"
+          }
+        }
+      }
+    },
+    "In %@ at" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В отделе «%@»"
           }
         }
       }
@@ -11883,6 +12101,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Выставлено"
+          }
+        }
+      }
+    },
+    "Issued By" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автор"
+          }
+        }
+      }
+    },
+    "Issued by Corporation · %lld" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выставлены корпорацией · %lld"
           }
         }
       }
@@ -13314,6 +13552,16 @@
         }
       }
     },
+    "Master Wallet" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Главный кошелёк"
+          }
+        }
+      }
+    },
     "Mastery" : {
       "localizations" : {
         "ru" : {
@@ -14338,6 +14586,56 @@
         }
       }
     },
+    "No Corporation" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет корпорации"
+          }
+        }
+      }
+    },
+    "No Corporation Asset Access" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет доступа к имуществу корпорации"
+          }
+        }
+      }
+    },
+    "No Corporation Contract Access" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет доступа к контрактам корпорации"
+          }
+        }
+      }
+    },
+    "No Corporation Industry Access" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет доступа к производству корпорации"
+          }
+        }
+      }
+    },
+    "No Corporation Market Access" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет доступа к рынку корпорации"
+          }
+        }
+      }
+    },
     "No data yet" : {
       "localizations" : {
         "ru" : {
@@ -15290,6 +15588,16 @@
         }
       }
     },
+    "Offered only to your corporation. Accept it in the EVE client before %@; the corporation pays %@." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Предложен только вашей корпорации. Примите его в клиенте EVE до %@; корпорация платит %@."
+          }
+        }
+      }
+    },
     "Offered only to you. Accept it in the EVE client before %@; you pay %@." : {
       "localizations" : {
         "en" : {
@@ -15689,6 +15997,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Здесь показываются заявки, выставленные в клиенте EVE: сколько исполнено, сколько осталось и когда истекает каждая."
+          }
+        }
+      }
+    },
+    "Orders your corporation places show here: what has traded, what is left and when each one expires." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Здесь показываются заявки, выставленные вашей корпорацией: сколько исполнено, сколько осталось и когда истекает каждая."
           }
         }
       }
@@ -18545,6 +18863,26 @@
         }
       }
     },
+    "Sign In" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Войти"
+          }
+        }
+      }
+    },
+    "Sign in again to see your corporation's data" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Войдите снова, чтобы увидеть данные корпорации"
+          }
+        }
+      }
+    },
     "Sign in to unlock the rest of Neocom" : {
       "localizations" : {
         "ru" : {
@@ -20829,6 +21167,16 @@
         }
       }
     },
+    "This character is not in a corporation." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этот персонаж не состоит в корпорации."
+          }
+        }
+      }
+    },
     "This character owns nothing EVE lists as an asset." : {
       "localizations" : {
         "ru" : {
@@ -20845,6 +21193,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Этого контракта больше нет в списке."
+          }
+        }
+      }
+    },
+    "This corporation owns nothing EVE lists as an asset." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У этой корпорации нет ничего, что EVE считает имуществом."
           }
         }
       }
@@ -21273,6 +21631,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Кому: %@ + %lld"
+          }
+        }
+      }
+    },
+    "To Corporation" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Корпорации"
           }
         }
       }
@@ -22501,6 +22869,16 @@
         }
       }
     },
+    "Wallet Division" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отдел кошелька"
+          }
+        }
+      }
+    },
     "Warp range" : {
       "localizations" : {
         "ru" : {
@@ -22827,6 +23205,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Для контрактов нужно ещё одно разрешение. Войдите в EVE ещё раз и разрешите Neocom читать ваши контракты."
+          }
+        }
+      }
+    },
+    "Your corporation roles don't allow reading this." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Роли в вашей корпорации не позволяют это читать."
           }
         }
       }

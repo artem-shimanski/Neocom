@@ -31,6 +31,9 @@ public struct AssetRecord: Codable, Sendable, Hashable {
         self.isSingleton = isSingleton
         self.isBlueprintCopy = isBlueprintCopy
     }
+
+    /// A corporation's Office: the record that holds the hangar divisions in a station.
+    public var isOffice: Bool { locationFlag == AssetFlag.office }
 }
 
 /// A root location (one that is not an item of the character), as far as it could be named.

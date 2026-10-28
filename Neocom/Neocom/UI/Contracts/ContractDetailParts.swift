@@ -16,7 +16,11 @@ struct ContractDetail {
     var market: MarketSheet
 
     var me: Int64 { context.characterID }
-    var isMine: Bool { contract.isIssued(by: me) }
+    var isMine: Bool {
+        context.corporationID.map(contract.isIssuedByCorporation) ?? contract.isIssued(by: me)
+    }
+    /// Offered to the pilot, or in a corporation's list to the corporation.
+    var isAssignedToMe: Bool { contract.assigneeID == (context.corporationID ?? me) }
     var isActive: Bool { contract.status.isActive }
     var isDueSoon: Bool { contract.isDueSoon(at: now) }
 

@@ -7,7 +7,7 @@ import SwiftUI
 /// ESI adds later reads as an exchange. The items and the bids load for this contract only,
 /// through the sheet that owns them.
 struct ContractDetailView: View {
-    let sheet: ContractsSheet
+    let sheet: any ContractsSource
     let contractID: Int64
 
     var body: some View {
@@ -24,7 +24,7 @@ struct ContractDetailView: View {
 }
 
 private struct ContractDetailBody: View {
-    let sheet: ContractsSheet
+    let sheet: any ContractsSource
     let data: ESIContracts
     let contract: Contract
     let items: ESISnapshot<[ContractItem]>
@@ -33,7 +33,7 @@ private struct ContractDetailBody: View {
     @Environment(AccountStore.self) private var accounts
     @Environment(MarketSheet.self) private var market
 
-    init(sheet: ContractsSheet, data: ESIContracts, contract: Contract) {
+    init(sheet: any ContractsSource, data: ESIContracts, contract: Contract) {
         self.sheet = sheet
         self.data = data
         self.contract = contract
@@ -54,7 +54,8 @@ private struct ContractDetailBody: View {
                 let detail = ContractDetail(
                     contract: contract,
                     context: ContractContext(characterID: sheet.characterID, names: names,
-                                             locations: data.locations, places: places),
+                                             locations: data.locations, places: places,
+                                             corporationID: sheet.corporationID),
                     items: items, bids: bids, now: timeline.date, pilotSystemID: pilotSystemID, market: market)
                 HUDList {
                     switch contract.kind {
@@ -92,8 +93,8 @@ private struct ContractDetailBody: View {
     private func refresh() async {
         async let itemsDone: Void = items.refresh()
         async let bidsDone: Void? = bids?.refresh()
-        async let listDone: Void = sheet.refresh()
-        _ = await (itemsDone, bidsDone, listDone)
+        await sheet.refresh()
+        _ = await (itemsDone, bidsDone)
     }
 
     /// Jumps to the contract's places from the pilot, and — for a courier — along its route.
@@ -164,7 +165,10 @@ struct ContractExchangeLayout: View {
             return text
         }
         let issuer = detail.name(c.issuerID)
-        return c.assigneeID == detail.me ? String(localized: "From \(issuer) · to you") : String(localized: "From \(issuer)")
+        guard detail.isAssignedToMe else { return String(localized: "From \(issuer)") }
+        return detail.context.corporationID != nil
+            ? String(localized: "From \(issuer) · to the corporation")
+            : String(localized: "From \(issuer) · to you")
     }
 
     /// Whether the issuer pays ISK ("I will pay", ESI's `reward`) instead of asking for it.
@@ -193,8 +197,11 @@ struct ContractExchangeLayout: View {
         guard c.status == .outstanding, !detail.isMine, !c.isExpired(at: detail.now) else { return nil }
         let until = EVETime.dateTime(c.dateExpired)
         let price = c.price.map { ContractText.isk($0) } ?? "0 ISK"
-        return c.assigneeID == detail.me
-            ? String(localized: "Offered only to you. Accept it in the EVE client before \(until); you pay \(price).")
-            : String(localized: "Accept it in the EVE client before \(until); you pay \(price).")
+        if detail.isAssignedToMe {
+            return detail.context.corporationID != nil
+                ? String(localized: "Offered only to your corporation. Accept it in the EVE client before \(until); the corporation pays \(price).")
+                : String(localized: "Offered only to you. Accept it in the EVE client before \(until); you pay \(price).")
+        }
+        return String(localized: "Accept it in the EVE client before \(until); you pay \(price).")
     }
 }

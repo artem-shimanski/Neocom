@@ -53,6 +53,12 @@ final class AccountStore {
     @ObservationIgnored private var orderSheets: [Int64: OrdersSheet] = [:]
     @ObservationIgnored private var industrySheets: [Int64: IndustrySheet] = [:]
     @ObservationIgnored private var contractSheets: [Int64: ContractsSheet] = [:]
+    /// Corporation sheets, by the viewing character; each is bound to one corporation id.
+    @ObservationIgnored private var corporationSheets: [Int64: CorporationSheet] = [:]
+    @ObservationIgnored private var corporationAssetSheets: [Int64: CorporationAssetsSheet] = [:]
+    @ObservationIgnored private var corporationOrderSheets: [Int64: CorporationOrdersSheet] = [:]
+    @ObservationIgnored private var corporationIndustrySheets: [Int64: CorporationIndustrySheet] = [:]
+    @ObservationIgnored private var corporationContractSheets: [Int64: CorporationContractsSheet] = [:]
     @ObservationIgnored private var mailSheets: [Int64: MailSheet] = [:]
     @ObservationIgnored private var killmailSheets: [Int64: KillmailsSheet] = [:]
     @ObservationIgnored private var plans: [Int64: TrainingPlanStore] = [:]
@@ -122,6 +128,7 @@ final class AccountStore {
         assetSheets[characterID]?.invalidate()
         assetSheets[characterID] = nil
         dropBusinessSheets(of: characterID)
+        dropCorporationSheets(of: characterID)
         dropMailSheet(of: characterID)
         dropKillmailsSheet(of: characterID)
         plans[characterID] = nil
@@ -186,6 +193,12 @@ final class AccountStore {
         assetSheets = [:]
         for characterID in Set(orderSheets.keys).union(industrySheets.keys).union(contractSheets.keys) {
             dropBusinessSheets(of: characterID)
+        }
+        let corporationViewers = Set(corporationSheets.keys)
+            .union(corporationAssetSheets.keys).union(corporationOrderSheets.keys)
+            .union(corporationIndustrySheets.keys).union(corporationContractSheets.keys)
+        for characterID in corporationViewers {
+            dropCorporationSheets(of: characterID)
         }
         for characterID in Array(mailSheets.keys) {
             dropMailSheet(of: characterID)
@@ -311,6 +324,118 @@ final class AccountStore {
         industrySheets[characterID] = nil
         contractSheets[characterID]?.invalidate()
         contractSheets[characterID] = nil
+    }
+
+    // MARK: - Corporation
+
+    /// The corporation of `account`, if it is a player corporation: `nil` for the demo pilot,
+    /// for an NPC corporation and until the profile is loaded.
+    func corporationID(of account: Account) -> Int64? {
+        guard !account.isDemo,
+              let id = sheet(for: account).profile?.corporationID,
+              CorporationSheet.isPlayerCorporation(id) else { return nil }
+        return id
+    }
+
+    /// The corporation sheet of `account`; a sheet bound to another corporation is invalidated
+    /// and replaced.
+    func corporation(for account: Account) -> CorporationSheet? {
+        guard let id = corporationID(of: account) else { return nil }
+        return corporationSheet(in: &corporationSheets, for: account, corporationID: id) {
+            CorporationSheet(characterID: account.id, corporationID: id, client: client(for: account),
+                             hasScope: account.hasScope)
+        }
+    }
+
+    var currentCorporation: CorporationSheet? {
+        currentAccount.flatMap(corporation(for:))
+    }
+
+    /// The corporation's assets as seen by `account`. Creating the sheet reads a possibly large
+    /// file on the main actor: call only when the Assets screen opens.
+    func corporationAssets(for account: Account) -> CorporationAssetsSheet? {
+        guard let id = corporationID(of: account) else { return nil }
+        return corporationSheet(in: &corporationAssetSheets, for: account, corporationID: id) {
+            CorporationAssetsSheet(characterID: account.id, corporationID: id, client: client(for: account),
+                                   hasScope: account.hasScope(SSOConfiguration.Scope.corporationAssets))
+        }
+    }
+
+    var currentCorporationAssets: CorporationAssetsSheet? {
+        currentAccount.flatMap(corporationAssets(for:))
+    }
+
+    /// The corporation assets sheet of `account` if one was created for its current
+    /// corporation, without creating it.
+    func existingCorporationAssets(for account: Account) -> CorporationAssetsSheet? {
+        guard let id = corporationID(of: account),
+              let sheet = corporationAssetSheets[account.id],
+              sheet.boundCorporationID == id else { return nil }
+        return sheet
+    }
+
+    func corporationOrders(for account: Account) -> CorporationOrdersSheet? {
+        guard let id = corporationID(of: account) else { return nil }
+        return corporationSheet(in: &corporationOrderSheets, for: account, corporationID: id) {
+            CorporationOrdersSheet(characterID: account.id, corporationID: id, client: client(for: account),
+                                   hasScope: account.hasScope(SSOConfiguration.Scope.corporationOrders))
+        }
+    }
+
+    var currentCorporationOrders: CorporationOrdersSheet? {
+        currentAccount.flatMap(corporationOrders(for:))
+    }
+
+    func corporationIndustry(for account: Account) -> CorporationIndustrySheet? {
+        guard let id = corporationID(of: account) else { return nil }
+        return corporationSheet(in: &corporationIndustrySheets, for: account, corporationID: id) {
+            CorporationIndustrySheet(characterID: account.id, corporationID: id, client: client(for: account),
+                                     hasScope: account.hasScope(SSOConfiguration.Scope.corporationIndustryJobs))
+        }
+    }
+
+    var currentCorporationIndustry: CorporationIndustrySheet? {
+        currentAccount.flatMap(corporationIndustry(for:))
+    }
+
+    func corporationContracts(for account: Account) -> CorporationContractsSheet? {
+        guard let id = corporationID(of: account) else { return nil }
+        return corporationSheet(in: &corporationContractSheets, for: account, corporationID: id) {
+            CorporationContractsSheet(characterID: account.id, corporationID: id, client: client(for: account),
+                                      hasScope: account.hasScope(SSOConfiguration.Scope.corporationContracts))
+        }
+    }
+
+    var currentCorporationContracts: CorporationContractsSheet? {
+        currentAccount.flatMap(corporationContracts(for:))
+    }
+
+    /// The cached sheet of a store, or a new one when the corporation changed.
+    private func corporationSheet<Sheet: CorporationBound>(in store: inout [Int64: Sheet],
+                                                           for account: Account,
+                                                           corporationID: Int64,
+                                                           make: () -> Sheet) -> Sheet {
+        if let sheet = store[account.id] {
+            if sheet.boundCorporationID == corporationID { return sheet }
+            sheet.invalidate()
+        }
+        let sheet = make()
+        store[account.id] = sheet
+        return sheet
+    }
+
+    /// Invalidates and drops every corporation sheet of the viewing character.
+    private func dropCorporationSheets(of characterID: Int64) {
+        corporationSheets[characterID]?.invalidate()
+        corporationSheets[characterID] = nil
+        corporationAssetSheets[characterID]?.invalidate()
+        corporationAssetSheets[characterID] = nil
+        corporationOrderSheets[characterID]?.invalidate()
+        corporationOrderSheets[characterID] = nil
+        corporationIndustrySheets[characterID]?.invalidate()
+        corporationIndustrySheets[characterID] = nil
+        corporationContractSheets[characterID]?.invalidate()
+        corporationContractSheets[characterID] = nil
     }
 
     func mail(for account: Account) -> MailSheet {
@@ -444,4 +569,19 @@ final class AccountStore {
         guard let data = try? JSONEncoder().encode(accounts) else { return }
         try? keychain.set(data, forKey: Self.accountsKey)
     }
+}
+
+/// A sheet whose cache files belong to one corporation.
+@MainActor
+protocol CorporationBound: AnyObject {
+    /// The viewing character.
+    var characterID: Int64 { get }
+    /// The corporation whose data the sheet holds. Named apart from the sources'
+    /// `corporationID: Int64?`, which a corporation data sheet also implements.
+    var boundCorporationID: Int64 { get }
+    func invalidate()
+}
+
+extension CorporationSheet: CorporationBound {
+    var boundCorporationID: Int64 { corporationID }
 }

@@ -10,8 +10,7 @@ struct HUDGrantAccessPanel: View {
     let message: Text
 
     @Environment(AccountStore.self) private var accounts
-    @State private var isSigningIn = false
-    @State private var error: (any Error)?
+    @State private var action = GrantAccessAction()
 
     init(title: Text, message: Text) {
         self.title = title
@@ -20,31 +19,13 @@ struct HUDGrantAccessPanel: View {
 
     var body: some View {
         HUDEmptyPanel(title: title, message: message) {
-            Button(action: signIn) {
+            Button { action.signIn(accounts) } label: {
                 Label("Grant Access", systemImage: "lock")
             }
             .hudProminentButton()
-            .disabled(isSigningIn)
+            .disabled(action.isSigningIn)
         }
-        .alert("Sign-In Failed", isPresented: Binding(get: { error != nil }, set: { if !$0 { error = nil } })) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(error?.localizedDescription ?? "")
-        }
-    }
-
-    private func signIn() {
-        isSigningIn = true
-        Task {
-            defer { isSigningIn = false }
-            do {
-                try await accounts.signIn()
-            } catch SSOError.cancelled {
-                // The sign-in sheet was dismissed.
-            } catch {
-                self.error = error
-            }
-        }
+        .signInFailureAlert(action)
     }
 }
 

@@ -548,6 +548,164 @@ nonisolated extension Client {
         }
     }
 
+    // MARK: - Corporation
+
+    /// The corporation roles of a character. Needs `esi-characters.read_corporation_roles.v1`.
+    func characterRoles(characterID: Int64) async throws -> Components.Schemas.CharactersCharacterIdRolesGet {
+        let output = try await getCharactersCharacterIdRoles(
+            path: .init(characterId: characterID),
+            headers: .init(xCompatibilityDate: ESIService.compatibilityDate)
+        )
+        switch output {
+        case let .ok(ok):
+            return try ok.body.json
+        case let .default(status, response):
+            throw ESIError.http(status: status, message: try? response.body.json.error)
+        }
+    }
+
+    /// The names of a corporation's hangar and wallet divisions. Needs the Director role.
+    func corporationDivisions(corporationID: Int64) async throws -> Components.Schemas.CorporationsCorporationIdDivisionsGet {
+        let output = try await getCorporationsCorporationIdDivisions(
+            path: .init(corporationId: corporationID),
+            headers: .init(xCompatibilityDate: ESIService.compatibilityDate)
+        )
+        switch output {
+        case let .ok(ok):
+            return try ok.body.json
+        case let .default(status, response):
+            throw ESIError.http(status: status, message: try? response.body.json.error)
+        }
+    }
+
+    /// One page of a corporation's assets, with the page count and `Last-Modified`; see
+    /// `assets(characterID:page:)`. Needs the Director role.
+    func corporationAssets(corporationID: Int64, page: Int) async throws -> (records: Components.Schemas.CorporationsCorporationIdAssetsGet,
+                                                                              pages: Int,
+                                                                              lastModified: String?) {
+        let output = try await getCorporationsCorporationIdAssets(
+            path: .init(corporationId: corporationID),
+            query: .init(page: Int32(clamping: page)),
+            headers: .init(xCompatibilityDate: ESIService.compatibilityDate)
+        )
+        switch output {
+        case let .ok(ok):
+            return (try ok.body.json, max(Int(clamping: ok.headers.xPages ?? 1), 1), ok.headers.lastModified)
+        case let .default(status, response):
+            throw ESIError.http(status: status, message: try? response.body.json.error)
+        }
+    }
+
+    /// Player-assigned names of a corporation's items, by item id. At most 1000 ids per call.
+    func corporationAssetNames(corporationID: Int64, itemIDs: [Int64]) async throws -> Components.Schemas.CorporationsCorporationIdAssetsNamesPost {
+        let output = try await postCorporationsCorporationIdAssetsNames(
+            path: .init(corporationId: corporationID),
+            headers: .init(xCompatibilityDate: ESIService.compatibilityDate),
+            body: .json(itemIDs)
+        )
+        switch output {
+        case let .ok(ok):
+            return try ok.body.json
+        case let .default(status, response):
+            throw ESIError.http(status: status, message: try? response.body.json.error)
+        }
+    }
+
+    /// One page of a corporation's open market orders, with the page count. Page numbers start at 1.
+    func corporationOrders(corporationID: Int64, page: Int) async throws -> (orders: Components.Schemas.CorporationsCorporationIdOrdersGet,
+                                                                            pages: Int) {
+        let output = try await getCorporationsCorporationIdOrders(
+            path: .init(corporationId: corporationID),
+            query: .init(page: Int32(clamping: page)),
+            headers: .init(xCompatibilityDate: ESIService.compatibilityDate)
+        )
+        switch output {
+        case let .ok(ok):
+            return (try ok.body.json, max(Int(clamping: ok.headers.xPages ?? 1), 1))
+        case let .default(status, response):
+            throw ESIError.http(status: status, message: try? response.body.json.error)
+        }
+    }
+
+    /// One page of a corporation's expired and cancelled orders of the last 90 days, with the
+    /// page count. Page numbers start at 1.
+    func corporationOrderHistory(corporationID: Int64, page: Int) async throws -> (orders: Components.Schemas.CorporationsCorporationIdOrdersHistoryGet,
+                                                                                  pages: Int) {
+        let output = try await getCorporationsCorporationIdOrdersHistory(
+            path: .init(corporationId: corporationID),
+            query: .init(page: Int32(clamping: page)),
+            headers: .init(xCompatibilityDate: ESIService.compatibilityDate)
+        )
+        switch output {
+        case let .ok(ok):
+            return (try ok.body.json, max(Int(clamping: ok.headers.xPages ?? 1), 1))
+        case let .default(status, response):
+            throw ESIError.http(status: status, message: try? response.body.json.error)
+        }
+    }
+
+    /// One page of a corporation's industry jobs, with the page count. Page numbers start at 1.
+    func corporationIndustryJobs(corporationID: Int64, includeCompleted: Bool, page: Int) async throws -> (jobs: Components.Schemas.CorporationsCorporationIdIndustryJobsGet,
+                                                                                                            pages: Int) {
+        let output = try await getCorporationsCorporationIdIndustryJobs(
+            path: .init(corporationId: corporationID),
+            query: .init(includeCompleted: includeCompleted, page: Int32(clamping: page)),
+            headers: .init(xCompatibilityDate: ESIService.compatibilityDate)
+        )
+        switch output {
+        case let .ok(ok):
+            return (try ok.body.json, max(Int(clamping: ok.headers.xPages ?? 1), 1))
+        case let .default(status, response):
+            throw ESIError.http(status: status, message: try? response.body.json.error)
+        }
+    }
+
+    /// One page of a corporation's contracts, with the page count. Page numbers start at 1.
+    func corporationContracts(corporationID: Int64, page: Int) async throws -> (contracts: Components.Schemas.CorporationsCorporationIdContractsGet,
+                                                                               pages: Int) {
+        let output = try await getCorporationsCorporationIdContracts(
+            path: .init(corporationId: corporationID),
+            query: .init(page: Int32(clamping: page)),
+            headers: .init(xCompatibilityDate: ESIService.compatibilityDate)
+        )
+        switch output {
+        case let .ok(ok):
+            return (try ok.body.json, max(Int(clamping: ok.headers.xPages ?? 1), 1))
+        case let .default(status, response):
+            throw ESIError.http(status: status, message: try? response.body.json.error)
+        }
+    }
+
+    /// The items of a corporation's contract. Not paged.
+    func corporationContractItems(corporationID: Int64, contractID: Int64) async throws -> Components.Schemas.CorporationsCorporationIdContractsContractIdItemsGet {
+        let output = try await getCorporationsCorporationIdContractsContractIdItems(
+            path: .init(contractId: contractID, corporationId: corporationID),
+            headers: .init(xCompatibilityDate: ESIService.compatibilityDate)
+        )
+        switch output {
+        case let .ok(ok):
+            return try ok.body.json
+        case let .default(status, response):
+            throw ESIError.http(status: status, message: try? response.body.json.error)
+        }
+    }
+
+    /// One page of the bids on one of a corporation's auctions, with the page count.
+    func corporationContractBids(corporationID: Int64, contractID: Int64, page: Int) async throws -> (bids: Components.Schemas.CorporationsCorporationIdContractsContractIdBidsGet,
+                                                                                                      pages: Int) {
+        let output = try await getCorporationsCorporationIdContractsContractIdBids(
+            path: .init(contractId: contractID, corporationId: corporationID),
+            query: .init(page: Int32(clamping: page)),
+            headers: .init(xCompatibilityDate: ESIService.compatibilityDate)
+        )
+        switch output {
+        case let .ok(ok):
+            return (try ok.body.json, max(Int(clamping: ok.headers.xPages ?? 1), 1))
+        case let .default(status, response):
+            throw ESIError.http(status: status, message: try? response.body.json.error)
+        }
+    }
+
     // MARK: - Mail
 
     /// One page of a character's mail headers, newest first: at most 50, older than

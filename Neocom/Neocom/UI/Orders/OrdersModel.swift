@@ -21,7 +21,7 @@ final class OrdersModel {
     /// A cached book older than this is unreliable for undercut and outbid.
     private static let bookTolerance: TimeInterval = 3600
 
-    let sheet: OrdersSheet
+    let sheet: any OrdersSource
     private(set) var types: [Int64: TypeLabel] = [:]
     private(set) var systems: [Int64: MarketSystemRow] = [:]
     private(set) var regions: [Int64: String] = [:]
@@ -33,12 +33,15 @@ final class OrdersModel {
 
     @ObservationIgnored private let market: MarketSheet
     @ObservationIgnored private let characterSheet: CharacterSheet?
+    @ObservationIgnored let corporation: CorporationSheet?
     @ObservationIgnored private let database: SDEDatabase?
 
-    init(sheet: OrdersSheet, market: MarketSheet, characterSheet: CharacterSheet?, database: SDEDatabase?) {
+    init(sheet: any OrdersSource, market: MarketSheet, characterSheet: CharacterSheet?,
+         corporation: CorporationSheet? = nil, database: SDEDatabase?) {
         self.sheet = sheet
         self.market = market
         self.characterSheet = characterSheet
+        self.corporation = corporation
         self.database = database
     }
 
@@ -46,6 +49,38 @@ final class OrdersModel {
 
     var open: [CharacterOrder] { sheet.open.value?.orders ?? [] }
     var history: [CharacterOrder] { sheet.history.value?.orders ?? [] }
+
+    var isCorporation: Bool { sheet.corporationID != nil }
+
+    /// Wallet divisions the orders came from, ascending.
+    var walletDivisions: [Int] {
+        guard isCorporation else { return [] }
+        return Array(Set((open + history).compactMap(\.walletDivision))).sorted()
+    }
+
+    /// The corporation's name of the wallet division the order was placed from.
+    func walletName(_ order: CharacterOrder) -> String? {
+        guard isCorporation, let number = order.walletDivision else { return nil }
+        return corporation?.walletName(number) ?? ESICorporationDivisions.walletName(number, in: [:])
+    }
+
+    func walletName(division number: Int) -> String {
+        corporation?.walletName(number) ?? ESICorporationDivisions.walletName(number, in: [:])
+    }
+
+    /// The character who placed a corporation order.
+    func issuerName(_ order: CharacterOrder) -> String? {
+        guard isCorporation, let id = order.issuedBy else { return nil }
+        return (sheet.open.value?.names[id] ?? sheet.history.value?.names[id])?.name
+    }
+
+    func ensureDivisionsFresh() async {
+        await corporation?.ensureDivisionsFresh()
+    }
+
+    func refreshRoles() async {
+        await corporation?.refresh()
+    }
 
     func order(id: Int64) -> CharacterOrder? {
         open.first { $0.id == id } ?? history.first { $0.id == id }

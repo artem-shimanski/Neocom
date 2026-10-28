@@ -138,6 +138,11 @@ final class ContractsSheet {
     }
 }
 
+extension ContractsSheet: ContractsSource {
+    var corporationID: Int64? { nil }
+    var access: BusinessAccess { isMissingScope ? .missingScope : .granted }
+}
+
 nonisolated extension Contract {
     init(_ payload: Components.Schemas.CharactersCharacterIdContractsGetPayload) {
         self.init(id: payload.contractId,

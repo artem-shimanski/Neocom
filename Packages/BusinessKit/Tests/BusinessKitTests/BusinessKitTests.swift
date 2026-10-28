@@ -120,6 +120,30 @@ private func job(_ id: Int64, activity: Int = 1, start: TimeInterval, end: TimeI
                 status: status)
 }
 
+@Suite struct CorporationOrderTests {
+    @Test func newFieldsRoundTrip() throws {
+        let o = CharacterOrder(id: 1, typeID: 34, regionID: 1, locationID: 2, isBuyOrder: false, isCorporation: true,
+                               price: 1, volumeRemain: 1, volumeTotal: 1, duration: 30, issued: now,
+                               walletDivision: 3, issuedBy: 42)
+        let decoded = try JSONDecoder().decode(CharacterOrder.self, from: JSONEncoder().encode(o))
+        #expect(decoded == o)
+        #expect(decoded.walletDivision == 3)
+        #expect(decoded.issuedBy == 42)
+    }
+
+    @Test func oldCacheWithoutTheNewKeysDecodes() throws {
+        let json = """
+        {"id":1,"typeID":34,"regionID":1,"locationID":2,"isBuyOrder":true,"isCorporation":false,
+         "price":5,"volumeRemain":1,"volumeTotal":2,"minVolume":1,"range":"region","duration":30,
+         "issued":0,"state":"open"}
+        """
+        let decoded = try JSONDecoder().decode(CharacterOrder.self, from: Data(json.utf8))
+        #expect(decoded.walletDivision == nil)
+        #expect(decoded.issuedBy == nil)
+        #expect(order(2).walletDivision == nil)
+    }
+}
+
 @Suite struct IndustryTests {
     @Test func activities() {
         #expect(IndustryActivity(activityID: 1) == .manufacturing)
@@ -265,6 +289,38 @@ private func contract(_ id: Int64, type: String = "item_exchange", status: Strin
         #expect(summary.activeCount == 3)
         #expect(summary.finishedCount == 2)
         #expect(summary.outstandingCount == 2)
+        #expect(summary.inProgressCount == 1)
+        #expect(summary.toYouCount == 1)
+    }
+
+    @Test func corporationRelations() {
+        func corp(_ id: Int64, status: String = "outstanding", issuerCorp: Int64 = 7, forCorp: Bool = false,
+                  assignee: Int64 = 0, acceptor: Int64 = 0) -> Contract {
+            Contract(id: id, type: "courier", status: status, issuerID: 1, issuerCorporationID: issuerCorp,
+                     assigneeID: assignee, acceptorID: acceptor, forCorporation: forCorp,
+                     dateIssued: now, dateExpired: now.addingTimeInterval(day))
+        }
+        let corporation: Int64 = 98_000_001
+        #expect(corp(1, issuerCorp: corporation, forCorp: true).isIssuedByCorporation(corporation))
+        #expect(!corp(2, issuerCorp: corporation).isIssuedByCorporation(corporation))
+        #expect(!corp(3, issuerCorp: 5, forCorp: true).isIssuedByCorporation(corporation))
+
+        #expect(corp(4, assignee: corporation).isForCorporation(corporation))
+        #expect(corp(5, status: "in_progress", acceptor: corporation).isForCorporation(corporation))
+        #expect(!corp(6, status: "finished", assignee: corporation).isForCorporation(corporation))
+        #expect(!corp(7, issuerCorp: corporation, forCorp: true, assignee: corporation).isForCorporation(corporation))
+        #expect(!corp(8).isForCorporation(corporation))
+
+        let summary = ContractsSummary([
+            corp(10, assignee: corporation),
+            corp(11, issuerCorp: corporation, forCorp: true),
+            corp(12, status: "in_progress", acceptor: corporation),
+            corp(13, status: "finished", assignee: corporation),
+            corp(14, issuerCorp: corporation, forCorp: true, assignee: corporation),
+        ], corporationID: corporation)
+        #expect(summary.activeCount == 4)
+        #expect(summary.finishedCount == 1)
+        #expect(summary.outstandingCount == 3)
         #expect(summary.inProgressCount == 1)
         #expect(summary.toYouCount == 1)
     }

@@ -88,6 +88,8 @@ struct ContractContext {
     var names: [Int64: ESIEntityName]
     var locations: [Int64: AssetLocationInfo]
     var places: ContractPlaces
+    /// Set when the contracts are a corporation's.
+    var corporationID: Int64?
 
     func name(of id: Int64) -> String? {
         id == 0 ? nil : names[id]?.name
@@ -96,6 +98,7 @@ struct ContractContext {
     /// The name to write for a party: `You` for the pilot.
     func partyName(_ id: Int64) -> String {
         if id == characterID { return String(localized: "You") }
+        if id == corporationID { return name(of: id) ?? String(localized: "Corporation") }
         return name(of: id) ?? String(localized: "Unknown")
     }
 
@@ -132,7 +135,16 @@ struct ContractContext {
 
     /// `BY YOU · TOVI SALTMARSH`, `FROM OSKAR TIDEWATER`, `YOU CARRIED · FOR BRAM IRONVALE`.
     func party(of contract: Contract) -> String {
-        if contract.isIssued(by: characterID) {
+        if let corporationID, contract.isIssuedByCorporation(corporationID) {
+            var text = String(localized: "By \(partyName(contract.issuerID))")
+            if contract.acceptorID != 0, let name = name(of: contract.acceptorID) {
+                text += " · \(name)"
+            } else if contract.availability != .public, let name = name(of: contract.assigneeID) {
+                text += " · " + String(localized: "to \(name)")
+            }
+            return text
+        }
+        if corporationID == nil, contract.isIssued(by: characterID) {
             var text = String(localized: "By you")
             if contract.acceptorID != 0, let name = name(of: contract.acceptorID) {
                 text += " · \(name)"

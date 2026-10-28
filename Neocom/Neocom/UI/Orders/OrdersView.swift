@@ -9,13 +9,20 @@ import SwiftUI
 /// `OrdersSheet` fetches, `OrdersModel` names and positions; flags (undercut, outbid) come from
 /// books the market already holds.
 struct OrdersView: View {
+    var scope: DataScope = .character
+
     var body: some View {
         SDESectionView { database in
-            OrdersBody(database: database)
+            if scope == .corporation {
+                CorporationOrdersBody(database: database)
+            } else {
+                OrdersBody(database: database)
+            }
         }
         .hudScreen()
         .navigationTitle("Market Orders")
         .navigationBarTitleDisplayMode(.inline)
+        .corporationSubtitle(scope)
     }
 }
 
@@ -40,6 +47,23 @@ private struct OrdersBody: View {
     }
 }
 
+private struct CorporationOrdersBody: View {
+    let database: SDEDatabase
+
+    @Environment(AccountStore.self) private var accounts
+    @Environment(MarketSheet.self) private var market
+
+    var body: some View {
+        if let sheet = accounts.currentCorporationOrders {
+            OrdersScreen(sheet: sheet, market: market, characterSheet: accounts.currentSheet,
+                         corporation: accounts.currentCorporation, database: database)
+                .id(ObjectIdentifier(sheet))
+        } else {
+            NoCorporationView()
+        }
+    }
+}
+
 private enum OrdersTab: Hashable {
     case sell
     case buy
@@ -50,19 +74,19 @@ private struct OrdersScreen: View {
     @State private var model: OrdersModel
     @State private var tab: OrdersTab = .sell
 
-    init(sheet: OrdersSheet, market: MarketSheet, characterSheet: CharacterSheet?, database: SDEDatabase) {
-        _model = State(initialValue: OrdersModel(sheet: sheet, market: market,
-                                                 characterSheet: characterSheet, database: database))
+    init(sheet: any OrdersSource, market: MarketSheet, characterSheet: CharacterSheet?,
+         corporation: CorporationSheet? = nil, database: SDEDatabase) {
+        _model = State(initialValue: OrdersModel(sheet: sheet, market: market, characterSheet: characterSheet,
+                                                 corporation: corporation, database: database))
     }
 
     var body: some View {
         let sheet = model.sheet
         Group {
-            if sheet.isMissingScope {
+            if sheet.access != .granted {
                 HUDList {
                     Section {
-                        HUDGrantAccessPanel(title: Text("No Market Access"),
-                                            message: Text("Your own orders need one more permission. Sign in to EVE again and allow Neocom to read your market orders."))
+                        accessPanel(sheet.access)
                             .hudBareRow()
                     }
                 }
@@ -72,12 +96,20 @@ private struct OrdersScreen: View {
                 }
             }
         }
-        .task { await sheet.ensureFresh() }
+        .task {
+            async let divisions: Void = model.ensureDivisionsFresh()
+            await sheet.ensureFresh()
+            await divisions
+        }
         .task(id: sheet.open.revision + sheet.history.revision) {
             await model.resolveNames()
             model.refreshPositions()
         }
-        .refreshableCommand { await sheet.refresh() }
+        .refreshableCommand {
+            async let roles: Void = model.refreshRoles()
+            await sheet.refresh()
+            await roles
+        }
         .navigationDestination(for: OrdersRoute.self) { route in
             switch route {
             case let .order(id):
@@ -87,12 +119,25 @@ private struct OrdersScreen: View {
             }
         }
     }
+
+    @ViewBuilder
+    private func accessPanel(_ access: BusinessAccess) -> some View {
+        if model.isCorporation {
+            HUDBusinessAccessPanel(access: access, title: Text("No Corporation Market Access"),
+                                   message: Text("Corporation orders need one more permission. Sign in to EVE again and allow Neocom to read your corporation's market orders."))
+        } else {
+            HUDBusinessAccessPanel(access: access, title: Text("No Market Access"),
+                                   message: Text("Your own orders need one more permission. Sign in to EVE again and allow Neocom to read your market orders."))
+        }
+    }
 }
 
 private struct OrdersList: View {
     let model: OrdersModel
     @Binding var tab: OrdersTab
     let now: Date
+
+    @State private var walletFilter: Int?
 
     var body: some View {
         let sheet = model.sheet
@@ -121,10 +166,10 @@ private struct OrdersList: View {
     }
 
     private var loaded: some View {
-        let open = model.open
+        let open = model.open.filter { matches($0) }
         let sells = open.filter { !$0.isBuyOrder }.sorted { $0.expires < $1.expires }
         let buys = open.filter(\.isBuyOrder).sorted { $0.expires < $1.expires }
-        let history = model.history.sorted { $0.issued > $1.issued }
+        let history = model.history.filter { matches($0) }.sorted { $0.issued > $1.issued }
         let summary = OrdersSummary(open, now: now)
 
         return HUDList {
@@ -155,10 +200,33 @@ private struct OrdersList: View {
             Section {
                 HUDFootnote(tab == .history
                             ? "Expired and cancelled orders from the last 90 days. An expired order with nothing left traded in full."
+                            : model.isCorporation
+                            ? "EVE refreshes the corporation's orders every 20 minutes. Undercut and outbid are checked against the order book of the order’s region, once you have opened that market or the order. Change or cancel orders in the EVE client."
                             : "EVE refreshes your orders every 20 minutes. Undercut and outbid are checked against the order book of the order’s region, once you have opened that market or the order. Change or cancel orders in the EVE client.")
                     .hudBareRow()
             }
         }
+        .toolbar {
+            if model.walletDivisions.count > 1 {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Picker("Wallet Division", selection: $walletFilter) {
+                            Text("All Divisions").tag(Int?.none)
+                            ForEach(model.walletDivisions, id: \.self) { number in
+                                Text(verbatim: model.walletName(division: number)).tag(Int?.some(number))
+                            }
+                        }
+                    } label: {
+                        Label("Filter by Wallet Division", systemImage: walletFilter == nil
+                              ? "line.3.horizontal.decrease" : "line.3.horizontal.decrease.circle.fill")
+                    }
+                }
+            }
+        }
+    }
+
+    private func matches(_ order: CharacterOrder) -> Bool {
+        walletFilter == nil || order.walletDivision == walletFilter
     }
 
     @ViewBuilder
@@ -166,7 +234,9 @@ private struct OrdersList: View {
         if orders.isEmpty {
             Section {
                 HUDEmptyPanel(title: Text(tab == .sell ? String(localized: "No Sell Orders") : String(localized: "No Buy Orders")),
-                              message: Text("Orders you place in the EVE client show here: what has traded, what is left and when each one expires."))
+                              message: Text(model.isCorporation
+                                            ? "Orders your corporation places show here: what has traded, what is left and when each one expires."
+                                            : "Orders you place in the EVE client show here: what has traded, what is left and when each one expires."))
                     .hudBareRow()
             }
         } else {
@@ -198,7 +268,9 @@ private struct OrdersList: View {
         } else if orders.isEmpty {
             Section {
                 HUDEmptyPanel(title: Text("No Order History"),
-                              message: Text("Orders you place in the EVE client show here: what has traded, what is left and when each one expires."))
+                              message: Text(model.isCorporation
+                                            ? "Orders your corporation places show here: what has traded, what is left and when each one expires."
+                                            : "Orders you place in the EVE client show here: what has traded, what is left and when each one expires."))
                     .hudBareRow()
             }
         } else {
@@ -290,7 +362,9 @@ private struct OrderRow: View {
                     meta
                         .lineLimit(1)
                     Spacer(minLength: 0)
-                    if order.isCorporation {
+                    if model.isCorporation {
+                        HUDMetaBadge(text: model.walletName(order).map { Text(verbatim: $0) } ?? Text("Corp"))
+                    } else if order.isCorporation {
                         HUDMetaBadge(text: Text("Corp"))
                     }
                     if let badge {

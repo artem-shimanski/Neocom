@@ -368,3 +368,98 @@ import Testing
         #expect(row?.name == "Asset Safety Wrap")
     }
 }
+
+@Suite struct AssetCorporationTests {
+    private static let station: Int64 = 60000004
+    private static let office: Int64 = 100
+
+    private static let types: [Int64: AssetTypeInfo] = [
+        1: AssetTypeInfo(typeID: 1, name: "Rifter", groupID: 25, groupName: "Frigate",
+                         categoryID: AssetCategory.ship, categoryName: "Ship"),
+        2: AssetTypeInfo(typeID: 2, name: "Container", groupID: 12, groupName: "Cargo Container",
+                         categoryID: 2, categoryName: "Celestial"),
+        4: AssetTypeInfo(typeID: 4, name: "Laser", groupID: 53, groupName: "Energy Weapon",
+                         categoryID: AssetCategory.module, categoryName: "Module"),
+        27: AssetTypeInfo(typeID: 27, name: "Office", groupID: 15, groupName: "Station",
+                          categoryID: 3, categoryName: "Station"),
+    ]
+
+    private static func record(_ id: Int64, _ type: Int64, in location: Int64, _ flag: String,
+                               quantity: Int64 = 1, singleton: Bool = true) -> AssetRecord {
+        AssetRecord(itemID: id, typeID: type, locationID: location, locationFlag: flag,
+                    locationType: location == station ? "station" : "item", quantity: quantity,
+                    isSingleton: singleton)
+    }
+
+    private static let records = [
+        record(office, 27, in: station, "OfficeFolder", singleton: false),
+        record(10, 1, in: office, "CorpSAG1"),
+        record(11, 4, in: office, "CorpSAG1", quantity: 5, singleton: false),
+        record(12, 2, in: office, "CorpSAG2"),
+        record(13, 4, in: 12, "Unlocked", quantity: 3, singleton: false),
+        record(14, 4, in: office, "CorpSAG3", quantity: 2, singleton: false),
+        record(15, 4, in: office, "CorpDeliveries", singleton: false),
+    ]
+
+    private static let index = AssetIndex(records: records, types: types)
+
+    @Test func officeIsNotAnItem() throws {
+        let index = Self.index
+        #expect(index.summary.items == 6)
+        #expect(index.summary.locations == 1)
+        let station = try #require(index.location(Self.station))
+        #expect(station.itemCount == 6)
+        #expect(station.shipCount == 1)
+        #expect(station.containerCount == 1)
+        let sections = index.contents(of: Self.station)
+        #expect(sections.map(\.kind) == [.flag("CorpDeliveries")])
+        #expect(sections.flatMap(\.rows).map(\.id) == [15])
+    }
+
+    @Test func divisionsAreCounted() {
+        let divisions = Self.index.divisions(at: Self.station)
+        #expect(divisions.map(\.number) == [1, 2, 3])
+        #expect(divisions[0].itemCount == 2)
+        #expect(divisions[0].shipCount == 1)
+        #expect(divisions[1].itemCount == 2)
+        #expect(divisions[1].containerCount == 1)
+        #expect(divisions[2].itemCount == 1)
+        #expect(Self.index.divisions(at: 60000005).isEmpty)
+    }
+
+    @Test func divisionContentsAreSectioned() {
+        let first = Self.index.contents(ofDivision: 1, at: Self.station)
+        #expect(first.map(\.kind) == [.ships, .category(AssetCategory.module)])
+        #expect(first[1].rows.first?.quantity == 5)
+        let second = Self.index.contents(ofDivision: 2, at: Self.station)
+        #expect(second.map(\.kind) == [.containers])
+        #expect(second[0].rows.first?.childCount == 1)
+        #expect(Self.index.contents(ofDivision: 4, at: Self.station).isEmpty)
+    }
+
+    @Test func pathCarriesTheDivision() throws {
+        let inContainer = try #require(Self.index.path(to: 13))
+        #expect(inContainer.division == 2)
+        #expect(inContainer.parents.map(\.id) == [12])
+        #expect(inContainer.location?.id == Self.station)
+        let loose = try #require(Self.index.path(to: 14))
+        #expect(loose.division == 3)
+        #expect(loose.parents.isEmpty)
+        #expect(try #require(Self.index.path(to: 15)).division == nil)
+    }
+
+    @Test func searchCarriesTheDivision() {
+        let hits = Self.index.search("laser").flatMap(\.hits)
+        let byRow = Dictionary(uniqueKeysWithValues: hits.map { ($0.row.itemIDs.first ?? 0, $0) })
+        #expect(byRow[13]?.division == 2)
+        #expect(byRow[13]?.parents.map(\.id) == [12])
+        #expect(byRow[14]?.division == 3)
+        #expect(byRow[15]?.division == nil)
+    }
+
+    @Test func personalAssetsHaveNoDivisions() throws {
+        let index = try Fixture.index()
+        #expect(index.divisions(at: Fixture.rens).isEmpty)
+        #expect(try #require(index.path(to: Fixture.thorax)).division == nil)
+    }
+}

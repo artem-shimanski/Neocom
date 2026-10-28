@@ -75,6 +75,11 @@ final class IndustrySheet {
     }
 }
 
+extension IndustrySheet: IndustrySource {
+    var corporationID: Int64? { nil }
+    var access: BusinessAccess { isMissingScope ? .missingScope : .granted }
+}
+
 nonisolated extension IndustryJob {
     init(_ payload: Components.Schemas.CharactersCharacterIdIndustryJobsGetPayload) {
         self.init(id: payload.jobId,

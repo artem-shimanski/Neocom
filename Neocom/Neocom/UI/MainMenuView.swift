@@ -79,6 +79,8 @@ struct MainMenuView: View {
         .onChange(of: accounts.currentAccountID) {
             if accounts.currentAccount == nil, selection?.requiresAccount == true {
                 select(nil)
+            } else if selection?.group == .corporation, accounts.currentCorporation == nil {
+                select(nil)
             }
         }
     }
@@ -131,6 +133,11 @@ private struct HomeView: View {
     @State private var orders: OrdersSheet?
     @State private var industry: IndustrySheet?
     @State private var contracts: ContractsSheet?
+    /// The current character's corporation: its roles decide the Corporation tiles.
+    @State private var corporation: CorporationSheet?
+    @State private var corporationOrders: CorporationOrdersSheet?
+    @State private var corporationIndustry: CorporationIndustrySheet?
+    @State private var corporationContracts: CorporationContractsSheet?
     /// The current character's mail, for the tile's unread count.
     @State private var mail: MailSheet?
     /// The current character's killmails, for the tile's counts.
@@ -171,14 +178,21 @@ private struct HomeView: View {
 
             ForEach(visibleGroups) { group in
                 Section {
-                    LazyVGrid(columns: [GridItem(.flexible(), spacing: HUDMetrics.headerSpacing),
-                                        GridItem(.flexible(), spacing: HUDMetrics.headerSpacing)],
-                              spacing: HUDMetrics.headerSpacing) {
-                        ForEach(group.sections) { section in
-                            tile(for: section)
+                    if group == .corporation, corporationState == .needsSignIn {
+                        HUDGrantAccessRow(message: Text("Sign in again to see your corporation's data"))
+                            .hudBareRow()
+                    } else {
+                        LazyVGrid(columns: [GridItem(.flexible(), spacing: HUDMetrics.headerSpacing),
+                                            GridItem(.flexible(), spacing: HUDMetrics.headerSpacing)],
+                                  spacing: HUDMetrics.headerSpacing) {
+                            ForEach(sections(of: group)) { section in
+                                tile(for: section)
+                            }
                         }
+                        // A lazy grid in a list row leaves tiles inserted later blank.
+                        .id(sections(of: group))
+                        .hudBareRow()
                     }
-                    .hudBareRow()
                 } header: {
                     HUDSectionHeader(Text(group.title)) {
                         if isSignedOut && group == .tools {
@@ -248,6 +262,12 @@ private struct HomeView: View {
             async let contractsDone: Void = contracts?.ensureFresh() ?? ()
             _ = await (ordersDone, industryDone, contractsDone)
         }
+        // The Corporation tiles: the roles decide which show, and only those fetch their counts.
+        // Corporation assets are never fetched here: the list is far larger than a count is worth.
+        .task(id: CorporationTaskKey(characterID: accounts.currentAccountID, signIn: accounts.signInGeneration,
+                                     corporationID: accounts.currentAccount.flatMap(accounts.corporationID(of:)))) {
+            await loadCorporation()
+        }
         // The Mail tile counts unread mail; the sheet skips the labels route without the scope.
         .task(id: AssetsTaskKey(characterID: accounts.currentAccountID, signIn: accounts.signInGeneration)) {
             let mail = accounts.currentMail
@@ -297,8 +317,79 @@ private struct HomeView: View {
     /// placeholder stands in for all of them.
     private var visibleGroups: [MainMenuSection.Group] {
         MainMenuSection.Group.allCases.filter { group in
-            !isSignedOut || !group.sections.contains(where: \.requiresAccount)
+            if isSignedOut, group.sections.contains(where: \.requiresAccount) { return false }
+            return group != .corporation || corporationState != .hidden
         }
+    }
+
+    private enum CorporationState {
+        /// Not in a player corporation, its profile is not in yet, or no role opens a section.
+        case hidden
+        /// The account was signed in before the corporation scopes were asked for.
+        case needsSignIn
+        case tiles
+    }
+
+    /// The sheet of the current character's current corporation, once taken in `.task`.
+    private var currentCorporation: CorporationSheet? {
+        guard let account = accounts.currentAccount, let corporation,
+              corporation.characterID == account.id,
+              corporation.corporationID == accounts.corporationID(of: account) else { return nil }
+        return corporation
+    }
+
+    /// `sheet` if it belongs to the current character's current corporation; a sheet kept from
+    /// the previous character stays out until `.task` replaces it.
+    private func current<Sheet: CorporationBound>(_ sheet: Sheet?) -> Sheet? {
+        guard let sheet, let corporation = currentCorporation,
+              sheet.boundCorporationID == corporation.corporationID,
+              sheet.characterID == corporation.characterID else { return nil }
+        return sheet
+    }
+
+    private var corporationState: CorporationState {
+        guard let account = accounts.currentAccount, let corporation = currentCorporation else { return .hidden }
+        if !SSOConfiguration.Scope.corporation.allSatisfy(account.hasScope) { return .needsSignIn }
+        return corporation.access.isEmpty ? .hidden : .tiles
+    }
+
+    /// The tiles of `group`; the corporation's are those its roles allow.
+    private func sections(of group: MainMenuSection.Group) -> [MainMenuSection] {
+        guard group == .corporation else { return group.sections }
+        guard let access = currentCorporation?.access else { return [] }
+        return group.sections.filter {
+            switch $0 {
+            case .corporationAssets: access.assets
+            case .corporationOrders: access.orders
+            case .corporationIndustry: access.industry
+            case .corporationContracts: access.contracts
+            default: false
+            }
+        }
+    }
+
+    private func loadCorporation() async {
+        guard let account = accounts.currentAccount, let corporation = accounts.currentCorporation else {
+            corporationOrders = nil
+            corporationIndustry = nil
+            corporationContracts = nil
+            corporation = nil
+            return
+        }
+        self.corporation = corporation
+        guard SSOConfiguration.Scope.corporation.allSatisfy(account.hasScope) else { return }
+        await corporation.ensureFresh()
+        let access = corporation.access
+        let orders = access.orders ? accounts.currentCorporationOrders : nil
+        let industry = access.industry ? accounts.currentCorporationIndustry : nil
+        let contracts = access.contracts ? accounts.currentCorporationContracts : nil
+        corporationOrders = orders
+        corporationIndustry = industry
+        corporationContracts = contracts
+        async let ordersDone: Void = orders?.ensureOpenFresh() ?? ()
+        async let industryDone: Void = industry?.ensureFresh() ?? ()
+        async let contractsDone: Void = contracts?.ensureFresh() ?? ()
+        _ = await (ordersDone, industryDone, contractsDone)
     }
 
     /// A tile with the section's counters and selection ring.
@@ -315,14 +406,28 @@ private struct HomeView: View {
             case .skills:
                 SkillsTile(injected: accounts.currentSheet?.snapshot?.skills.count)
                     .overlay { selectionRing(section) }
+            case .corporationAssets:
+                HUDNavTile(systemImage: section.systemImage,
+                           title: Text(section.title),
+                           subtitle: corporationAssetsSubtitle)
+                    .overlay { selectionRing(section) }
             case .marketOrders:
-                ordersTile
+                ordersTile(personalOrders, section: section)
+                    .overlay { selectionRing(section) }
+            case .corporationOrders:
+                ordersTile(current(corporationOrders), section: section)
                     .overlay { selectionRing(section) }
             case .industry:
-                industryTile
+                industryTile(personalIndustry, section: section)
+                    .overlay { selectionRing(section) }
+            case .corporationIndustry:
+                industryTile(current(corporationIndustry), section: section)
                     .overlay { selectionRing(section) }
             case .contracts:
-                contractsTile
+                contractsTile(personalContracts, section: section)
+                    .overlay { selectionRing(section) }
+            case .corporationContracts:
+                contractsTile(current(corporationContracts), section: section)
                     .overlay { selectionRing(section) }
             case .mail:
                 mailTile
@@ -370,6 +475,12 @@ private struct HomeView: View {
             .buttonStyle(.hudTile)
     }
 
+    private struct CorporationTaskKey: Hashable {
+        var characterID: Int64?
+        var signIn: Int
+        var corporationID: Int64?
+    }
+
     /// What the assets task runs again for: another character, or the same one signed in anew.
     private struct AssetsTaskKey: Hashable {
         var characterID: Int64?
@@ -383,19 +494,39 @@ private struct HomeView: View {
         return Text("\(count) locations")
     }
 
+    /// From the cached list only: the home screen does not fetch the corporation's assets.
+    private var corporationAssetsSubtitle: Text? {
+        guard let account = accounts.currentAccount,
+              let sheet = accounts.existingCorporationAssets(for: account) else { return nil }
+        if sheet.access == .forbidden { return Text("No access") }
+        guard let count = sheet.value?.locations.count else { return nil }
+        return Text("\(count) locations")
+    }
+
+    private var personalOrders: (any OrdersSource)? {
+        orders.flatMap { $0.characterID == accounts.currentAccountID ? $0 : nil }
+    }
+
+    private var personalIndustry: (any IndustrySource)? {
+        industry.flatMap { $0.characterID == accounts.currentAccountID ? $0 : nil }
+    }
+
+    private var personalContracts: (any ContractsSource)? {
+        contracts.flatMap { $0.characterID == accounts.currentAccountID ? $0 : nil }
+    }
+
     /// `7 open`, and `2 EXPIRING` in `warn` while orders have less than a day left. Undercut and
     /// outbid are not shown: they need each order's regional book.
-    private var ordersTile: some View {
-        let sheet = orders.flatMap { $0.characterID == accounts.currentAccountID ? $0 : nil }
+    private func ordersTile(_ sheet: (any OrdersSource)?, section: MainMenuSection) -> some View {
         let summary = sheet?.open.value.map { OrdersSummary($0.orders, now: .now) }
         let expiring = summary?.expiringSoonCount ?? 0
-        let subtitle: Text? = if sheet?.isMissingScope == true {
+        let subtitle: Text? = if let sheet, sheet.access != .granted {
             Text("No access")
         } else {
             summary.map { Text("\($0.openCount) open") }
         }
-        return HUDNavTile(systemImage: MainMenuSection.marketOrders.systemImage,
-                          title: Text(MainMenuSection.marketOrders.title),
+        return HUDNavTile(systemImage: section.systemImage,
+                          title: Text(section.title),
                           subtitle: subtitle,
                           tone: expiring > 0 ? .warn : .normal) {
             if expiring > 0 {
@@ -405,10 +536,9 @@ private struct HomeView: View {
     }
 
     /// `4 active · 1 paused`, and `1 READY` in `ok` while jobs wait to be delivered.
-    private var industryTile: some View {
-        let sheet = industry.flatMap { $0.characterID == accounts.currentAccountID ? $0 : nil }
+    private func industryTile(_ sheet: (any IndustrySource)?, section: MainMenuSection) -> some View {
         let summary = sheet?.value.map { IndustrySummary($0.jobs, now: .now) }
-        let subtitle: Text? = if sheet?.isMissingScope == true {
+        let subtitle: Text? = if let sheet, sheet.access != .granted {
             Text("No access")
         } else if let summary {
             summary.pausedCount > 0
@@ -418,8 +548,8 @@ private struct HomeView: View {
             nil
         }
         let ready = summary?.readyCount ?? 0
-        return HUDNavTile(systemImage: MainMenuSection.industry.systemImage,
-                          title: Text(MainMenuSection.industry.title),
+        return HUDNavTile(systemImage: section.systemImage,
+                          title: Text(section.title),
                           subtitle: subtitle) {
             if ready > 0 {
                 HUDStatusChip(text: Text("\(ready) ready"), color: .hudOk)
@@ -427,23 +557,29 @@ private struct HomeView: View {
         }
     }
 
-    /// `5 active · 1 to you`.
-    private var contractsTile: some View {
-        let sheet = contracts.flatMap { $0.characterID == accounts.currentAccountID ? $0 : nil }
+    /// `5 active · 1 to you`; a corporation's, `5 active · 1 to corp`.
+    private func contractsTile(_ sheet: (any ContractsSource)?, section: MainMenuSection) -> some View {
         let summary = sheet.flatMap { sheet in
-            sheet.value.map { ContractsSummary($0.contracts, characterID: sheet.characterID) }
+            sheet.value.map { value in
+                sheet.corporationID.map { ContractsSummary(value.contracts, corporationID: $0) }
+                    ?? ContractsSummary(value.contracts, characterID: sheet.characterID)
+            }
         }
-        let subtitle: Text? = if sheet?.isMissingScope == true {
+        let subtitle: Text? = if let sheet, sheet.access != .granted {
             Text("No access")
         } else if let summary {
-            summary.toYouCount > 0
-                ? Text("\(summary.activeCount) active · \(summary.toYouCount) to you")
-                : Text("\(summary.activeCount) active")
+            if summary.toYouCount == 0 {
+                Text("\(summary.activeCount) active")
+            } else if sheet?.corporationID != nil {
+                Text("\(summary.activeCount) active · \(summary.toYouCount) to corp")
+            } else {
+                Text("\(summary.activeCount) active · \(summary.toYouCount) to you")
+            }
         } else {
             nil
         }
-        return HUDNavTile(systemImage: MainMenuSection.contracts.systemImage,
-                          title: Text(MainMenuSection.contracts.title),
+        return HUDNavTile(systemImage: section.systemImage,
+                          title: Text(section.title),
                           subtitle: subtitle)
     }
 

@@ -211,9 +211,12 @@ private struct OrderDetailList: View {
                     HUDReadoutRow("Escrow", value: ISK.price(escrow))
                 }
             }
-            HUDReadoutRow("Placed For", value: order.isCorporation
+            HUDReadoutRow("Placed For", value: model.walletName(order) ?? (order.isCorporation
                           ? String(localized: "Corporation")
-                          : accounts.currentAccount?.characterName ?? "—")
+                          : accounts.currentAccount?.characterName ?? "—"))
+            if let issuer = model.issuerName(order) {
+                HUDReadoutRow("Issued By", value: issuer)
+            }
             if !isOpen {
                 HUDReadoutRow("State") {
                     Text(verbatim: stateText)

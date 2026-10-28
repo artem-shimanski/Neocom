@@ -10,7 +10,7 @@ import SDEKit
 @Observable
 @MainActor
 final class AssetsModel {
-    let sheet: AssetsSheet
+    let sheet: any AssetsSource
 
     /// `nil` until the first build finishes or when assets were never fetched. The previous index
     /// stays while a newer build runs.
@@ -28,7 +28,11 @@ final class AssetsModel {
     var revision: Int { sheet.revision }
 
     /// The character's home station or structure; `nil` until the profile is loaded with location ids.
-    var homeLocationID: Int64? { characterSheet?.profile?.homeLocation?.locationID }
+    var homeLocationID: Int64? {
+        isCorporation ? nil : characterSheet?.profile?.homeLocation?.locationID
+    }
+    var isCorporation: Bool { sheet.corporationID != nil }
+    var access: BusinessAccess { sheet.access }
     /// The station or structure the character is docked in; `nil` in space or when unknown.
     var dockedLocationID: Int64? { characterSheet?.profile?.location?.locationID }
 
@@ -41,10 +45,27 @@ final class AssetsModel {
     @ObservationIgnored private var building: (revision: Int, task: Task<[Int64], Never>)?
     @ObservationIgnored private var buildsRunning = 0
 
-    init(sheet: AssetsSheet, database: SDEDatabase, characterSheet: CharacterSheet? = nil) {
+    @ObservationIgnored let corporation: CorporationSheet?
+
+    init(sheet: any AssetsSource, database: SDEDatabase, characterSheet: CharacterSheet? = nil,
+         corporation: CorporationSheet? = nil) {
         self.sheet = sheet
         self.database = database
         self.characterSheet = characterSheet
+        self.corporation = corporation
+    }
+
+    func ensureDivisionsFresh() async {
+        await corporation?.ensureDivisionsFresh()
+    }
+
+    func refreshRoles() async {
+        await corporation?.refresh()
+    }
+
+    /// The corporation's name of a hangar division.
+    func divisionName(_ number: Int) -> String {
+        corporation?.hangarName(number) ?? ESICorporationDivisions.hangarName(number, in: [:])
     }
 
     /// Brings the assets up to date if they are older than the TTL, then the index.

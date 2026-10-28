@@ -132,6 +132,7 @@ extension IndustryContext {
     func meta(of job: IndustryJob) -> String {
         var parts = [job.activity.shortTitle, job.activity.count(job.runs)]
         if let system = system(of: job) { parts.append(system.name) }
+        if isCorporation { parts.append(pilotName(job.installerID)) }
         return parts.joined(separator: " · ")
     }
 

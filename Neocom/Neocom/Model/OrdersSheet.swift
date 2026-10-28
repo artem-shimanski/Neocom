@@ -4,11 +4,28 @@ import ESIKit
 import Foundation
 import Observation
 
-/// A character's orders as stored in `ESICache`, with their locations resolved.
+/// A character's or a corporation's orders as stored in `ESICache`, with their locations
+/// resolved.
 nonisolated struct ESIOrderList: Codable, Sendable, Hashable {
     var orders: [CharacterOrder]
     /// Names of the `locationID`s of `orders` that could be resolved.
     var locations: [Int64: AssetLocationInfo]
+    /// Names of the `issuedBy`s of `orders` that could be resolved; corporation orders only.
+    var names: [Int64: ESIEntityName] = [:]
+
+    private enum CodingKeys: String, CodingKey {
+        case orders, locations, names
+    }
+}
+
+nonisolated extension ESIOrderList {
+    /// Decodes files without `names`.
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        orders = try container.decode([CharacterOrder].self, forKey: .orders)
+        locations = try container.decode([Int64: AssetLocationInfo].self, forKey: .locations)
+        names = try container.decodeIfPresent([Int64: ESIEntityName].self, forKey: .names) ?? [:]
+    }
 }
 
 /// A character's own market orders: the open ones and 90 days of history.
@@ -88,6 +105,11 @@ final class OrdersSheet {
         open.invalidate()
         history.invalidate()
     }
+}
+
+extension OrdersSheet: OrdersSource {
+    var corporationID: Int64? { nil }
+    var access: BusinessAccess { isMissingScope ? .missingScope : .granted }
 }
 
 nonisolated extension CharacterOrder {

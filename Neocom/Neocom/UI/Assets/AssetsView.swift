@@ -7,13 +7,20 @@ import SwiftUI
 /// across every hangar, ship and container. Every pushed screen reads the same `AssetsModel`
 /// through `AssetsRoute`.
 struct AssetsView: View {
+    var scope: DataScope = .character
+
     var body: some View {
         SDESectionView { database in
-            AssetsBody(database: database)
+            if scope == .corporation {
+                CorporationAssetsBody(database: database)
+            } else {
+                AssetsBody(database: database)
+            }
         }
         .hudScreen()
         .navigationTitle("Assets")
         .navigationBarTitleDisplayMode(.inline)
+        .corporationSubtitle(scope)
     }
 }
 
@@ -31,11 +38,30 @@ private struct AssetsBody: View {
     }
 }
 
+/// The corporation's assets; the sheet is created here, when the screen opens.
+private struct CorporationAssetsBody: View {
+    let database: SDEDatabase
+
+    @Environment(AccountStore.self) private var accounts
+
+    var body: some View {
+        if let sheet = accounts.currentCorporationAssets {
+            AssetsScreen(sheet: sheet, database: database, characterSheet: accounts.currentSheet,
+                         corporation: accounts.currentCorporation)
+                .id(ObjectIdentifier(sheet))
+        } else {
+            NoCorporationView()
+        }
+    }
+}
+
 enum AssetsRoute: Hashable {
     /// A root location: a station, a structure, a system, or a place nobody could name.
     case location(Int64)
     /// A ship or a container, by item id.
     case item(Int64)
+    /// One hangar division of a corporation's offices at a location.
+    case division(locationID: Int64, number: Int)
 
     @ViewBuilder
     func destination(model: AssetsModel, database: SDEDatabase) -> some View {
@@ -44,6 +70,8 @@ enum AssetsRoute: Hashable {
             AssetsLocationView(model: model, locationID: id)
         case let .item(id):
             AssetsItemView(model: model, database: database, itemID: id)
+        case let .division(locationID, number):
+            AssetsDivisionView(model: model, locationID: locationID, number: number)
         }
     }
 }
@@ -53,9 +81,17 @@ extension View {
     /// (each screen runs its own tasks, as a covered screen has them cancelled), pull to refresh.
     func assetsRefresh(_ model: AssetsModel) -> some View {
         self
-            .task { await model.ensureFresh() }
+            .task {
+                async let divisions: Void = model.ensureDivisionsFresh()
+                await model.ensureFresh()
+                await divisions
+            }
             .task(id: model.revision) { await model.rebuildIfNeeded() }
-            .refreshableCommand { await model.refresh() }
+            .refreshableCommand {
+                async let roles: Void = model.refreshRoles()
+                await model.refresh()
+                await roles
+            }
     }
 }
 
@@ -64,9 +100,11 @@ private struct AssetsScreen: View {
     @State private var model: AssetsModel
     @State private var query = ""
 
-    init(sheet: AssetsSheet, database: SDEDatabase, characterSheet: CharacterSheet?) {
+    init(sheet: any AssetsSource, database: SDEDatabase, characterSheet: CharacterSheet?,
+         corporation: CorporationSheet? = nil) {
         self.database = database
-        _model = State(initialValue: AssetsModel(sheet: sheet, database: database, characterSheet: characterSheet))
+        _model = State(initialValue: AssetsModel(sheet: sheet, database: database, characterSheet: characterSheet,
+                                                 corporation: corporation))
     }
 
     var body: some View {
@@ -96,12 +134,28 @@ struct AssetsIndexContent<Content: View>: View {
     var body: some View {
         if let index = model.index {
             content(index)
+        } else if model.sheet.value == nil, model.access != .granted {
+            HUDList {
+                Section {
+                    accessPanel.hudBareRow()
+                }
+            }
         } else {
             HUDList {
                 Section {
                     placeholder.hudBareRow()
                 }
             }
+        }
+    }
+
+    @ViewBuilder private var accessPanel: some View {
+        if model.access == .forbidden {
+            HUDEmptyPanel(title: Text("No Access"),
+                          message: Text("Your corporation roles don't allow reading this."))
+        } else {
+            HUDGrantAccessPanel(title: Text("No Corporation Asset Access"),
+                                message: Text("Corporation assets need one more permission. Sign in to EVE again and allow Neocom to read your corporation's assets."))
         }
     }
 
@@ -210,7 +264,9 @@ struct AssetsRootList: View {
             if index.regions.isEmpty {
                 Section {
                     HUDEmptyPanel(title: Text("No Assets"),
-                                  message: Text("This character owns nothing EVE lists as an asset."))
+                                  message: model.isCorporation
+                                      ? Text("This corporation owns nothing EVE lists as an asset.")
+                                      : Text("This character owns nothing EVE lists as an asset."))
                         .hudBareRow()
                 }
             }

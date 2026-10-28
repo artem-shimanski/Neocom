@@ -44,6 +44,18 @@ private struct AssetsLocationList: View {
                 .hudBareRow()
             }
 
+            let divisions = index.divisions(at: location.id)
+            if !divisions.isEmpty {
+                HUDListSection(divisions, row: { division in
+                    NavigationLink(value: AssetsRoute.division(locationID: location.id, number: division.number)) {
+                        AssetsDivisionRow(name: model.divisionName(division.number), division: division)
+                    }
+                    .hudRowButton(AssetsDivisionRow.rowStyle)
+                }, header: {
+                    HUDSectionHeader(Text("Hangar Divisions"))
+                })
+            }
+
             AssetsSections(sections: sections)
 
             Section {
@@ -53,6 +65,43 @@ private struct AssetsLocationList: View {
                     .hudBareRow()
             }
         }
+    }
+}
+
+/// One hangar division of a corporation: its name and what lies in it.
+private struct AssetsDivisionRow: View {
+    static let rowStyle = HUDRowStyle(horizontalPadding: 0, minHeight: 56, verticalPadding: 10)
+
+    let name: String
+    let division: AssetDivision
+
+    var body: some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(verbatim: name)
+                    .font(.hudBody)
+                    .foregroundStyle(Color.hudInk)
+                    .multilineTextAlignment(.leading)
+                Text(verbatim: AssetsFormat.items(division.itemCount))
+                    .font(HUDFont.mono(11, weight: .regular, relativeTo: .caption))
+                    .foregroundStyle(Color.hudInkMuted)
+                    .lineLimit(1)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .trailing, spacing: 5) {
+                if division.shipCount > 0 {
+                    HUDMetaBadge(text: Text(verbatim: AssetsFormat.ships(division.shipCount)))
+                }
+                if division.containerCount > 0 {
+                    HUDMetaBadge(text: Text(verbatim: String(localized: "\(division.containerCount) containers")))
+                }
+            }
+            .fixedSize()
+            HUDChevron()
+        }
+        .padding(.leading, HUDMetrics.gutter)
+        .padding(.trailing, 14)
+        .hudRow(Self.rowStyle)
     }
 }
 

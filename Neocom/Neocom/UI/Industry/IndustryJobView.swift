@@ -5,15 +5,16 @@ import SwiftUI
 /// One industry job: the blueprint, how far along it is against the clock, what it makes,
 /// when, and where.
 struct IndustryJobView: View {
-    let sheet: IndustrySheet
-    let assets: AssetsSheet?
+    let sheet: any IndustrySource
+    let assets: (any AssetsSource)?
     let jobID: Int64
 
     var body: some View {
         Group {
             if let value = sheet.value, let job = value.jobs.first(where: { $0.id == jobID }) {
                 IndustryContextReader(data: value, jobs: [job], characterID: sheet.characterID,
-                                      assetNames: assets?.value?.names ?? [:]) { context in
+                                      assetNames: assets?.value?.names ?? [:],
+                                      isCorporation: sheet.corporationID != nil) { context in
                     IndustryJobDetail(context: context, job: job)
                 }
             } else {

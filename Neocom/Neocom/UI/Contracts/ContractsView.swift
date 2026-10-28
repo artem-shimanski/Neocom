@@ -8,13 +8,20 @@ import SwiftUI
 /// the `ContractsSheet` — the summary strip, the Active / Finished tabs, and a row per
 /// contract that opens its detail.
 struct ContractsView: View {
+    var scope: DataScope = .character
+
     var body: some View {
         SDESectionView { database in
-            ContractsBody(database: database)
+            if scope == .corporation {
+                CorporationContractsBody(database: database)
+            } else {
+                ContractsBody(database: database)
+            }
         }
         .hudScreen()
         .navigationTitle("Contracts")
         .navigationBarTitleDisplayMode(.inline)
+        .corporationSubtitle(scope)
     }
 }
 
@@ -32,22 +39,37 @@ private struct ContractsBody: View {
     }
 }
 
+private struct CorporationContractsBody: View {
+    let database: SDEDatabase
+
+    @Environment(AccountStore.self) private var accounts
+
+    var body: some View {
+        if let sheet = accounts.currentCorporationContracts {
+            ContractsScreen(sheet: sheet, database: database, corporation: accounts.currentCorporation)
+                .id(ObjectIdentifier(sheet))
+        } else {
+            NoCorporationView()
+        }
+    }
+}
+
 /// Where a row of the list leads.
 struct ContractRoute: Hashable {
     var contractID: Int64
 }
 
 private struct ContractsScreen: View {
-    let sheet: ContractsSheet
+    let sheet: any ContractsSource
     let database: SDEDatabase
+    var corporation: CorporationSheet?
 
     var body: some View {
         Group {
-            if sheet.isMissingScope {
+            if sheet.access != .granted {
                 HUDList {
                     Section {
-                        HUDGrantAccessPanel(title: Text("No Contract Access"),
-                                            message: Text("Your contracts need one more permission. Sign in to EVE again and allow Neocom to read your contracts."))
+                        accessPanel
                             .hudBareRow()
                     }
                 }
@@ -74,11 +96,22 @@ private struct ContractsScreen: View {
             }
         }
         .task { await sheet.ensureFresh() }
-        .refreshableCommand { await sheet.refresh() }
+        .refreshableCommand {
+            await corporation?.refresh()
+            await sheet.refresh()
+        }
         .navigationDestination(for: ContractRoute.self) { route in
             ContractDetailView(sheet: sheet, contractID: route.contractID)
                 .liteDatabase(database.database)
         }
+    }
+
+    @ViewBuilder private var accessPanel: some View {
+        HUDBusinessAccessPanel(access: sheet.access,
+                               title: Text(sheet.corporationID == nil ? "No Contract Access" : "No Corporation Contract Access"),
+                               message: Text(sheet.corporationID == nil
+                                             ? "Your contracts need one more permission. Sign in to EVE again and allow Neocom to read your contracts."
+                                             : "Corporation contracts need one more permission. Sign in to EVE again and allow Neocom to read your corporation's contracts."))
     }
 }
 
@@ -90,7 +123,7 @@ private enum ContractSide: Hashable {
 }
 
 private struct ContractsList: View {
-    let sheet: ContractsSheet
+    let sheet: any ContractsSource
     let data: ESIContracts
     let now: Date
 
@@ -99,13 +132,15 @@ private struct ContractsList: View {
 
     var body: some View {
         let me = sheet.characterID
+        let corporationID = sheet.corporationID
         let filtered = data.contracts.filter { kindFilter == nil || $0.kind == kindFilter }
         let active = filtered.filter { $0.status.isActive }
         let finished = filtered.filter { !$0.status.isActive }
         ContractPlacesReader(systemIDs: data.contracts.flatMap { [$0.startLocationID, $0.endLocationID] }
             .compactMap { $0 }.compactMap { data.locations[$0]?.solarSystemID },
                              typeIDs: []) { places in
-            let context = ContractContext(characterID: me, names: data.names, locations: data.locations, places: places)
+            let context = ContractContext(characterID: me, names: data.names, locations: data.locations, places: places,
+                                          corporationID: corporationID)
             HUDList {
                 summary(data.contracts)
 
@@ -120,11 +155,19 @@ private struct ContractsList: View {
 
                 switch side {
                 case .active:
-                    let forMe = active.filter { $0.isForMe(me) }.sorted { Self.soonestFirst($0, $1) }
-                    let issued = active.filter { !$0.isForMe(me) }.sorted { Self.soonestFirst($0, $1) }
+                    let isForMe: (Contract) -> Bool = { contract in
+                        corporationID.map(contract.isForCorporation) ?? contract.isForMe(me)
+                    }
+                    let forMe = active.filter(isForMe).sorted { Self.soonestFirst($0, $1) }
+                    let issued = active.filter { !isForMe($0) }.sorted { Self.soonestFirst($0, $1) }
                     if active.isEmpty { empty(title: "No Active Contracts") }
-                    group(Text("For You · \(forMe.count)"), forMe, context)
-                    group(Text("Issued by You · \(issued.count)"), issued, context)
+                    if corporationID == nil {
+                        group(Text("For You · \(forMe.count)"), forMe, context)
+                        group(Text("Issued by You · \(issued.count)"), issued, context)
+                    } else {
+                        group(Text("For Corporation · \(forMe.count)"), forMe, context)
+                        group(Text("Issued by Corporation · \(issued.count)"), issued, context)
+                    }
                 case .finished:
                     if finished.isEmpty { empty(title: "No Finished Contracts") }
                     group(Text("Last 30 Days · \(finished.count)"),
@@ -162,13 +205,14 @@ private struct ContractsList: View {
     }
 
     private func summary(_ contracts: [Contract]) -> some View {
-        let figures = ContractsSummary(contracts, characterID: sheet.characterID)
+        let figures = sheet.corporationID.map { ContractsSummary(contracts, corporationID: $0) }
+            ?? ContractsSummary(contracts, characterID: sheet.characterID)
         return Section {
             HUDPanel {
                 HUDStatStrip(items: [
                     .init(id: 0, label: Text("Outstanding"), value: Text(verbatim: "\(figures.outstandingCount)")),
                     .init(id: 1, label: Text("In Progress"), value: Text(verbatim: "\(figures.inProgressCount)")),
-                    .init(id: 2, label: Text("To You"), value: Text(verbatim: "\(figures.toYouCount)"), color: .hudAccent),
+                    .init(id: 2, label: sheet.corporationID == nil ? Text("To You") : Text("To Corporation"), value: Text(verbatim: "\(figures.toYouCount)"), color: .hudAccent),
                 ])
             }
             .hudBareRow()
@@ -181,7 +225,9 @@ private struct ContractsList: View {
     private func empty(title: LocalizedStringKey) -> some View {
         Section {
             HUDEmptyPanel(title: Text(title),
-                          message: Text("Contracts you issue, accept or are offered show here: item exchanges, auctions and courier runs."))
+                          message: Text(sheet.corporationID == nil
+                                        ? "Contracts you issue, accept or are offered show here: item exchanges, auctions and courier runs."
+                                        : "Contracts your corporation issues, accepts or is offered show here: item exchanges, auctions and courier runs."))
                 .hudBareRow()
         }
     }

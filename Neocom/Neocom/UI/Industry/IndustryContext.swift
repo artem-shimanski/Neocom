@@ -60,6 +60,7 @@ struct IndustryContext {
     var types: [Int64: IndustryTypeRow]
     var systems: [Int64: MarketSystemRow]
     var outputs: [Int64: [BlueprintActivity: Int]]
+    var isCorporation = false
 
     func job(_ id: Int64) -> IndustryJob? { data.jobs.first { $0.id == id } }
 
@@ -131,6 +132,10 @@ struct IndustryContext {
     /// Where a blueprint comes from or an output goes to: the facility's hangar, or a container
     /// inside it.
     func place(_ id: Int64, in job: IndustryJob) -> String {
+        if isCorporation {
+            if let name = assetNames[id] { return String(localized: "Container “\(name)”") }
+            return String(localized: "Corporation hangar")
+        }
         if id == job.stationID || id == job.facilityID { return String(localized: "Item hangar") }
         if let name = assetNames[id] { return String(localized: "Container “\(name)”") }
         return String(localized: "Container")
@@ -146,6 +151,7 @@ struct IndustryContextReader<Content: View>: View {
     private let data: ESIIndustryJobs
     private let characterID: Int64
     private let assetNames: [Int64: String]
+    private let isCorporation: Bool
     private let content: (IndustryContext) -> Content
 
     @LiteQuery private var types: [IndustryTypeRow]
@@ -154,10 +160,11 @@ struct IndustryContextReader<Content: View>: View {
 
     /// `jobs` are the ones the screen draws — all of them for the list, one for its detail.
     init(data: ESIIndustryJobs, jobs: [IndustryJob], characterID: Int64, assetNames: [Int64: String],
-         @ViewBuilder content: @escaping (IndustryContext) -> Content) {
+         isCorporation: Bool = false, @ViewBuilder content: @escaping (IndustryContext) -> Content) {
         self.data = data
         self.characterID = characterID
         self.assetNames = assetNames
+        self.isCorporation = isCorporation
         self.content = content
 
         var typeIDs = Set<Int64>()
@@ -186,7 +193,7 @@ struct IndustryContextReader<Content: View>: View {
             data: data, characterID: characterID, assetNames: assetNames,
             types: Dictionary(types.map { (Int64($0.id.rawValue), $0) }, uniquingKeysWith: { first, _ in first }),
             systems: Dictionary(systems.map { (Int64($0.id.rawValue), $0) }, uniquingKeysWith: { first, _ in first }),
-            outputs: outputsByBlueprint)
+            outputs: outputsByBlueprint, isCorporation: isCorporation)
         return content(context)
     }
 }

@@ -6,6 +6,22 @@ enum AssetFlag {
     /// container. Items under these are sorted into category sections.
     static let looseFlags: Set<String> = ["Hangar", "HangarAll", "Unlocked", "Locked", "AutoFit"]
 
+    /// The flag of a corporation's Office record, which lies in a station or structure and
+    /// holds the hangar divisions.
+    static let office = "OfficeFolder"
+
+    /// The hangar division a `CorpSAG1`...`CorpSAG7` flag names.
+    static func division(of flag: String) -> Int? {
+        guard flag.hasPrefix("CorpSAG"), let number = Int(flag.dropFirst("CorpSAG".count)),
+              (1...7).contains(number) else { return nil }
+        return number
+    }
+
+    /// Whether items under the flag lie loose: a hangar, a container's inside or a division.
+    static func isLoose(_ flag: String) -> Bool {
+        looseFlags.contains(flag) || division(of: flag) != nil
+    }
+
     /// The ship section a flag names, if it names one.
     static func shipSection(_ flag: String) -> AssetSection.Kind? {
         switch flag {

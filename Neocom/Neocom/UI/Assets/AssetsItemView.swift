@@ -164,6 +164,9 @@ private struct AssetsItemList: View {
     /// elsewhere — Deliveries, Asset Safety.
     private func placeLabel(path: AssetPath?, location: AssetLocation) -> Text {
         if location.kind == .solarSystem { return Text("In space at") }
+        if let division = path?.division {
+            return Text("In \(model.divisionName(division)) at")
+        }
         let outermost = path?.parents.first ?? row
         return ["Hangar", "HangarAll"].contains(outermost.flag) ? Text("In hangar at") : Text("At")
     }

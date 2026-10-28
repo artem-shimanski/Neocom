@@ -172,6 +172,18 @@ extension Contract {
         return assigneeID == characterID || acceptorID == characterID
     }
 
+    /// Issued on behalf of `corporationID` by one of its members.
+    public func isIssuedByCorporation(_ corporationID: Int64) -> Bool {
+        forCorporation && issuerCorporationID == corporationID
+    }
+
+    /// An active contract the corporation did not issue that waits on it: offered to it, or a
+    /// courier it carries.
+    public func isForCorporation(_ corporationID: Int64) -> Bool {
+        guard status.isActive, !isIssuedByCorporation(corporationID) else { return false }
+        return assigneeID == corporationID || acceptorID == corporationID
+    }
+
     /// Courier only: when the package is due — `dateAccepted` plus `daysToComplete`.
     public var deadline: Date? {
         guard kind == .courier, let dateAccepted, let daysToComplete else { return nil }
@@ -234,6 +246,18 @@ public struct ContractsSummary: Sendable, Hashable {
         outstandingCount = contracts.filter { $0.status == .outstanding }.count
         inProgressCount = contracts.filter { $0.status == .inProgress }.count
         toYouCount = contracts.filter { $0.isOfferedTo(characterID) }.count
+    }
+
+    /// The same figures for a corporation's contracts; `toYouCount` counts the outstanding
+    /// ones assigned to the corporation.
+    public init(_ contracts: [Contract], corporationID: Int64) {
+        activeCount = contracts.filter { $0.status.isActive }.count
+        finishedCount = contracts.count - activeCount
+        outstandingCount = contracts.filter { $0.status == .outstanding }.count
+        inProgressCount = contracts.filter { $0.status == .inProgress }.count
+        toYouCount = contracts.filter {
+            $0.status == .outstanding && $0.assigneeID == corporationID && !$0.isIssuedByCorporation(corporationID)
+        }.count
     }
 }
 

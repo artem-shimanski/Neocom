@@ -106,9 +106,10 @@ struct AssetsSearchView: View {
 
     /// `HYBRID WEAPON · IN <PILOT>'S THORAX`, the chain outermost first.
     private func subtitle(of hit: AssetSearchHit) -> String {
-        guard !hit.parents.isEmpty else { return hit.row.subtitle }
+        let subtitle = hit.division.map { "\(model.divisionName($0)) · \(hit.row.subtitle)" } ?? hit.row.subtitle
+        guard !hit.parents.isEmpty else { return subtitle }
         let chain = hit.parents.map(\.name).joined(separator: " › ")
-        return "\(hit.row.subtitle) · \(String(localized: "assets.search.in", defaultValue: "in \(chain)", comment: "Where a found item sits: the containers it is in, outermost first"))"
+        return "\(subtitle) · \(String(localized: "assets.search.in", defaultValue: "in \(chain)", comment: "Where a found item sits: the containers it is in, outermost first"))"
     }
 
     private func locationsTitle(_ count: Int) -> String {
