@@ -4,6 +4,7 @@ import Foundation
 
 let usage = """
     usage: demo-fixtures export --input <recording.json> --config <DemoConfig.json> --output <DemoFixtures.json>
+           demo-fixtures wallet --archive <DemoFixtures.json> --config <DemoConfig.json>
     """
 
 func fail(_ message: String) -> Never {
@@ -12,7 +13,7 @@ func fail(_ message: String) -> Never {
 }
 
 var arguments = Array(CommandLine.arguments.dropFirst())
-guard arguments.first == "export" else { fail(usage) }
+guard let command = arguments.first, command == "export" || command == "wallet" else { fail(usage) }
 arguments.removeFirst()
 
 var options: [String: String] = [:]
@@ -20,8 +21,27 @@ while arguments.count >= 2, arguments[0].hasPrefix("--") {
     options[String(arguments[0].dropFirst(2))] = arguments[1]
     arguments.removeFirst(2)
 }
-guard arguments.isEmpty, let input = options["input"], let configPath = options["config"],
-      let output = options["output"] else { fail(usage) }
+guard arguments.isEmpty, let configPath = options["config"] else { fail(usage) }
+
+if command == "wallet" {
+    guard let path = options["archive"] else { fail(usage) }
+    do {
+        let url = URL(fileURLWithPath: path)
+        var archive = try DemoArchive.decode(from: Data(contentsOf: url))
+        let config = try DemoConfig.decode(from: Data(contentsOf: URL(fileURLWithPath: configPath)))
+        try DemoExporter(config: config).applyWallet(to: &archive)
+        let data = try archive.encoded()
+        guard data.count <= config.sizeBudget else {
+            fail("error: \(DemoExportError.overBudget(size: data.count, budget: config.sizeBudget))")
+        }
+        try data.write(to: url, options: .atomic)
+        print("\(archive.entries.count) entries, \(data.count) bytes → \(path)")
+    } catch {
+        fail("error: \(error)")
+    }
+    exit(0)
+}
+guard let input = options["input"], let output = options["output"] else { fail(usage) }
 
 do {
     let recording = try DemoRecording.decode(from: Data(contentsOf: URL(fileURLWithPath: input)))

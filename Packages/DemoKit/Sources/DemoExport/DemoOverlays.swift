@@ -15,6 +15,7 @@ extension DemoExporter {
     /// stays missing.
     func applyOverlays(to entries: inout [DemoArchive.Entry], recordedAt: Date) throws {
         try validateSyntheticIDs()
+        try applyWallet(to: &entries, recordedAt: recordedAt)
         let base = "/characters/\(DemoIDs.characterID)"
         func index(_ operationID: String, _ path: String, query: String = "") -> Int? {
             entries.firstIndex { $0.operationID == operationID && $0.path == path && $0.query == query }
@@ -194,13 +195,17 @@ extension DemoExporter {
         ])
     }
 
+    /// NPC corporations are public game data, not the real pilot's.
+    static let npcCorporations: Range<Int64> = 1_000_000 ..< 2_000_000
+
     /// Ids the config makes up must be synthetic, so that nothing real gets a fake payload.
     func validateSyntheticIDs() throws {
         var ids: [Int64] = []
         ids += config.orders.open.map(\.orderID) + config.orders.history.map(\.orderID)
         ids += config.industryJobs.flatMap { [$0.jobID, $0.blueprintID] }
         ids += config.contracts.map(\.contractID)
-        ids += config.names.filter { $0.category == "character" || $0.category == "corporation" }.map(\.id)
+        ids += config.names.filter { ($0.category == "character" || $0.category == "corporation") && !Self.npcCorporations.contains($0.id) }
+            .map(\.id)
         if let id = ids.first(where: { !DemoIDs.contains($0) }) {
             throw DemoExportError.notSynthetic(id)
         }

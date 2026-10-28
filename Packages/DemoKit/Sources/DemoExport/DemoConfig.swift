@@ -17,6 +17,7 @@ public struct DemoConfig: Codable, Sendable {
     public var orders: Orders
     public var industryJobs: [IndustryJob]
     public var contracts: [Contract]
+    public var wallet: Wallet
     /// Extra `/universe/names` entries: synthetic parties and the stations the synthetic content uses.
     public var names: [Named]
 
@@ -186,6 +187,58 @@ public struct DemoConfig: Codable, Sendable {
         /// `false` for an item the issuer asks for.
         public var isIncluded: Bool
         public var isSingleton: Bool?
+    }
+
+    /// The pilot's wallet journal and market transactions. Times are hours before the recording,
+    /// at most `DemoExporter.walletWindowHours`; the exporter derives ids, balances and tax entries.
+    public struct Wallet: Codable, Sendable {
+        /// Share of a sale taken as `transaction_tax`.
+        public var salesTax: Double
+        /// Share of a bounty taken by the pilot's corporation.
+        public var corporationTax: Double
+        /// Type names for the entry descriptions, by type id.
+        public var types: [String: String]
+        public var ratting: [Ratting]
+        public var trades: [Trade]
+        /// Everything else: fees, job costs, donations, insurance, purchases.
+        public var entries: [JournalEntry]
+    }
+
+    /// Bounty ticks every 20 minutes from `hoursAgo` on, one per payout.
+    public struct Ratting: Codable, Sendable {
+        public var hoursAgo: Double
+        public var systemID: Int64
+        public var systemName: String
+        /// Gross bounty of each tick, before the corporation tax.
+        public var payouts: [Double]
+        /// An `ess_escrow_transfer` a few minutes after the last tick.
+        public var essPayout: Double?
+    }
+
+    /// A transaction and its `market_transaction` journal entry, for a sale also its `transaction_tax`.
+    public struct Trade: Codable, Sendable {
+        public var hoursAgo: Double
+        public var typeID: Int64
+        public var quantity: Int64
+        public var unitPrice: Double
+        public var isBuy: Bool
+        public var clientID: Int64
+        public var locationID: Int64
+    }
+
+    public struct JournalEntry: Codable, Sendable {
+        public var hoursAgo: Double
+        /// An ESI `ref_type`.
+        public var refType: String
+        /// Positive when ISK comes in.
+        public var amount: Double
+        public var firstPartyID: Int64?
+        public var secondPartyID: Int64?
+        public var reason: String?
+        /// Replaces the description derived from the type.
+        public var description: String?
+        public var contextID: Int64?
+        public var contextIDType: String?
     }
 
     public struct Named: Codable, Sendable {

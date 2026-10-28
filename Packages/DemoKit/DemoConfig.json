@@ -225,7 +225,12 @@
   "names" : [
     { "category" : "corporation", "id" : 8000000000004001, "name" : "Northline Logistics" },
     { "category" : "corporation", "id" : 8000000000004002, "name" : "Quiet Orbit Traders" },
-    { "category" : "station", "id" : 60003760, "name" : "Jita IV - Moon 4 - Caldari Navy Assembly Plant" }
+    { "category" : "station", "id" : 60003760, "name" : "Jita IV - Moon 4 - Caldari Navy Assembly Plant" },
+    { "category" : "corporation", "id" : 1000035, "name" : "Caldari Navy" },
+    { "category" : "corporation", "id" : 1000125, "name" : "CONCORD" },
+    { "category" : "corporation", "id" : 1000132, "name" : "Secure Commerce Commission" },
+    { "category" : "solar_system", "id" : 30002537, "name" : "Amamake" },
+    { "category" : "solar_system", "id" : 30002813, "name" : "Tama" }
   ],
   "orders" : {
     "history" : [
@@ -296,5 +301,80 @@
     "Bluewater Fabrication",
     "Kestrel Survey Group",
     "Lantern Point Holdings"
-  ]
+  ],
+  "wallet" : {
+    "corporationTax" : 0.11,
+    "entries" : [
+      { "amount" : -2400000, "firstPartyID" : 8000000000000001, "hoursAgo" : 600, "refType" : "skill_purchase", "secondPartyID" : 1000125 },
+      { "amount" : -69300, "firstPartyID" : 8000000000000001, "hoursAgo" : 525, "refType" : "brokers_fee", "secondPartyID" : 1000035 },
+      { "amount" : -46000, "contextID" : 8000000000006011, "contextIDType" : "industry_job_id", "firstPartyID" : 8000000000000001, "hoursAgo" : 420, "refType" : "copying", "secondPartyID" : 1000044 },
+      { "amount" : -2000, "contextID" : 8000000000006011, "contextIDType" : "industry_job_id", "firstPartyID" : 8000000000000001, "hoursAgo" : 420, "refType" : "industry_job_tax", "secondPartyID" : 1000132 },
+      { "amount" : 4100000, "description" : "Insurance payment for the loss of a Vexor", "firstPartyID" : 1000132, "hoursAgo" : 410, "refType" : "insurance", "secondPartyID" : 8000000000000001 },
+      { "amount" : 15000000, "firstPartyID" : 8000000000001003, "hoursAgo" : 360, "reason" : "Thanks for the escort", "refType" : "player_donation", "secondPartyID" : 8000000000000001 },
+      { "amount" : -614400, "contextID" : 8000000000006012, "contextIDType" : "industry_job_id", "firstPartyID" : 8000000000000001, "hoursAgo" : 330, "refType" : "manufacturing", "secondPartyID" : 1000044 },
+      { "amount" : -25600, "contextID" : 8000000000006012, "contextIDType" : "industry_job_id", "firstPartyID" : 8000000000000001, "hoursAgo" : 330, "refType" : "industry_job_tax", "secondPartyID" : 1000132 },
+      { "amount" : -234750, "firstPartyID" : 8000000000000001, "hoursAgo" : 310, "refType" : "brokers_fee", "secondPartyID" : 1000044 },
+      { "amount" : -59700, "firstPartyID" : 8000000000000001, "hoursAgo" : 290, "refType" : "brokers_fee", "secondPartyID" : 1000035 },
+      { "amount" : -8000000, "firstPartyID" : 8000000000000001, "hoursAgo" : 240, "reason" : "Share of the hauling job", "refType" : "player_donation", "secondPartyID" : 8000000000001002 },
+      { "amount" : -184500, "firstPartyID" : 8000000000000001, "hoursAgo" : 220, "refType" : "brokers_fee", "secondPartyID" : 1000035 },
+      { "amount" : -297600, "contextID" : 8000000000006013, "contextIDType" : "industry_job_id", "firstPartyID" : 8000000000000001, "hoursAgo" : 200, "refType" : "manufacturing", "secondPartyID" : 1000044 },
+      { "amount" : -12400, "contextID" : 8000000000006013, "contextIDType" : "industry_job_id", "firstPartyID" : 8000000000000001, "hoursAgo" : 200, "refType" : "industry_job_tax", "secondPartyID" : 1000132 },
+      { "amount" : -238500, "firstPartyID" : 8000000000000001, "hoursAgo" : 150, "refType" : "brokers_fee", "secondPartyID" : 1000044 },
+      { "amount" : -202350, "firstPartyID" : 8000000000000001, "hoursAgo" : 74, "refType" : "brokers_fee", "secondPartyID" : 1000035 },
+      { "amount" : -30900, "firstPartyID" : 8000000000000001, "hoursAgo" : 50, "refType" : "brokers_fee", "secondPartyID" : 1000035 },
+      { "amount" : -117750, "firstPartyID" : 8000000000000001, "hoursAgo" : 26, "refType" : "brokers_fee", "secondPartyID" : 1000035 },
+      { "amount" : -59000, "contextID" : 8000000000006003, "contextIDType" : "industry_job_id", "firstPartyID" : 8000000000000001, "hoursAgo" : 12, "refType" : "manufacturing", "secondPartyID" : 1000044 },
+      { "amount" : -2800, "contextID" : 8000000000006003, "contextIDType" : "industry_job_id", "firstPartyID" : 8000000000000001, "hoursAgo" : 12, "refType" : "industry_job_tax", "secondPartyID" : 1000132 },
+      { "amount" : -11168, "firstPartyID" : 8000000000000001, "hoursAgo" : 9, "refType" : "brokers_fee", "secondPartyID" : 1000044 },
+      { "amount" : -427500, "firstPartyID" : 8000000000000001, "hoursAgo" : 6, "refType" : "brokers_fee", "secondPartyID" : 1000044 },
+      { "amount" : -55000, "contextID" : 8000000000006002, "contextIDType" : "industry_job_id", "firstPartyID" : 8000000000000001, "hoursAgo" : 5, "refType" : "researching_material_productivity", "secondPartyID" : 1000044 },
+      { "amount" : -3200, "contextID" : 8000000000006002, "contextIDType" : "industry_job_id", "firstPartyID" : 8000000000000001, "hoursAgo" : 5, "refType" : "industry_job_tax", "secondPartyID" : 1000132 },
+      { "amount" : -396350, "contextID" : 8000000000006001, "contextIDType" : "industry_job_id", "firstPartyID" : 8000000000000001, "hoursAgo" : 2, "refType" : "manufacturing", "secondPartyID" : 1000044 },
+      { "amount" : -16000, "contextID" : 8000000000006001, "contextIDType" : "industry_job_id", "firstPartyID" : 8000000000000001, "hoursAgo" : 2, "refType" : "industry_job_tax", "secondPartyID" : 1000132 }
+    ],
+    "ratting" : [
+      { "hoursAgo" : 650, "payouts" : [1094000, 891000, 1477000, 800000, 1342000, 1143000], "systemID" : 30002813, "systemName" : "Tama" },
+      { "hoursAgo" : 560, "payouts" : [783000, 1309000, 759000, 1222000, 797000], "systemID" : 30002813, "systemName" : "Tama" },
+      { "hoursAgo" : 470, "payouts" : [821000, 1212000, 1682000, 860000, 976000, 1449000], "systemID" : 30002537, "systemName" : "Amamake" },
+      { "hoursAgo" : 400, "payouts" : [1824000, 1390000, 1179000, 1857000], "systemID" : 30002537, "systemName" : "Amamake" },
+      { "essPayout" : 3400000, "hoursAgo" : 250, "payouts" : [355000, 794000, 486000, 408000, 394000, 497000, 771000], "systemID" : 30002813, "systemName" : "Tama" },
+      { "hoursAgo" : 190, "payouts" : [428000, 644000, 675000, 531000, 626000], "systemID" : 30002813, "systemName" : "Tama" },
+      { "hoursAgo" : 100, "payouts" : [364000, 362000, 441000, 697000, 561000, 500000], "systemID" : 30002537, "systemName" : "Amamake" },
+      { "hoursAgo" : 30, "payouts" : [646000, 575000, 492000, 759000, 707000], "systemID" : 30002537, "systemName" : "Amamake" }
+    ],
+    "salesTax" : 0.036,
+    "trades" : [
+      { "clientID" : 8000000000001004, "hoursAgo" : 660, "isBuy" : true, "locationID" : 60003760, "quantity" : 1200000, "typeID" : 34, "unitPrice" : 3.7 },
+      { "clientID" : 8000000000001001, "hoursAgo" : 520, "isBuy" : false, "locationID" : 60003760, "quantity" : 900000, "typeID" : 34, "unitPrice" : 3.92 },
+      { "clientID" : 8000000000001003, "hoursAgo" : 500, "isBuy" : true, "locationID" : 60003760, "quantity" : 250000, "typeID" : 35, "unitPrice" : 7.7 },
+      { "clientID" : 8000000000001005, "hoursAgo" : 470, "isBuy" : false, "locationID" : 60003760, "quantity" : 150000, "typeID" : 35, "unitPrice" : 7.9 },
+      { "clientID" : 8000000000001002, "hoursAgo" : 430, "isBuy" : true, "locationID" : 60003760, "quantity" : 400000, "typeID" : 35, "unitPrice" : 7.6 },
+      { "clientID" : 8000000000001004, "hoursAgo" : 380, "isBuy" : true, "locationID" : 60003760, "quantity" : 3000000, "typeID" : 34, "unitPrice" : 3.85 },
+      { "clientID" : 8000000000001001, "hoursAgo" : 345, "isBuy" : true, "locationID" : 60003760, "quantity" : 2, "typeID" : 626, "unitPrice" : 14120000 },
+      { "clientID" : 8000000000001003, "hoursAgo" : 332, "isBuy" : true, "locationID" : 60003760, "quantity" : 10, "typeID" : 519, "unitPrice" : 1190000 },
+      { "clientID" : 8000000000001002, "hoursAgo" : 300, "isBuy" : false, "locationID" : 60004420, "quantity" : 1, "typeID" : 626, "unitPrice" : 15650000 },
+      { "clientID" : 8000000000001001, "hoursAgo" : 285, "isBuy" : false, "locationID" : 60003760, "quantity" : 400000, "typeID" : 34, "unitPrice" : 3.98 },
+      { "clientID" : 8000000000001002, "hoursAgo" : 260, "isBuy" : false, "locationID" : 60003760, "quantity" : 600000, "typeID" : 34, "unitPrice" : 3.95 },
+      { "clientID" : 8000000000001004, "hoursAgo" : 250, "isBuy" : false, "locationID" : 60003760, "quantity" : 350000, "typeID" : 34, "unitPrice" : 3.98 },
+      { "clientID" : 8000000000001003, "hoursAgo" : 215, "isBuy" : false, "locationID" : 60003760, "quantity" : 250000, "typeID" : 34, "unitPrice" : 3.98 },
+      { "clientID" : 8000000000001002, "hoursAgo" : 200, "isBuy" : true, "locationID" : 60003760, "quantity" : 50000, "typeID" : 36, "unitPrice" : 61.5 },
+      { "clientID" : 8000000000001005, "hoursAgo" : 170, "isBuy" : true, "locationID" : 60003760, "quantity" : 40000, "typeID" : 36, "unitPrice" : 61.5 },
+      { "clientID" : 8000000000001004, "hoursAgo" : 160, "isBuy" : false, "locationID" : 60003760, "quantity" : 200000, "typeID" : 35, "unitPrice" : 8.1 },
+      { "clientID" : 8000000000001001, "hoursAgo" : 130, "isBuy" : true, "locationID" : 60003760, "quantity" : 30000, "typeID" : 36, "unitPrice" : 61.5 },
+      { "clientID" : 8000000000001005, "hoursAgo" : 120, "isBuy" : true, "locationID" : 60003760, "quantity" : 5000, "typeID" : 21896, "unitPrice" : 133.5 },
+      { "clientID" : 8000000000001003, "hoursAgo" : 110, "isBuy" : false, "locationID" : 60004420, "quantity" : 1, "typeID" : 626, "unitPrice" : 15900000 },
+      { "clientID" : 8000000000001003, "hoursAgo" : 90, "isBuy" : false, "locationID" : 60003760, "quantity" : 12000, "typeID" : 36, "unitPrice" : 64.0 },
+      { "clientID" : 8000000000001001, "hoursAgo" : 60, "isBuy" : false, "locationID" : 60003760, "quantity" : 2, "typeID" : 519, "unitPrice" : 1349000 },
+      { "clientID" : 8000000000001004, "hoursAgo" : 44, "isBuy" : false, "locationID" : 60003760, "quantity" : 100000, "typeID" : 34, "unitPrice" : 4.12 },
+      { "clientID" : 8000000000001005, "hoursAgo" : 40, "isBuy" : false, "locationID" : 60003760, "quantity" : 1, "typeID" : 519, "unitPrice" : 1349000 },
+      { "clientID" : 8000000000001002, "hoursAgo" : 24, "isBuy" : true, "locationID" : 60003760, "quantity" : 120000, "typeID" : 35, "unitPrice" : 7.85 },
+      { "clientID" : 8000000000001003, "hoursAgo" : 20, "isBuy" : false, "locationID" : 60003760, "quantity" : 87500, "typeID" : 34, "unitPrice" : 4.12 },
+      { "clientID" : 8000000000001001, "hoursAgo" : 15, "isBuy" : false, "locationID" : 60003760, "quantity" : 1, "typeID" : 519, "unitPrice" : 1349000 },
+      { "clientID" : 8000000000001005, "hoursAgo" : 14, "isBuy" : true, "locationID" : 60003760, "quantity" : 140000, "typeID" : 35, "unitPrice" : 7.85 },
+      { "clientID" : 8000000000001004, "hoursAgo" : 8, "isBuy" : false, "locationID" : 60004420, "quantity" : 800, "typeID" : 21896, "unitPrice" : 148.9 },
+      { "clientID" : 8000000000001001, "hoursAgo" : 6, "isBuy" : true, "locationID" : 60003760, "quantity" : 100000, "typeID" : 35, "unitPrice" : 7.85 },
+      { "clientID" : 8000000000001002, "hoursAgo" : 4, "isBuy" : false, "locationID" : 60004420, "quantity" : 1000, "typeID" : 21896, "unitPrice" : 148.9 }
+    ],
+    "types" : { "21896" : "Hammerhead II", "34" : "Tritanium", "35" : "Pyerite", "36" : "Mexallon", "519" : "Gyrostabilizer II", "626" : "Vexor" }
+  }
 }

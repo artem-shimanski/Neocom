@@ -9,6 +9,7 @@ public enum DemoExportError: Error, CustomStringConvertible {
     case inconsistentSkillQueue(String)
     case notSynthetic(Int64)
     case syntheticRangeExhausted(Int)
+    case invalidWallet(String)
 
     public var description: String {
         switch self {
@@ -22,6 +23,8 @@ public enum DemoExportError: Error, CustomStringConvertible {
             "The configured skill queue does not follow the recorded skills: \(reason)."
         case let .notSynthetic(id):
             "The configured id \(id) is outside the synthetic range."
+        case let .invalidWallet(reason):
+            "The configured wallet is invalid: \(reason)."
         case let .syntheticRangeExhausted(count):
             "\(count) recorded ids do not fit into the synthetic range."
         }
@@ -227,7 +230,7 @@ public struct DemoExporter {
             compatibilityDate: recording.compatibilityDate,
             pilot: DemoArchive.Pilot(id: DemoIDs.characterID, name: config.pilot.name,
                                      corporationID: config.pilot.corporationID),
-            entries: entries.sorted { ($0.path, $0.operationID, $0.query, $0.method) < ($1.path, $1.operationID, $1.query, $1.method) },
+            entries: Self.sorted(entries),
             names: names,
             assetNames: cleanAssetNames(Dictionary(assetNames.map { key, name in
                 (Int64(key).flatMap { rewriter.recordedIDs[$0] }.map(String.init) ?? key, rewriter.rewrite(string: name))
@@ -237,6 +240,10 @@ public struct DemoExporter {
         try Self.trim(&archive, budget: config.sizeBudget)
         Self.prune(&archive)
         return archive
+    }
+
+    static func sorted(_ entries: [DemoArchive.Entry]) -> [DemoArchive.Entry] {
+        entries.sorted { ($0.path, $0.operationID, $0.query, $0.method) < ($1.path, $1.operationID, $1.query, $1.method) }
     }
 
     /// Encodes the archive and fails when it still contains anything of the real pilot.

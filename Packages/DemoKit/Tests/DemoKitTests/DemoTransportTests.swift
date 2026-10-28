@@ -446,4 +446,32 @@ final class CountingMiddleware: ClientMiddleware, Sendable {
         #expect(!fits.isEmpty && fits.count <= 8 && fits.allSatisfy { $0.description.isEmpty })
         #expect(upstream.paths.isEmpty)
     }
+
+    @Test func decodesTheWallet() async throws {
+        let archive = try DemoArchive.decode(from: Data(contentsOf: Self.url))
+        let upstream = StubUpstream()
+        let transport = DemoTransport(archive: archive, writeRejectionMessage: message, upstream: upstream,
+                                      now: { .now }, onMiss: nil)
+        let client = Client(esi: ESI(configuration: ESIConfiguration(userAgent: "DemoKitTests"), transport: transport))
+        let date = try #require(Components.Parameters.CompatibilityDate(rawValue: ESIConfiguration.defaultCompatibilityDate))
+
+        guard case let .ok(journal) = try await client.getCharactersCharacterIdWalletJournal(
+            path: .init(characterId: demo), query: .init(page: 1), headers: .init(xCompatibilityDate: date))
+        else { Issue.record("wallet journal"); return }
+        let entries = try journal.body.json
+        #expect(entries.count > 100 && journal.headers.xPages == 1)
+        #expect(entries.allSatisfy { $0.balance != nil && $0.amount != nil })
+
+        guard case let .ok(batch) = try await client.getCharactersCharacterIdWalletTransactions(
+            path: .init(characterId: demo), query: .init(fromId: nil), headers: .init(xCompatibilityDate: date))
+        else { Issue.record("wallet transactions"); return }
+        let transactions = try batch.body.json
+        #expect(transactions.count > 20)
+        let oldest = try #require(transactions.map(\.transactionId).min())
+        guard case let .ok(rest) = try await client.getCharactersCharacterIdWalletTransactions(
+            path: .init(characterId: demo), query: .init(fromId: oldest - 1), headers: .init(xCompatibilityDate: date))
+        else { Issue.record("wallet transactions walk"); return }
+        #expect(try rest.body.json.isEmpty)
+        #expect(upstream.paths.isEmpty)
+    }
 }
