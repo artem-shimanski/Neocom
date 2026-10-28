@@ -268,6 +268,22 @@
         }
       }
     },
+    "%@ · %lld entries" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$lld entries"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · записей: %2$lld"
+          }
+        }
+      }
+    },
     "%@ · %lld groups" : {
       "localizations" : {
         "en" : {
@@ -747,6 +763,16 @@
         }
       }
     },
+    "%@ EVE" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ EVE"
+          }
+        }
+      }
+    },
     "%@ expired" : {
       "localizations" : {
         "ru" : {
@@ -799,6 +825,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ от %@"
+          }
+        }
+      }
+    },
+    "%@ from %lld members · 30D" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ from %2$lld members · 30D"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ от участников: %2$lld · 30 дн."
           }
         }
       }
@@ -868,6 +910,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ ед./с"
+          }
+        }
+      }
+    },
+    "%@ ISK" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ISK"
+          }
+        }
+      }
+    },
+    "%@ ISK · 30 days" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ISK · 30 дней"
           }
         }
       }
@@ -1092,6 +1154,22 @@
         }
       }
     },
+    "%@ of %@ sold" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ of %2$@ sold"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продано %1$@ из %2$@"
+          }
+        }
+      }
+    },
     "%@ on this iPhone" : {
       "localizations" : {
         "ru" : {
@@ -1129,6 +1207,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ с"
+          }
+        }
+      }
+    },
+    "%@ since %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ since %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ с %2$@"
           }
         }
       }
@@ -1599,6 +1693,12 @@
             "state" : "new",
             "value" : "%1$@%2$@%3$@"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@%2$@%3$@"
+          }
         }
       }
     },
@@ -1997,12 +2097,6 @@
         "ru" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld контейнер"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "translated",
@@ -2013,6 +2107,12 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld контейнеров"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld контейнер"
                 }
               },
               "other" : {
@@ -2126,6 +2226,26 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "%lld days active" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Активных дней: %lld"
+          }
+        }
+      }
+    },
+    "%lld entries · 30 days" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записей: %lld · 30 дней"
           }
         }
       }
@@ -3543,6 +3663,16 @@
         }
       }
     },
+    "%lld payouts" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выплат: %lld"
+          }
+        }
+      }
+    },
     "%lld pins" : {
       "localizations" : {
         "en" : {
@@ -4109,6 +4239,32 @@
         }
       }
     },
+    "%lld trades" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сделок: %lld"
+          }
+        }
+      }
+    },
+    "%lld trades · %lld items" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld trades · %2$lld items"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сделок: %1$lld · предметов: %2$lld"
+          }
+        }
+      }
+    },
     "%lld types" : {
       "localizations" : {
         "en" : {
@@ -4353,6 +4509,27 @@
         }
       }
     },
+    "7 Days" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 дней"
+          }
+        }
+      }
+    },
+    "7D" : {
+      "comment" : "Wallet period: the last 7 days",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 дн."
+          }
+        }
+      }
+    },
     "12 months" : {
       "localizations" : {
         "ru" : {
@@ -4373,12 +4550,44 @@
         }
       }
     },
+    "24H" : {
+      "comment" : "Wallet period: the last 24 hours",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "24 ч"
+          }
+        }
+      }
+    },
     "30 days" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "30 дней"
+          }
+        }
+      }
+    },
+    "30 Days" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 дней"
+          }
+        }
+      }
+    },
+    "30D" : {
+      "comment" : "Wallet period: the last 30 days",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 дн."
           }
         }
       }
@@ -5273,6 +5482,16 @@
         }
       }
     },
+    "All Categories" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Все категории"
+          }
+        }
+      }
+    },
     "All colonies" : {
       "localizations" : {
         "ru" : {
@@ -5339,6 +5558,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Все навыки на V"
+          }
+        }
+      }
+    },
+    "All Trades" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Все сделки"
           }
         }
       }
@@ -5430,6 +5659,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Боеприпасы…"
+          }
+        }
+      }
+    },
+    "Amount" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сумма"
           }
         }
       }
@@ -5999,12 +6238,32 @@
         }
       }
     },
+    "Avg Buy" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ср. покупка"
+          }
+        }
+      }
+    },
     "Avg per hour" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ср. в час"
+          }
+        }
+      }
+    },
+    "Avg Sell" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ср. продажа"
           }
         }
       }
@@ -6055,6 +6314,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Баланс"
+          }
+        }
+      }
+    },
+    "Balance After" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Баланс после"
+          }
+        }
+      }
+    },
+    "Balance over 30 days" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Баланс за 30 дней"
+          }
+        }
+      }
+    },
+    "Balance over time" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Динамика баланса"
           }
         }
       }
@@ -6499,6 +6788,76 @@
         }
       }
     },
+    "Bought" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Куплено"
+          }
+        }
+      }
+    },
+    "Bought %@" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Куплено %@"
+          }
+        }
+      }
+    },
+    "Bounties" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Баунти"
+          }
+        }
+      }
+    },
+    "Bounty and mission tax by member" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налог с баунти и миссий по участникам"
+          }
+        }
+      }
+    },
+    "Bounty payouts of one ratting session fold into one row; a sale carries its sales tax. The figure under the amount is the balance after the entry. EVE keeps 30 days." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выплаты баунти за одну охоту на НПС сворачиваются в одну строку; у продажи указан налог с продаж. Число под суммой — баланс после записи. EVE хранит 30 дней."
+          }
+        }
+      }
+    },
+    "Bounty Prizes" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Награды за баунти"
+          }
+        }
+      }
+    },
+    "Bounty Tax" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налог с баунти"
+          }
+        }
+      }
+    },
     "BPC" : {
       "localizations" : {
         "ru" : {
@@ -6515,6 +6874,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Пополните %@ в игре."
+          }
+        }
+      }
+    },
+    "Broker’s Fee" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Брокерская комиссия"
           }
         }
       }
@@ -6619,6 +6988,16 @@
         }
       }
     },
+    "Buyer" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Покупатель"
+          }
+        }
+      }
+    },
     "Buying" : {
       "localizations" : {
         "ru" : {
@@ -6669,6 +7048,16 @@
         }
       }
     },
+    "By Item" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "По предметам"
+          }
+        }
+      }
+    },
     "By program end" : {
       "localizations" : {
         "ru" : {
@@ -6685,6 +7074,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "По кораблям"
+          }
+        }
+      }
+    },
+    "By turnover" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "По обороту"
           }
         }
       }
@@ -6930,12 +7329,32 @@
         }
       }
     },
+    "Category" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Категория"
+          }
+        }
+      }
+    },
     "CC %lld" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ЦУ %lld"
+          }
+        }
+      }
+    },
+    "Ceiling" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Максимум"
           }
         }
       }
@@ -7570,12 +7989,42 @@
         }
       }
     },
+    "Context" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Контекст"
+          }
+        }
+      }
+    },
     "Contract" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Контракт"
+          }
+        }
+      }
+    },
+    "Contract Broker’s Fee" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Брокерская комиссия по контракту"
+          }
+        }
+      }
+    },
+    "Contract Collateral" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Залог по контракту"
           }
         }
       }
@@ -7662,6 +8111,16 @@
         }
       }
     },
+    "Contract Price" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Цена контракта"
+          }
+        }
+      }
+    },
     "Contract rejected" : {
       "localizations" : {
         "ru" : {
@@ -7678,6 +8137,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Контракт отменён сервером"
+          }
+        }
+      }
+    },
+    "Contract Reward" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Награда за контракт"
+          }
+        }
+      }
+    },
+    "Contract Sales Tax" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налог с продаж по контракту"
           }
         }
       }
@@ -7899,6 +8378,26 @@
         }
       }
     },
+    "Corporate Reward" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Корпоративная награда"
+          }
+        }
+      }
+    },
+    "Corporate Reward Tax" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налог с корпоративной награды"
+          }
+        }
+      }
+    },
     "Corporation" : {
       "localizations" : {
         "ru" : {
@@ -7955,6 +8454,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Для заявок корпорации нужно ещё одно разрешение. Войдите в EVE ещё раз и разрешите Neocom читать рыночные заявки вашей корпорации."
+          }
+        }
+      }
+    },
+    "Corporation Payment" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Платёж корпорации"
+          }
+        }
+      }
+    },
+    "Corporation wallets need one more permission. Sign in to EVE again and allow Neocom to read your corporation's wallets." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для кошельков корпорации нужно ещё одно разрешение. Войдите в EVE снова и разрешите Neocom читать кошельки вашей корпорации."
+          }
+        }
+      }
+    },
+    "Corporation wallets need the Accountant or Junior Accountant role. A director grants it in the EVE client." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для кошельков корпорации нужна роль «Бухгалтер» или «Младший бухгалтер». Её выдаёт директор в клиенте EVE."
+          }
+        }
+      }
+    },
+    "Corporation Withdrawal" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Снятие средств корпорации"
           }
         }
       }
@@ -8263,6 +8802,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Средняя цена за день с диапазоном от минимума до максимума"
+          }
+        }
+      }
+    },
+    "Daily Goal Payout" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выплата за ежедневную цель"
+          }
+        }
+      }
+    },
+    "Daily Goal Tax" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налог с ежедневной цели"
           }
         }
       }
@@ -8716,6 +9275,16 @@
         }
       }
     },
+    "Dividend Payment" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выплата дивидендов"
+          }
+        }
+      }
+    },
     "Division %lld" : {
       "localizations" : {
         "ru" : {
@@ -8726,12 +9295,42 @@
         }
       }
     },
+    "Division names come from the corporation’s settings; a division without one is shown by number. Each division has its own journal and market transactions, loaded when it is opened." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Названия отделов берутся из настроек корпорации; у отдела без названия показывается номер. У каждого отдела свой журнал и свои рыночные транзакции, они загружаются при открытии."
+          }
+        }
+      }
+    },
+    "Divisions · %lld" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отделы · %lld"
+          }
+        }
+      }
+    },
     "Docked" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "В доке"
+          }
+        }
+      }
+    },
+    "Docking Fee" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Плата за стыковку"
           }
         }
       }
@@ -9173,6 +9772,26 @@
         }
       }
     },
+    "Entry" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запись"
+          }
+        }
+      }
+    },
+    "Entry Not Found" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запись не найдена"
+          }
+        }
+      }
+    },
     "Environment" : {
       "localizations" : {
         "ru" : {
@@ -9237,6 +9856,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ошибка запроса ESI, статус %lld."
+          }
+        }
+      }
+    },
+    "ESS Payout" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выплата ESS"
           }
         }
       }
@@ -9323,6 +9952,16 @@
         }
       }
     },
+    "Est. Profit" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прибыль (оценка)"
+          }
+        }
+      }
+    },
     "EVE · %lld" : {
       "localizations" : {
         "ru" : {
@@ -9369,6 +10008,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "EVE не считает непрочитанные письма в списках рассылки. Вступать в списки и выходить из них можно в клиенте EVE."
+          }
+        }
+      }
+    },
+    "EVE keeps 30 days of wallet history; older entries are gone from ESI. The journal refreshes hourly. Tap a category to open the journal filtered to it." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EVE хранит историю кошелька за 30 дней; более старых записей в ESI нет. Журнал обновляется раз в час. Коснитесь категории, чтобы открыть журнал с этим фильтром."
           }
         }
       }
@@ -9781,6 +10430,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Фуг."
+          }
+        }
+      }
+    },
+    "Expenses" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Расходы"
           }
         }
       }
@@ -10273,6 +10932,16 @@
         }
       }
     },
+    "Filter by Category" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фильтр по категории"
+          }
+        }
+      }
+    },
     "Filter by Type" : {
       "localizations" : {
         "ru" : {
@@ -10530,6 +11199,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Время полёта"
+          }
+        }
+      }
+    },
+    "Floor" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Минимум"
           }
         }
       }
@@ -11077,6 +11756,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Здесь"
+          }
+        }
+      }
+    },
+    "Hides the payouts" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скрыть выплаты"
           }
         }
       }
@@ -11848,6 +12537,16 @@
         }
       }
     },
+    "Income" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доходы"
+          }
+        }
+      }
+    },
     "Incoming from Fleet" : {
       "localizations" : {
         "ru" : {
@@ -11895,6 +12594,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Промышленная работа"
+          }
+        }
+      }
+    },
+    "Industry Job Cost" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Стоимость промышленной работы"
           }
         }
       }
@@ -12011,6 +12720,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Кем запущена"
+          }
+        }
+      }
+    },
+    "Insurance" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Страховка"
           }
         }
       }
@@ -12365,12 +13084,52 @@
         }
       }
     },
+    "Journal" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Журнал"
+          }
+        }
+      }
+    },
+    "Journal Entry" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запись журнала"
+          }
+        }
+      }
+    },
     "Jump Clone" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Джамп-клон"
+          }
+        }
+      }
+    },
+    "Jump Clone Fee" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Плата за джамп-клон"
+          }
+        }
+      }
+    },
+    "Jump Clone Installation" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Установка джамп-клона"
           }
         }
       }
@@ -12623,6 +13382,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Отсек для крупных кораблей"
+          }
+        }
+      }
+    },
+    "Last %@" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Последняя: %@"
           }
         }
       }
@@ -13180,6 +13949,16 @@
         }
       }
     },
+    "LP Store" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Магазин LP"
+          }
+        }
+      }
+    },
     "LVL %@ → %@" : {
       "localizations" : {
         "en" : {
@@ -13446,6 +14225,16 @@
         }
       }
     },
+    "Market Escrow" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рыночный депозит"
+          }
+        }
+      }
+    },
     "Market Groups" : {
       "localizations" : {
         "ru" : {
@@ -13496,12 +14285,72 @@
         }
       }
     },
+    "Market Provider Tax" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налог оператора рынка"
+          }
+        }
+      }
+    },
+    "Market Purchases" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рыночные покупки"
+          }
+        }
+      }
+    },
     "Market Region" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Рыночный сектор"
+          }
+        }
+      }
+    },
+    "Market Sales" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рыночные продажи"
+          }
+        }
+      }
+    },
+    "Market trades of the last 30 days show here: what was sold and bought, at what price and with whom." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Здесь показаны рыночные сделки за последние 30 дней: что продано и куплено, по какой цене и с кем."
+          }
+        }
+      }
+    },
+    "Market Transaction" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рыночная транзакция"
+          }
+        }
+      }
+    },
+    "Market Transactions" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рыночные транзакции"
           }
         }
       }
@@ -13588,6 +14437,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Мастерство %@"
+          }
+        }
+      }
+    },
+    "Matched" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сопоставлено"
           }
         }
       }
@@ -13789,6 +14648,26 @@
         }
       }
     },
+    "Member Taxes" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налоги участников"
+          }
+        }
+      }
+    },
+    "Members" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Участники"
+          }
+        }
+      }
+    },
     "Memory" : {
       "localizations" : {
         "ru" : {
@@ -13936,6 +14815,66 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Недостающие навыки"
+          }
+        }
+      }
+    },
+    "Mission Reward" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Награда за миссию"
+          }
+        }
+      }
+    },
+    "Mission Tax" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налог с миссий"
+          }
+        }
+      }
+    },
+    "Mission Time Bonus" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бонус за скорость миссии"
+          }
+        }
+      }
+    },
+    "Mission Time Bonus Tax" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налог с бонуса за скорость миссии"
+          }
+        }
+      }
+    },
+    "Missions" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Миссии"
+          }
+        }
+      }
+    },
+    "Missions & other %@" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Миссии и прочее %@"
           }
         }
       }
@@ -14336,6 +15275,46 @@
         }
       }
     },
+    "Net" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Итого"
+          }
+        }
+      }
+    },
+    "Net · 30D" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Итого · 30 дн."
+          }
+        }
+      }
+    },
+    "Net Flow" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чистый приток"
+          }
+        }
+      }
+    },
+    "Net of Tax" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За вычетом налога"
+          }
+        }
+      }
+    },
     "Neural Remap" : {
       "localizations" : {
         "ru" : {
@@ -14466,12 +15445,42 @@
         }
       }
     },
+    "No Accountant Role" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет роли бухгалтера"
+          }
+        }
+      }
+    },
     "No Active Contracts" : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Нет активных контрактов"
+          }
+        }
+      }
+    },
+    "No Activity" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет движений"
+          }
+        }
+      }
+    },
+    "No activity · 30D" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет движений · 30 дн."
           }
         }
       }
@@ -14646,6 +15655,16 @@
         }
       }
     },
+    "No Corporation Wallet Access" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет доступа к кошелькам корпорации"
+          }
+        }
+      }
+    },
     "No data yet" : {
       "localizations" : {
         "ru" : {
@@ -14662,6 +15681,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Нет эффекта"
+          }
+        }
+      }
+    },
+    "No entries of this kind in the last 30 days." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За последние 30 дней записей такого рода нет."
           }
         }
       }
@@ -14912,6 +15941,16 @@
         }
       }
     },
+    "No member paid bounty or mission tax into the Master Wallet in this period." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За этот период никто из участников не платил налог с баунти или миссий в главный кошелёк."
+          }
+        }
+      }
+    },
     "No Module" : {
       "localizations" : {
         "ru" : {
@@ -15122,6 +16161,26 @@
         }
       }
     },
+    "No Taxes" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет налогов"
+          }
+        }
+      }
+    },
+    "No Trades" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет сделок"
+          }
+        }
+      }
+    },
     "No trades in this region over the span." : {
       "localizations" : {
         "ru" : {
@@ -15138,6 +16197,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Нет непрочитанных писем"
+          }
+        }
+      }
+    },
+    "No Wallet Access" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет доступа к кошельку"
+          }
+        }
+      }
+    },
+    "No withdrawals in this period" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За этот период снятий не было"
           }
         }
       }
@@ -15312,12 +16391,32 @@
         }
       }
     },
+    "Nothing came in or went out of this wallet in the period." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За этот период в кошелёк ничего не поступало и ничего не списывалось."
+          }
+        }
+      }
+    },
     "Nothing here fills up before the end of the forecast." : {
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "До конца прогноза здесь ничего не заполнится."
+          }
+        }
+      }
+    },
+    "Nothing in 30 Days" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ничего за 30 дней"
           }
         }
       }
@@ -15498,6 +16597,22 @@
         }
       }
     },
+    "Now %@, low %@, high %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Now %1$@, low %2$@, high %3$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сейчас %1$@, минимум %2$@, максимум %3$@"
+          }
+        }
+      }
+    },
     "Now → End" : {
       "localizations" : {
         "ru" : {
@@ -15598,16 +16713,6 @@
         }
       }
     },
-    "Offered only to your corporation. Accept it in the EVE client before %@; the corporation pays %@." : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Предложен только вашей корпорации. Примите его в клиенте EVE до %@; корпорация платит %@."
-          }
-        }
-      }
-    },
     "Offered only to you. Accept it in the EVE client before %@; you pay %@." : {
       "localizations" : {
         "en" : {
@@ -15620,6 +16725,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Предложен только вам. Примите его в клиенте EVE до %@; вы платите %@."
+          }
+        }
+      }
+    },
+    "Offered only to your corporation. Accept it in the EVE client before %@; the corporation pays %@." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Предложен только вашей корпорации. Примите его в клиенте EVE до %@; корпорация платит %@."
+          }
+        }
+      }
+    },
+    "Office & Upkeep" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Офис и содержание"
+          }
+        }
+      }
+    },
+    "Office Rental Fee" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аренда офиса"
           }
         }
       }
@@ -16626,6 +17761,16 @@
         }
       }
     },
+    "Planetary" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Планетарные"
+          }
+        }
+      }
+    },
     "Planetary Commodities" : {
       "comment" : "Plural EVE category name, a section of assets.",
       "localizations" : {
@@ -16644,6 +17789,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Отсек для планетарных товаров"
+          }
+        }
+      }
+    },
+    "Planetary Construction" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Планетарное строительство"
+          }
+        }
+      }
+    },
+    "Planetary Export Tax" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налог на планетарный экспорт"
+          }
+        }
+      }
+    },
+    "Planetary Import Tax" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налог на планетарный импорт"
           }
         }
       }
@@ -16775,6 +17950,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Плазменная"
+          }
+        }
+      }
+    },
+    "Player Donation" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пожертвование игрока"
+          }
+        }
+      }
+    },
+    "Player Trading" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Торговля между игроками"
           }
         }
       }
@@ -16945,6 +18140,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Производственная цепочка"
+          }
+        }
+      }
+    },
+    "Profit is an estimate: units sold and bought inside these 30 days are matched at their average prices, less the sales tax on those sales. What was bought before the window or is still in the hangar is not counted." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прибыль — оценка: проданное и купленное за эти 30 дней сопоставляется по средним ценам за вычетом налога с продаж. Купленное до этого периода или ещё лежащее в ангаре не учитывается."
           }
         }
       }
@@ -17283,6 +18488,16 @@
         }
       }
     },
+    "Reason" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Причина"
+          }
+        }
+      }
+    },
     "REC %lld" : {
       "comment" : "Record id of a contract item",
       "localizations" : {
@@ -17320,6 +18535,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Рекомендуется для · %lld"
+          }
+        }
+      }
+    },
+    "Ref Type" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тип записи"
           }
         }
       }
@@ -17694,6 +18919,16 @@
         }
       }
     },
+    "Reprocessing Tax" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налог на переработку"
+          }
+        }
+      }
+    },
     "Reps Given" : {
       "localizations" : {
         "ru" : {
@@ -17866,6 +19101,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Перезапустите программу в игре до %@."
+          }
+        }
+      }
+    },
+    "Result · 30 Days" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Результат · 30 дней"
           }
         }
       }
@@ -18131,6 +19376,32 @@
         }
       }
     },
+    "Sales Tax" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налог с продаж"
+          }
+        }
+      }
+    },
+    "Sales tax %@ · net %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Sales tax %1$@ · net %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налог с продаж %1$@ · итого %2$@"
+          }
+        }
+      }
+    },
     "Salvage Hold" : {
       "comment" : "EVE inventory flag name.",
       "localizations" : {
@@ -18148,6 +19419,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Та же система"
+          }
+        }
+      }
+    },
+    "Same Trade" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эта же сделка"
           }
         }
       }
@@ -18348,6 +19629,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Заявка на продажу"
+          }
+        }
+      }
+    },
+    "Seller" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продавец"
           }
         }
       }
@@ -18823,6 +20114,16 @@
         }
       }
     },
+    "Shows the payouts" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать выплаты"
+          }
+        }
+      }
+    },
     "Shows this ship in the editor" : {
       "localizations" : {
         "ru" : {
@@ -19103,6 +20404,16 @@
         }
       }
     },
+    "Skill Purchase" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Покупка навыка"
+          }
+        }
+      }
+    },
     "Skill State" : {
       "localizations" : {
         "ru" : {
@@ -19342,6 +20653,26 @@
         }
       }
     },
+    "Sold" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продано"
+          }
+        }
+      }
+    },
+    "Sold %@" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продано %@"
+          }
+        }
+      }
+    },
     "Sold for" : {
       "localizations" : {
         "ru" : {
@@ -19479,6 +20810,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Спред"
+          }
+        }
+      }
+    },
+    "Spread %@" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спред %@"
           }
         }
       }
@@ -20174,6 +21515,96 @@
         }
       }
     },
+    "Tax" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налог"
+          }
+        }
+      }
+    },
+    "Tax & Fees" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налоги и сборы"
+          }
+        }
+      }
+    },
+    "tax %@" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "налог %@"
+          }
+        }
+      }
+    },
+    "Tax %@" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налог %@"
+          }
+        }
+      }
+    },
+    "Tax by Member" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налог по участникам"
+          }
+        }
+      }
+    },
+    "Tax Paid" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уплачено налога"
+          }
+        }
+      }
+    },
+    "Tax Receiver" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Получатель налога"
+          }
+        }
+      }
+    },
+    "Taxes & Fees" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налоги и сборы"
+          }
+        }
+      }
+    },
+    "Taxes are the corporation’s share of members’ bounties and mission rewards, as booked in the Master Wallet journal. Members who paid nothing in the period are not listed." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налоги — доля корпорации от баунти и наград за миссии участников, как она записана в журнале главного кошелька. Участники, ничего не заплатившие за период, не показаны."
+          }
+        }
+      }
+    },
     "TE" : {
       "localizations" : {
         "ru" : {
@@ -20393,6 +21824,16 @@
         }
       }
     },
+    "The entry is no longer in the last 30 days of the journal." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи больше нет в журнале за последние 30 дней."
+          }
+        }
+      }
+    },
     "The five empire hubs are always there. Yours come right after them in the Market Region picker." : {
       "localizations" : {
         "ru" : {
@@ -20491,6 +21932,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Профилем становится соотношение типов урона предмета; его величина не важна."
+          }
+        }
+      }
+    },
+    "The journal holds the ISK. What was traded, how many, at what price and with whom comes from the market transaction it points to. Broker’s fees are paid when an order is placed and are separate entries." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В журнале записаны ISK. Что продано, сколько, по какой цене и с кем — берётся из рыночной транзакции, на которую ссылается запись. Брокерская комиссия платится при выставлении заявки и записывается отдельно."
           }
         }
       }
@@ -20943,6 +22394,16 @@
         }
       }
     },
+    "The spread compares the average sell and buy price inside these 30 days only. Sales tax and broker’s fees are journal entries; they are counted in the strip above." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спред сравнивает среднюю цену продажи и покупки только за эти 30 дней. Налог с продаж и брокерская комиссия — записи журнала; они учтены в полосе выше."
+          }
+        }
+      }
+    },
     "The subsystem rack holds more than EVE can store: %lld modules not saved." : {
       "localizations" : {
         "en" : {
@@ -21353,6 +22814,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Этот предмет нельзя установить ни в один слот."
+          }
+        }
+      }
+    },
+    "This item was not traded from this wallet in the last 30 days." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За последние 30 дней этим кошельком этот предмет не торговали."
           }
         }
       }
@@ -21865,6 +23336,16 @@
         }
       }
     },
+    "Trades · %lld" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сделки · %lld"
+          }
+        }
+      }
+    },
     "Trained" : {
       "localizations" : {
         "ru" : {
@@ -22067,6 +23548,26 @@
         }
       }
     },
+    "Transactions Unavailable" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Транзакции недоступны"
+          }
+        }
+      }
+    },
+    "Transfers" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переводы"
+          }
+        }
+      }
+    },
     "Triglavian Invasion" : {
       "localizations" : {
         "ru" : {
@@ -22215,6 +23716,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Нераспределённые"
+          }
+        }
+      }
+    },
+    "Unavailable" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Недоступно"
           }
         }
       }
@@ -22687,6 +24198,16 @@
         }
       }
     },
+    "View" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вид"
+          }
+        }
+      }
+    },
     "Vol / Day" : {
       "localizations" : {
         "ru" : {
@@ -22889,6 +24410,46 @@
         }
       }
     },
+    "Wallet Unavailable" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кошелёк недоступен"
+          }
+        }
+      }
+    },
+    "Wallets" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кошельки"
+          }
+        }
+      }
+    },
+    "Wallets Unavailable" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кошельки недоступны"
+          }
+        }
+      }
+    },
+    "War Fee" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Военный сбор"
+          }
+        }
+      }
+    },
     "Warp range" : {
       "localizations" : {
         "ru" : {
@@ -22959,6 +24520,16 @@
         }
       }
     },
+    "Where" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Где"
+          }
+        }
+      }
+    },
     "Whoever accepts pays the price, hands over what you ask for and receives everything you give. Delete or change it in the EVE client." : {
       "localizations" : {
         "ru" : {
@@ -22975,6 +24546,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сила воли"
+          }
+        }
+      }
+    },
+    "Withdrawals" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Снятия"
+          }
+        }
+      }
+    },
+    "Withdrawn" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Снято"
           }
         }
       }
@@ -23315,6 +24906,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Чаевые получены. В приложении ничего не меняется — всё и так было вашим."
+          }
+        }
+      }
+    },
+    "Your wallet journal needs one more permission. Sign in to EVE again and allow Neocom to read your wallet." : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для журнала кошелька нужно ещё одно разрешение. Войдите в EVE снова и разрешите Neocom читать ваш кошелёк."
           }
         }
       }

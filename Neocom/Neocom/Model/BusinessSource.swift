@@ -88,3 +88,21 @@ protocol ContractsSource: AnyObject, Sendable {
     func items(of contractID: Int64) -> ESISnapshot<[ContractItem]>
     func bids(of contractID: Int64) -> ESISnapshot<ESIContractBids>
 }
+
+/// What the Wallet screens read: a character's wallet or one corporation wallet division.
+@MainActor
+protocol WalletSource: AnyObject, Sendable {
+    /// The viewing character.
+    var characterID: Int64 { get }
+    /// `nil` for a character's own wallet.
+    var corporationID: Int64? { get }
+    /// The corporation wallet division, 1...7; `nil` for a character's own wallet.
+    var division: Int? { get }
+    /// The current balance, if known.
+    var balance: Double? { get }
+    var journal: ESISnapshot<ESIWalletJournal> { get }
+    var transactions: ESISnapshot<ESIWalletTransactions> { get }
+    var access: BusinessAccess { get }
+    func ensureFresh() async
+    func refresh() async
+}

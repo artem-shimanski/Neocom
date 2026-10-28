@@ -548,6 +548,88 @@ nonisolated extension Client {
         }
     }
 
+    // MARK: - Wallet
+
+    /// One page of a character's wallet journal, 30 days, newest first, with the page count.
+    /// Page numbers start at 1.
+    func walletJournal(characterID: Int64, page: Int) async throws -> (entries: Components.Schemas.CharactersCharacterIdWalletJournalGet,
+                                                                      pages: Int) {
+        let output = try await getCharactersCharacterIdWalletJournal(
+            path: .init(characterId: characterID),
+            query: .init(page: Int32(clamping: page)),
+            headers: .init(xCompatibilityDate: ESIService.compatibilityDate)
+        )
+        switch output {
+        case let .ok(ok):
+            return (try ok.body.json, max(Int(clamping: ok.headers.xPages ?? 1), 1))
+        case let .default(status, response):
+            throw ESIError.http(status: status, message: try? response.body.json.error)
+        }
+    }
+
+    /// A batch of a character's market transactions, newest first; with `fromID`, only those
+    /// up to that id.
+    func walletTransactions(characterID: Int64, fromID: Int64?) async throws -> Components.Schemas.CharactersCharacterIdWalletTransactionsGet {
+        let output = try await getCharactersCharacterIdWalletTransactions(
+            path: .init(characterId: characterID),
+            query: .init(fromId: fromID),
+            headers: .init(xCompatibilityDate: ESIService.compatibilityDate)
+        )
+        switch output {
+        case let .ok(ok):
+            return try ok.body.json
+        case let .default(status, response):
+            throw ESIError.http(status: status, message: try? response.body.json.error)
+        }
+    }
+
+    /// The balances of a corporation's wallet divisions. Needs the Accountant or Junior
+    /// Accountant role.
+    func corporationWallets(corporationID: Int64) async throws -> Components.Schemas.CorporationsCorporationIdWalletsGet {
+        let output = try await getCorporationsCorporationIdWallets(
+            path: .init(corporationId: corporationID),
+            headers: .init(xCompatibilityDate: ESIService.compatibilityDate)
+        )
+        switch output {
+        case let .ok(ok):
+            return try ok.body.json
+        case let .default(status, response):
+            throw ESIError.http(status: status, message: try? response.body.json.error)
+        }
+    }
+
+    /// One page of a corporation wallet division's journal, 30 days, with the page count.
+    func corporationWalletJournal(corporationID: Int64, division: Int, page: Int) async throws -> (entries: Components.Schemas.CorporationsCorporationIdWalletsDivisionJournalGet,
+                                                                                                  pages: Int) {
+        let output = try await getCorporationsCorporationIdWalletsDivisionJournal(
+            path: .init(corporationId: corporationID, division: Int64(division)),
+            query: .init(page: Int32(clamping: page)),
+            headers: .init(xCompatibilityDate: ESIService.compatibilityDate)
+        )
+        switch output {
+        case let .ok(ok):
+            return (try ok.body.json, max(Int(clamping: ok.headers.xPages ?? 1), 1))
+        case let .default(status, response):
+            throw ESIError.http(status: status, message: try? response.body.json.error)
+        }
+    }
+
+    /// A batch of a corporation wallet division's market transactions, newest first; with
+    /// `fromID`, only those up to that id.
+    func corporationWalletTransactions(corporationID: Int64, division: Int, fromID: Int64?) async throws -> Components.Schemas.CorporationsCorporationIdWalletsDivisionTransactionsGet {
+        let output = try await getCorporationsCorporationIdWalletsDivisionTransactions(
+            path: .init(corporationId: corporationID, division: Int64(division)),
+            query: .init(fromId: fromID),
+            headers: .init(xCompatibilityDate: ESIService.compatibilityDate)
+        )
+        switch output {
+        case let .ok(ok):
+            return try ok.body.json
+        case let .default(status, response):
+            throw ESIError.http(status: status, message: try? response.body.json.error)
+        }
+    }
+
     // MARK: - Corporation
 
     /// The corporation roles of a character. Needs `esi-characters.read_corporation_roles.v1`.

@@ -13,6 +13,7 @@ nonisolated struct ESICorporationRoles: Codable, Sendable, Hashable {
 
     static let director = "Director"
     static let accountant = "Accountant"
+    static let juniorAccountant = "Junior_Accountant"
     static let trader = "Trader"
     static let factoryManager = "Factory_Manager"
 }
@@ -45,8 +46,9 @@ struct CorporationAccess: Sendable, Hashable {
     var orders = false
     var industry = false
     var contracts = false
+    var wallets = false
 
-    var isEmpty: Bool { !(assets || orders || industry || contracts) }
+    var isEmpty: Bool { !(assets || orders || industry || contracts || wallets) }
 }
 
 /// The viewing character's corporation: their roles in it and its division names.
@@ -122,7 +124,9 @@ final class CorporationSheet {
             assets: allowed(SSOConfiguration.Scope.corporationAssets, ESICorporationRoles.director),
             orders: allowed(SSOConfiguration.Scope.corporationOrders, ESICorporationRoles.accountant, ESICorporationRoles.trader),
             industry: allowed(SSOConfiguration.Scope.corporationIndustryJobs, ESICorporationRoles.factoryManager),
-            contracts: hasScope(SSOConfiguration.Scope.corporationContracts)
+            contracts: hasScope(SSOConfiguration.Scope.corporationContracts),
+            wallets: allowed(SSOConfiguration.Scope.corporationWallets, ESICorporationRoles.accountant,
+                             ESICorporationRoles.juniorAccountant)
         )
     }
 

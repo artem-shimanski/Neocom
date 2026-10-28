@@ -13,10 +13,12 @@ enum MainMenuSection: String, CaseIterable, Identifiable, Hashable {
     case marketOrders
     case industry
     case contracts
+    case wallet
     case corporationAssets
     case corporationOrders
     case corporationIndustry
     case corporationContracts
+    case corporationWallets
     case planetaryInteraction
     case database
     case fittingTool
@@ -41,6 +43,8 @@ enum MainMenuSection: String, CaseIterable, Identifiable, Hashable {
         case .marketOrders, .corporationOrders: "Market Orders"
         case .industry, .corporationIndustry: "Industry"
         case .contracts, .corporationContracts: "Contracts"
+        case .wallet: "Wallet"
+        case .corporationWallets: "Wallets"
         case .database: "Database"
         case .fittingTool: "Fitting Tool"
         case .zKillboard: "zKillboard"
@@ -62,6 +66,7 @@ enum MainMenuSection: String, CaseIterable, Identifiable, Hashable {
         case .marketOrders, .corporationOrders: "tag"
         case .industry, .corporationIndustry: "hammer"
         case .contracts, .corporationContracts: "doc.text"
+        case .wallet, .corporationWallets: "wallet.bifold"
         case .database: "square.stack.3d.up"
         case .fittingTool: "wrench.and.screwdriver"
         case .zKillboard: "magnifyingglass"
@@ -83,6 +88,7 @@ enum MainMenuSection: String, CaseIterable, Identifiable, Hashable {
         case .marketOrders, .corporationOrders: .mint
         case .industry, .corporationIndustry: .yellow
         case .contracts, .corporationContracts: .purple
+        case .wallet, .corporationWallets: .green
         case .database: .orange
         case .fittingTool: .pink
         case .zKillboard: .red
@@ -96,8 +102,8 @@ enum MainMenuSection: String, CaseIterable, Identifiable, Hashable {
         switch self {
         case .characterSheet, .skills, .trainingQueue, .certificates, .planetaryInteraction, .assets, .mail: true
         case .killmails: true
-        case .marketOrders, .industry, .contracts: true
-        case .corporationAssets, .corporationOrders, .corporationIndustry, .corporationContracts: true
+        case .marketOrders, .industry, .contracts, .wallet: true
+        case .corporationAssets, .corporationOrders, .corporationIndustry, .corporationContracts, .corporationWallets: true
         case .database, .fittingTool, .support, .settings: false
         case .zKillboard: false
         }
@@ -107,8 +113,8 @@ enum MainMenuSection: String, CaseIterable, Identifiable, Hashable {
     var group: Group? {
         switch self {
         case .characterSheet, .skills, .trainingQueue, .certificates, .assets, .mail, .killmails: .character
-        case .marketOrders, .industry, .contracts, .planetaryInteraction: .business
-        case .corporationAssets, .corporationOrders, .corporationIndustry, .corporationContracts: .corporation
+        case .marketOrders, .industry, .contracts, .wallet, .planetaryInteraction: .business
+        case .corporationAssets, .corporationOrders, .corporationIndustry, .corporationContracts, .corporationWallets: .corporation
         case .database, .fittingTool: .tools
         case .zKillboard: .tools
         case .support, .settings: nil

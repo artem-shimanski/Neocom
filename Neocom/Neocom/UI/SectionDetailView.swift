@@ -48,6 +48,8 @@ struct SectionDetailView: View {
                 IndustryJobsView()
             case .contracts:
                 ContractsView()
+            case .wallet:
+                WalletView()
             case .corporationAssets:
                 AssetsView(scope: .corporation)
             case .corporationOrders:
@@ -56,6 +58,8 @@ struct SectionDetailView: View {
                 IndustryJobsView(scope: .corporation)
             case .corporationContracts:
                 ContractsView(scope: .corporation)
+            case .corporationWallets:
+                CorporationWalletsView()
             case .support:
                 SupportView()
             case .settings:

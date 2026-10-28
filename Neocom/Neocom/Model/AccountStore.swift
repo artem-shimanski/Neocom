@@ -53,12 +53,14 @@ final class AccountStore {
     @ObservationIgnored private var orderSheets: [Int64: OrdersSheet] = [:]
     @ObservationIgnored private var industrySheets: [Int64: IndustrySheet] = [:]
     @ObservationIgnored private var contractSheets: [Int64: ContractsSheet] = [:]
+    @ObservationIgnored private var walletSheets: [Int64: WalletSheet] = [:]
     /// Corporation sheets, by the viewing character; each is bound to one corporation id.
     @ObservationIgnored private var corporationSheets: [Int64: CorporationSheet] = [:]
     @ObservationIgnored private var corporationAssetSheets: [Int64: CorporationAssetsSheet] = [:]
     @ObservationIgnored private var corporationOrderSheets: [Int64: CorporationOrdersSheet] = [:]
     @ObservationIgnored private var corporationIndustrySheets: [Int64: CorporationIndustrySheet] = [:]
     @ObservationIgnored private var corporationContractSheets: [Int64: CorporationContractsSheet] = [:]
+    @ObservationIgnored private var corporationWalletSheets: [Int64: CorporationWalletSheet] = [:]
     @ObservationIgnored private var mailSheets: [Int64: MailSheet] = [:]
     @ObservationIgnored private var killmailSheets: [Int64: KillmailsSheet] = [:]
     @ObservationIgnored private var plans: [Int64: TrainingPlanStore] = [:]
@@ -194,12 +196,14 @@ final class AccountStore {
         planetSheets = [:]
         assetSheets.values.forEach { $0.invalidate() }
         assetSheets = [:]
-        for characterID in Set(orderSheets.keys).union(industrySheets.keys).union(contractSheets.keys) {
+        for characterID in Set(orderSheets.keys).union(industrySheets.keys).union(contractSheets.keys)
+            .union(walletSheets.keys) {
             dropBusinessSheets(of: characterID)
         }
         let corporationViewers = Set(corporationSheets.keys)
             .union(corporationAssetSheets.keys).union(corporationOrderSheets.keys)
             .union(corporationIndustrySheets.keys).union(corporationContractSheets.keys)
+            .union(corporationWalletSheets.keys)
         for characterID in corporationViewers {
             dropCorporationSheets(of: characterID)
         }
@@ -319,6 +323,21 @@ final class AccountStore {
         currentAccount.map(contracts(for:))
     }
 
+    func wallet(for account: Account) -> WalletSheet {
+        if let sheet = walletSheets[account.id] { return sheet }
+
+        let character = self.sheet(for: account)
+        let sheet = WalletSheet(characterID: account.id, client: client(for: account),
+                                hasScope: account.hasScope(SSOConfiguration.Scope.characterWallet),
+                                character: character)
+        walletSheets[account.id] = sheet
+        return sheet
+    }
+
+    var currentWallet: WalletSheet? {
+        currentAccount.map(wallet(for:))
+    }
+
     /// Invalidates and drops the Business sheets, so in-flight fetches write no files.
     private func dropBusinessSheets(of characterID: Int64) {
         orderSheets[characterID]?.invalidate()
@@ -327,6 +346,8 @@ final class AccountStore {
         industrySheets[characterID] = nil
         contractSheets[characterID]?.invalidate()
         contractSheets[characterID] = nil
+        walletSheets[characterID]?.invalidate()
+        walletSheets[characterID] = nil
     }
 
     // MARK: - Corporation
@@ -413,6 +434,20 @@ final class AccountStore {
         currentAccount.flatMap(corporationContracts(for:))
     }
 
+    /// The corporation's wallets as seen by `account`; creating the sheet reads only the
+    /// balances' cache, a division's files are read on first access.
+    func corporationWallet(for account: Account) -> CorporationWalletSheet? {
+        guard let id = corporationID(of: account) else { return nil }
+        return corporationSheet(in: &corporationWalletSheets, for: account, corporationID: id) {
+            CorporationWalletSheet(characterID: account.id, corporationID: id, client: client(for: account),
+                                   hasScope: account.hasScope(SSOConfiguration.Scope.corporationWallets))
+        }
+    }
+
+    var currentCorporationWallet: CorporationWalletSheet? {
+        currentAccount.flatMap(corporationWallet(for:))
+    }
+
     /// The cached sheet of a store, or a new one when the corporation changed.
     private func corporationSheet<Sheet: CorporationBound>(in store: inout [Int64: Sheet],
                                                            for account: Account,
@@ -450,6 +485,8 @@ final class AccountStore {
         corporationIndustrySheets[characterID] = nil
         corporationContractSheets[characterID]?.invalidate()
         corporationContractSheets[characterID] = nil
+        corporationWalletSheets[characterID]?.invalidate()
+        corporationWalletSheets[characterID] = nil
     }
 
     func mail(for account: Account) -> MailSheet {

@@ -133,11 +133,13 @@ private struct HomeView: View {
     @State private var orders: OrdersSheet?
     @State private var industry: IndustrySheet?
     @State private var contracts: ContractsSheet?
+    @State private var wallet: WalletSheet?
     /// The current character's corporation: its roles decide the Corporation tiles.
     @State private var corporation: CorporationSheet?
     @State private var corporationOrders: CorporationOrdersSheet?
     @State private var corporationIndustry: CorporationIndustrySheet?
     @State private var corporationContracts: CorporationContractsSheet?
+    @State private var corporationWallets: CorporationWalletSheet?
     /// The current character's mail, for the tile's unread count.
     @State private var mail: MailSheet?
     /// The current character's killmails, for the tile's counts.
@@ -248,19 +250,23 @@ private struct HomeView: View {
             assets = accounts.currentAssets
             await assets?.ensureFresh()
         }
-        // The Business tiles count open orders, running jobs and active contracts. Each sheet skips
-        // the fetch when the account lacks the scope; the section's own call joins one in flight.
+        // The Business tiles count open orders, running jobs and active contracts, and the wallet's
+        // change over 30 days from its journal (not the transactions). Each sheet skips the fetch
+        // when the account lacks the scope; the section's own call joins one in flight.
         .task(id: AssetsTaskKey(characterID: accounts.currentAccountID, signIn: accounts.signInGeneration)) {
             let orders = accounts.currentOrders
             let industry = accounts.currentIndustry
             let contracts = accounts.currentContracts
+            let wallet = accounts.currentWallet
             self.orders = orders
             self.industry = industry
             self.contracts = contracts
+            self.wallet = wallet
             async let ordersDone: Void = orders?.ensureOpenFresh() ?? ()
             async let industryDone: Void = industry?.ensureFresh() ?? ()
             async let contractsDone: Void = contracts?.ensureFresh() ?? ()
-            _ = await (ordersDone, industryDone, contractsDone)
+            async let walletDone: Void = wallet?.ensureJournalFresh() ?? ()
+            _ = await (ordersDone, industryDone, contractsDone, walletDone)
         }
         // The Corporation tiles: the roles decide which show, and only those fetch their counts.
         // Corporation assets are never fetched here: the list is far larger than a count is worth.
@@ -363,6 +369,7 @@ private struct HomeView: View {
             case .corporationOrders: access.orders
             case .corporationIndustry: access.industry
             case .corporationContracts: access.contracts
+            case .corporationWallets: access.wallets
             default: false
             }
         }
@@ -373,6 +380,7 @@ private struct HomeView: View {
             corporationOrders = nil
             corporationIndustry = nil
             corporationContracts = nil
+            corporationWallets = nil
             corporation = nil
             return
         }
@@ -383,13 +391,17 @@ private struct HomeView: View {
         let orders = access.orders ? accounts.currentCorporationOrders : nil
         let industry = access.industry ? accounts.currentCorporationIndustry : nil
         let contracts = access.contracts ? accounts.currentCorporationContracts : nil
+        // The balances only: a division's journal is fetched when it is opened.
+        let wallets = access.wallets ? accounts.currentCorporationWallet : nil
         corporationOrders = orders
         corporationIndustry = industry
         corporationContracts = contracts
+        corporationWallets = wallets
         async let ordersDone: Void = orders?.ensureOpenFresh() ?? ()
         async let industryDone: Void = industry?.ensureFresh() ?? ()
         async let contractsDone: Void = contracts?.ensureFresh() ?? ()
-        _ = await (ordersDone, industryDone, contractsDone)
+        async let walletsDone: Void = wallets?.ensureFresh() ?? ()
+        _ = await (ordersDone, industryDone, contractsDone, walletsDone)
     }
 
     /// A tile with the section's counters and selection ring.
@@ -428,6 +440,12 @@ private struct HomeView: View {
                     .overlay { selectionRing(section) }
             case .corporationContracts:
                 contractsTile(current(corporationContracts), section: section)
+                    .overlay { selectionRing(section) }
+            case .wallet:
+                walletTile
+                    .overlay { selectionRing(section) }
+            case .corporationWallets:
+                corporationWalletsTile
                     .overlay { selectionRing(section) }
             case .mail:
                 mailTile
@@ -580,6 +598,40 @@ private struct HomeView: View {
         }
         return HUDNavTile(systemImage: section.systemImage,
                           title: Text(section.title),
+                          subtitle: subtitle)
+    }
+
+    /// `30.27M ISK · 30 days`, and the change over those days, `+6.88M` in `ok` when it grew.
+    private var walletTile: some View {
+        let sheet = wallet.flatMap { $0.characterID == accounts.currentAccountID ? $0 : nil }
+        let series = sheet?.journal.value.map { WalletBalancePoint.series(from: $0.entries, now: .now) } ?? []
+        let net: Double? = if let first = series.first, let last = series.last { last.balance - first.balance } else { nil }
+        let subtitle: Text? = if let sheet, sheet.access != .granted {
+            Text("No access")
+        } else if let balance = sheet?.balance {
+            net == nil ? Text("\(ISK.compact(balance)) ISK") : Text("\(ISK.compact(balance)) ISK · 30 days")
+        } else {
+            nil
+        }
+        return HUDNavTile(systemImage: MainMenuSection.wallet.systemImage,
+                          title: Text(MainMenuSection.wallet.title),
+                          subtitle: subtitle) {
+            if let net {
+                HUDStatusChip(text: Text(verbatim: WalletText.signed(net)), color: net > 0 ? .hudOk : .hudInkMuted)
+            }
+        }
+    }
+
+    /// `1.28B ISK`: the divisions' balances added up.
+    private var corporationWalletsTile: some View {
+        let sheet = current(corporationWallets)
+        let subtitle: Text? = if let sheet, sheet.access != .granted {
+            Text("No access")
+        } else {
+            sheet?.balances.value.map { Text("\(ISK.compact($0.total)) ISK") }
+        }
+        return HUDNavTile(systemImage: MainMenuSection.corporationWallets.systemImage,
+                          title: Text(MainMenuSection.corporationWallets.title),
                           subtitle: subtitle)
     }
 
