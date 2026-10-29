@@ -331,9 +331,10 @@ private struct MarketPickerBrowser: View {
     }
 }
 
-/// One level of the tree (the roots when `groupID` is `nil`), or, when it would be a screen of a
-/// single row, the level under that row in its place, repeatedly. A rig slot opens on the rig
-/// groups; a light-fighter slot on the light fighters themselves.
+/// One level of the tree (the roots when `groupID` is `nil`). The root, when it would be a screen
+/// of a single row, shows the level under that row in its place, repeatedly; a level opened by a
+/// tap is never collapsed, so only the leading chain of single rows is skipped. A rig slot opens
+/// on the rig groups; a light-fighter slot on the light fighters themselves.
 ///
 /// Collapsed here rather than in the stack: queries are synchronous, and the stack keeps the
 /// groups as tapped (`ModulePickerView.path`). A collapsed root is still the root.
@@ -355,9 +356,9 @@ private struct MarketPickerLevel: View {
     }
 
     var body: some View {
-        if items.isEmpty, groups.count == 1, let only = groups.first {
+        if isRoot, items.isEmpty, groups.count == 1, let only = groups.first {
             // Type-erased: a view that contains itself has no concrete type to name.
-            AnyView(MarketPickerLevel(groupID: only.id, pick: pick, isRoot: isRoot, onSelect: onSelect))
+            AnyView(MarketPickerLevel(groupID: only.id, pick: pick, isRoot: true, onSelect: onSelect))
         } else if isRoot {
             list
         } else {
