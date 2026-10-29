@@ -2,10 +2,13 @@ import SwiftUI
 
 /// "Load Older": the row at the end of a paged list that asks for the next page — an accent
 /// arrow (a spinner while loading), the title, and the paging state (`PAGE 2 OF 4`) on the right.
-/// Disabled while loading.
+/// Disabled while loading. `systemImage` replaces the arrow for rows that start something else.
+/// `detailColor` tints the detail, e.g. a warning when the action failed.
 struct HUDLoadMoreRow: View {
     var title: Text = Text("Load Older")
     var detail: Text?
+    var detailColor: Color = .hudInkMuted
+    var systemImage = "arrow.down"
     let isLoading: Bool
     let action: () -> Void
 
@@ -16,7 +19,7 @@ struct HUDLoadMoreRow: View {
                     if isLoading {
                         ProgressView()
                     } else {
-                        Image(systemName: "arrow.down")
+                        Image(systemName: systemImage)
                             .font(.system(size: 16, weight: .semibold))
                             .accessibilityHidden(true)
                     }
@@ -31,7 +34,7 @@ struct HUDLoadMoreRow: View {
                         .font(.hudLabel)
                         .tracking(1)
                         .textCase(.uppercase)
-                        .foregroundStyle(Color.hudInkMuted)
+                        .foregroundStyle(detailColor)
                 }
             }
             .hudRow()

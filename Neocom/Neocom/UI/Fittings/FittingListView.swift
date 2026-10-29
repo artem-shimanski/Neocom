@@ -6,11 +6,61 @@ import SwiftUI
 
 /// Reads the player's fits from the environment and hands the fixed list to `FittingListBody`;
 /// `@LiteQuery` builds its query in `init`, so the ship ids must be known by then.
+///
+/// Also checks whether the pasteboard holds text, on appearing, on returning to the foreground and
+/// when it changes, to offer "Paste from Clipboard"; the text itself is read only on the tap.
+/// A failed paste is shown on the row until the screen reappears or the pasteboard changes.
 struct FittingListView: View {
+    /// Opens a fit created here in the editor.
+    let open: (UUID) -> Void
+
+    @State private var canPaste = false
+    @State private var pasteFailure: PasteFailure?
+    @State private var failedChangeCount = 0
+
     @Environment(FittingStore.self) private var fittings
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        FittingListBody(fits: fittings.fits)
+        FittingListBody(fits: fittings.fits, canPaste: canPaste, pasteFailure: $pasteFailure, open: open)
+            .onAppear {
+                pasteFailure = nil
+                canPaste = FitPasteboard.hasText
+            }
+            .onChange(of: pasteFailure) { _, failure in
+                if failure != nil { failedChangeCount = FitPasteboard.changeCount }
+            }
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active { refreshPasteboard() }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIPasteboard.changedNotification)) { _ in
+                refreshPasteboard()
+            }
+    }
+
+    private func refreshPasteboard() {
+        if pasteFailure != nil, FitPasteboard.changeCount != failedChangeCount { pasteFailure = nil }
+        canPaste = FitPasteboard.hasText
+    }
+}
+
+/// Why the last paste produced no fit.
+private enum PasteFailure {
+    case denied
+    case noFit
+
+    var text: Text {
+        switch self {
+        case .denied: Text("Paste not allowed")
+        case .noFit: Text("No fit in EFT or DNA format")
+        }
+    }
+
+    var message: String {
+        switch self {
+        case .denied: String(localized: "Paste not allowed")
+        case .noFit: String(localized: "No fit in EFT or DNA format")
+        }
     }
 }
 
@@ -30,20 +80,30 @@ enum FittingOrder: String, CaseIterable, Identifiable {
 
 private struct FittingListBody: View {
     let fits: [FittingSummary]
+    let canPaste: Bool
+    @Binding var pasteFailure: PasteFailure?
+    let open: (UUID) -> Void
 
     @State private var order: FittingOrder = .byShip
     @State private var searchText = ""
     @State private var renamingFit: FittingSummary?
     @State private var renameText = ""
     @State private var uploader = FitUploader()
+    @State private var isReadingClipboard = false
+    /// A pasted fit that lost something on import, created once the player confirms.
+    @State private var lossyPaste: PastedFit?
 
     @Environment(FittingStore.self) private var fittings
     @Environment(AccountStore.self) private var accounts
 
     @LiteQuery private var ships: [ShipRow]
 
-    init(fits: [FittingSummary]) {
+    init(fits: [FittingSummary], canPaste: Bool, pasteFailure: Binding<PasteFailure?>,
+         open: @escaping (UUID) -> Void) {
         self.fits = fits
+        self.canPaste = canPaste
+        _pasteFailure = pasteFailure
+        self.open = open
         let shipTypeIDs = Array(Set(fits.map(\.shipTypeID)))
         _ships = LiteQuery(FittingBrowser.ships(shipTypeIDs))
     }
@@ -53,9 +113,11 @@ private struct FittingListBody: View {
         // in the search field.
         let shipByID = Dictionary(ships.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         let visibleFits = filteredFits(shipByID)
+        let showsPaste = canPaste && searchText.isEmpty
         return Group {
             if fits.isEmpty {
                 HUDList {
+                    if showsPaste { pasteSection }
                     Section {
                         HUDEmptyPanel(title: Text("No Fits"), message: Text("Tap ＋ to create a fit."))
                             .hudBareRow()
@@ -66,6 +128,7 @@ private struct FittingListBody: View {
                     .hudScreen()
             } else {
                 HUDList {
+                    if showsPaste { pasteSection }
                     switch order {
                     case .byShip:
                         ForEach(sections(of: visibleFits, shipByID)) { section in
@@ -120,6 +183,85 @@ private struct FittingListBody: View {
             }
         }
         .fitUploadFlow(uploader)
+        .alert(
+            "Not Everything Was Copied",
+            isPresented: Binding(
+                get: { lossyPaste != nil },
+                set: { isPresented in if !isPresented { lossyPaste = nil } }
+            ),
+            presenting: lossyPaste
+        ) { pasted in
+            Button("Open Fit") {
+                create(pasted)
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: { _ in
+            Text("Some items of this fitting are not in the database, are cargo or did not fit, and were left out.")
+        }
+    }
+
+    private var pasteSection: some View {
+        Section {
+            HUDLoadMoreRow(title: Text("Paste from Clipboard"),
+                           detail: pasteFailure?.text,
+                           detailColor: .hudWarnNoteInk,
+                           systemImage: "doc.on.clipboard",
+                           isLoading: isReadingClipboard) {
+                isReadingClipboard = true
+                pasteFailure = nil
+                let feedback = UINotificationFeedbackGenerator()
+                feedback.prepare()
+                Task {
+                    let result = await FitPasteboard.read()
+                    isReadingClipboard = false
+                    await Self.becomeActive()
+                    switch result {
+                    case .fit: feedback.notificationOccurred(.success)
+                    case .denied, .noFit: feedback.notificationOccurred(.error)
+                    }
+                    switch result {
+                    case .fit(let pasted):
+                        if pasted.warnings.isEmpty {
+                            create(pasted)
+                        } else {
+                            lossyPaste = pasted
+                        }
+                    case .denied:
+                        fail(.denied)
+                    case .noFit:
+                        fail(.noFit)
+                    }
+                }
+            }
+            .accessibilityValue(pasteFailure?.message ?? "")
+        }
+    }
+
+    /// The "Allow Paste" prompt deactivates the app, and haptics are dropped while it is inactive.
+    private static func becomeActive() async {
+        guard UIApplication.shared.applicationState != .active else { return }
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask {
+                for await _ in NotificationCenter.default.notifications(named: UIApplication.didBecomeActiveNotification) {
+                    return
+                }
+            }
+            group.addTask { try? await Task.sleep(for: .seconds(1)) }
+            await group.next()
+            group.cancelAll()
+        }
+    }
+
+    private func fail(_ failure: PasteFailure) {
+        pasteFailure = failure
+        AccessibilityNotification.Announcement(failure.message).post()
+    }
+
+    private func create(_ pasted: PastedFit) {
+        let name = PickedShip(typeID: pasted.shipTypeID, name: pasted.name).name
+        var document = pasted.document
+        document.name = name
+        open(fittings.create(shipTypeID: pasted.shipTypeID, name: name, document: document))
     }
 
     @ViewBuilder

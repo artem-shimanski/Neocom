@@ -1,6 +1,36 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Paste not allowed" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вставка запрещена"
+          }
+        }
+      }
+    },
+    "No fit in EFT or DNA format" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет оснастки в формате EFT или DNA"
+          }
+        }
+      }
+    },
+    "Paste from Clipboard" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вставить из буфера обмена"
+          }
+        }
+      }
+    },
     "· %lld online" : {
       "localizations" : {
         "ru" : {

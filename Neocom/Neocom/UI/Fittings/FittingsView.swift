@@ -24,7 +24,7 @@ struct FittingsView: View {
             Group {
                 switch tab {
                 case .myFits:
-                    FittingListView()
+                    FittingListView { pushedRoute = .editor($0) }
                 case .inGame:
                     InGameFittingsView()
                 }
