@@ -3,8 +3,9 @@ import SwiftUI
 
 /// A balance over time as a step line: each value holds until the next one. A faint area under
 /// the line, dashed rules at the lowest and the highest value with their figures, a dot at the
-/// last point, and an optional shaded window (the period the screen sums up). The caller writes
-/// the figures (`valueLabel`) and the dates under the ends.
+/// last point, and an optional shaded window (the period the screen sums up) with a dashed rule
+/// at its start, animated when it changes. The caller writes the figures (`valueLabel`) and the
+/// dates under the ends.
 struct HUDBalanceChart: View {
     struct Point: Hashable {
         var date: Date
@@ -65,7 +66,12 @@ struct HUDBalanceChart: View {
                 RectangleMark(xStart: .value("From", max(window.lowerBound, start)),
                               xEnd: .value("To", min(window.upperBound, end)),
                               yStart: .value("Floor", floor), yEnd: .value("Ceiling", ceiling))
-                    .foregroundStyle(color.opacity(0.06))
+                    .foregroundStyle(color.opacity(0.12))
+                if window.lowerBound > start {
+                    RuleMark(x: .value("Window start", window.lowerBound))
+                        .foregroundStyle(color.opacity(0.5))
+                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [2, 4]))
+                }
             }
             RuleMark(y: .value("Low", low))
                 .foregroundStyle(Color.hudLineSubtle)
@@ -98,6 +104,7 @@ struct HUDBalanceChart: View {
         .chartXAxis(.hidden)
         .chartYAxis(.hidden)
         .chartLegend(.hidden)
+        .animation(.easeInOut(duration: 0.25), value: window)
         .frame(height: height)
     }
 

@@ -173,6 +173,16 @@ final class WalletModel {
         return points
     }
 
+    /// The balance change over `period` up to `now`: the last balance at or before the window start
+    /// (the first one if the series starts later) to the newest.
+    func balanceChange(now: Date, period: WalletPeriod) -> Double? {
+        let series = balanceSeries(now: now)
+        guard let first = series.first, let last = series.last else { return nil }
+        let from = now.addingTimeInterval(-period.interval)
+        let base = series.last { $0.date <= from } ?? first
+        return last.balance - base.balance
+    }
+
     func summary(now: Date, period: WalletPeriod) -> WalletSummary {
         validateMemo()
         if let memo = memoSummaries[period], memo.now == now { return memo.summary }

@@ -322,6 +322,11 @@ private struct WalletHero: View {
                             .font(.hudCaption)
                             .foregroundStyle(Color.hudInkBodyMuted)
                     }
+                    if period != .month, let change = model.balanceChange(now: now, period: period) {
+                        Text("\(Text(verbatim: "\(WalletText.signed(change)) ISK").foregroundStyle(WalletText.color(change))) in \(WalletText.period(period))")
+                            .font(.hudCaption)
+                            .foregroundStyle(Color.hudInkBodyMuted)
+                    }
                 }
                 .padding(.horizontal, HUDMetrics.gutter)
                 .padding(.top, 14)

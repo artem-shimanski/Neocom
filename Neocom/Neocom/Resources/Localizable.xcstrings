@@ -1241,6 +1241,22 @@
         }
       }
     },
+    "%@ in %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ in %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ за %2$@"
+          }
+        }
+      }
+    },
     "%@ since %@" : {
       "localizations" : {
         "en" : {
@@ -24596,6 +24612,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сила воли"
+          }
+        }
+      }
+    },
+    "Window start" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Начало периода"
           }
         }
       }
