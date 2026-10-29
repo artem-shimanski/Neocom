@@ -33,6 +33,8 @@ struct TacticalModeAttributeRow: Sendable {
     var name: String
     var displayName: String?
     var value: Double
+    /// The modifier's dogma operation: 4 PostMul, 5 PostDiv, 6 PostPercent.
+    var operation: Int?
 }
 
 extension FittingBrowser {
@@ -82,12 +84,13 @@ extension FittingBrowser {
             .leftJoin(NameRow.self) { _, attribute, _, _, name in attribute.displayNameID == name.id }
         return withName
             .filter { row, _, _, _, _ in row.typeID.in(modes) }
-            .select { row, attribute, _, _, name in
+            .select { row, attribute, _, modifier, name in
                 TacticalModeAttributeRow.projection(id: attribute.id,
                                                     typeID: row.typeID,
                                                     name: attribute.name,
                                                     displayName: name.text,
-                                                    value: row.value)
+                                                    value: row.value,
+                                                    operation: modifier.operation)
             }
             .order(by: { _, attribute, _, _, _ in attribute.id })
             .distinct()
@@ -166,8 +169,9 @@ struct TacticalMode: Identifiable, Hashable, Sendable {
     }
 }
 
-/// What a mode changes, as the percentage a `PostDiv` makes: the attribute is divided by the
-/// value `v`, a change of `1/v − 1` (`1.5` is −33.3%, `0.5` is +100%).
+/// What a mode changes, as a percentage. A `PostDiv` divides the attribute by the value `v`, a
+/// change of `1/v − 1` (`1.5` is −33.3%, `0.5` is +100%); a `PostPercent` is `v/100`, a `PostMul`
+/// `v − 1`.
 ///
 /// Labels prefer the SDE display name; the unnamed `mode…` attributes are labelled here, and
 /// unknown ones are derived from the dogma name.
@@ -191,7 +195,7 @@ struct TacticalModeBonus: Identifiable, Hashable, Sendable {
 
     /// One mode's bonuses in attribute order; four equal resistances fold into one line.
     static func bonuses(of attributes: [TacticalModeAttributeRow]) -> [TacticalModeBonus] {
-        let modifiers = attributes.filter { $0.name.hasPrefix("mode") && $0.name.contains("PostDiv") && $0.value > 0 }
+        let modifiers = attributes.filter { change(of: $0) != 0 }
         let resistances = modifiers.filter { resistanceNames.contains($0.name) }
         let folds = resistances.count == resistanceNames.count && Set(resistances.map(\.value)).count == 1
 
@@ -207,11 +211,21 @@ struct TacticalModeBonus: Identifiable, Hashable, Sendable {
                 continue
             }
             let (label, shortLabel) = labels(of: row)
-            let change = 1 / row.value - 1
+            let delta = change(of: row)
             bonuses.append(TacticalModeBonus(id: row.id, label: label, shortLabel: shortLabel,
-                                             change: isResistance ? -change : change))
+                                             change: isResistance ? -delta : delta))
         }
         return bonuses
+    }
+
+    /// The signed change a modifier makes; zero for operations the cards do not show.
+    private static func change(of row: TacticalModeAttributeRow) -> Double {
+        switch row.operation {
+        case 5: row.value > 0 ? 1 / row.value - 1 : 0
+        case 6: row.value / 100
+        case 4: row.value - 1
+        default: 0
+        }
     }
 
     private static let resistanceNames: Set<String> = [
@@ -221,6 +235,9 @@ struct TacticalModeBonus: Identifiable, Hashable, Sendable {
 
     /// The row label and tile label, by dogma name.
     private static func labels(of row: TacticalModeAttributeRow) -> (String, String) {
+        if row.name == "roleBonusMarauder" {
+            return (String(localized: "MJD reactivation delay"), String(localized: "MJD"))
+        }
         if let displayName = row.displayName, !displayName.isEmpty { return (displayName, displayName) }
         switch row.name {
         case "modeEmResistancePostDiv":
@@ -275,7 +292,7 @@ struct TacticalModeBonus: Identifiable, Hashable, Sendable {
         case "modeAnhingaCruiseLauncherTorpedoLauncherRapidHeavyLauncherROFPostDiv":
             return (String(localized: "Launcher cycle time"), String(localized: "Cycle"))
         default:
-            let label = derivedLabel(of: row.name)
+            let label = row.name.hasPrefix("mode") ? derivedLabel(of: row.name) : row.name
             return (label, label)
         }
     }

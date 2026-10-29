@@ -14909,6 +14909,26 @@
         }
       }
     },
+    "MJD" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MJD"
+          }
+        }
+      }
+    },
+    "MJD reactivation delay" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Задержка повторного включения MJD"
+          }
+        }
+      }
+    },
     "Module state" : {
       "localizations" : {
         "ru" : {
