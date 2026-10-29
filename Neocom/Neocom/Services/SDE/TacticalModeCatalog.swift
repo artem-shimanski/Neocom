@@ -67,22 +67,30 @@ extension FittingBrowser {
             .query()
     }
 
-    /// Every attribute of these mode types in attribute id order, including unpublished ones.
+    /// The attributes of these mode types that one of the type's own effects applies, in attribute
+    /// id order. The SDE carries inert `mode…` attributes no effect reads; they are left out.
     static func tacticalModeAttributes(of modes: [TypeID]) -> SQLQuery<TacticalModeAttributeRow> {
         let withAttribute = TypeAttribute.all()
             .join(DogmaAttributeInfo.self) { row, attribute in row.attributeID == attribute.id }
-        let withName = withAttribute
-            .leftJoin(NameRow.self) { _, attribute, name in attribute.displayNameID == name.id }
+        let withEffect = withAttribute
+            .join(TypeEffect.self) { row, _, link in row.typeID == link.typeID }
+        let withModifier = withEffect
+            .join(DogmaEffectModifier.self) { _, attribute, link, modifier in
+                link.effectID == modifier.effectID && modifier.modifyingAttributeID == attribute.id
+            }
+        let withName = withModifier
+            .leftJoin(NameRow.self) { _, attribute, _, _, name in attribute.displayNameID == name.id }
         return withName
-            .filter { row, _, _ in row.typeID.in(modes) }
-            .select { row, attribute, name in
+            .filter { row, _, _, _, _ in row.typeID.in(modes) }
+            .select { row, attribute, _, _, name in
                 TacticalModeAttributeRow.projection(id: attribute.id,
                                                     typeID: row.typeID,
                                                     name: attribute.name,
                                                     displayName: name.text,
                                                     value: row.value)
             }
-            .order(by: { _, attribute, _ in attribute.id })
+            .order(by: { _, attribute, _, _, _ in attribute.id })
+            .distinct()
             .query()
     }
 }
