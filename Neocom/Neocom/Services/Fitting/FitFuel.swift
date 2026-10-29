@@ -28,19 +28,13 @@ nonisolated struct FitFuel: Sendable {
 
 nonisolated extension FitFuel {
     /// `nil` for anything but a structure.
-    init?(_ hull: borrowing FitStats.Hull) {
+    init?(_ hull: FitStats.Hull.Snapshot) {
         guard hull.categoryID == .structure else { return nil }
-        var services: [(socket: Int, service: Service)] = []
-        hull.modules.forEach(in: .service) { module in
+        let services = hull.modules
             // Matches the engine's totals: online or above consumes fuel.
-            guard module.effectiveState >= .online else { return }
-            services.append((module.socket, Service(id: module.id,
-                                                    typeID: module.typeID,
-                                                    perHour: module.serviceFuelPerHour,
-                                                    toOnline: module.serviceFuelToOnline)))
-        }
-        self.init(services: services.sorted { $0.socket < $1.socket }.map(\.service),
-                  perHour: hull.fuelPerHour,
-                  toOnline: hull.fuelToOnline)
+            .filter { $0.slot == .service && $0.effectiveState >= .online }
+            .sorted { $0.socket < $1.socket }
+            .map { Service(id: $0.id, typeID: $0.typeID, perHour: $0.serviceFuelPerHour, toOnline: $0.serviceFuelToOnline) }
+        self.init(services: services, perHour: hull.fuelPerHour, toOnline: hull.fuelToOnline)
     }
 }

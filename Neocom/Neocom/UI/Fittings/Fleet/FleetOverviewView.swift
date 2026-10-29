@@ -124,7 +124,7 @@ private struct FleetOverviewBody: View {
     }
 
     private var totals: [HUDStatStrip.Item] {
-        let dps = members.reduce(0) { $0 + $1.stats.damage.dps.sum() }
+        let dps = members.reduce(0) { $0 + $1.stats.dps.sum() }
         let hitPoints = FitStatFormat.hpCompact(members.reduce(0) { $0 + $1.stats.uniformEffectiveHitPoints.sum() })
         let repairs = effects.compactMap { $0.isActive ? $0.repair : nil }
         let given = repairs.reduce(0) { $0 + $1.hpPerSecond }
@@ -199,11 +199,11 @@ private struct FleetOverviewBody: View {
     private static let rowStyle = HUDRowStyle(minHeight: 68, verticalPadding: 10)
 
     /// `487 DPS · 14.1K EHP · CAP 41%` — the editor header's three figures on one line.
-    private func statsLine(_ stats: FitStatsSummary) -> String {
+    private func statsLine(_ stats: FleetSnapshot.Ship.Stats) -> String {
         let hitPoints = FitStatFormat.hpCompact(stats.uniformEffectiveHitPoints.sum())
         let capacitor = stats.capacitor
         let cap = capacitor.stableLevel.map { FitStatFormat.percent($0) } ?? FitStatFormat.clock(capacitor.lastsFor)
-        let dps = FitStatFormat.dps(stats.damage.dps.sum())
+        let dps = FitStatFormat.dps(stats.dps.sum())
         return String(localized: "\(dps) · \(hitPoints.figure)\(hitPoints.unit) EHP · CAP \(cap)", comment: "Fleet row stats line: DPS, effective HP, capacitor")
     }
 }

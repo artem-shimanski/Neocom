@@ -8,7 +8,7 @@ struct FleetMember: Identifiable {
     var fittingID: UUID
     var name: String
     var shipTypeID: TypeID
-    var stats: FitStatsSummary
+    var stats: FleetSnapshot.Ship.Stats
 }
 
 extension FittingEditorModel {

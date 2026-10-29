@@ -417,7 +417,7 @@ actor FitSession {
     private func fighterTubes(of hull: HullID) async -> Int {
         await engine.evaluate({ stats -> Int in
             guard stats.pilots.allIDs.contains(where: { $0.hull == hull }) else { return 0 }
-            return Int(stats[hull].attributes[.fighterTubes] ?? 0)
+            return stats[hull].fighterTubes.total
         })
     }
 
@@ -814,11 +814,13 @@ actor FitSession {
                 digest.speedBonus = mass > 0 ? Self.positive(propulsion.thrust / mass) : nil
             }
 
-            digest.hiSlots = Self.positive(module.attributes[.hiSlotModifier] ?? 0)
-            digest.medSlots = Self.positive(module.attributes[.medSlotModifier] ?? 0)
-            digest.lowSlots = Self.positive(module.attributes[.lowSlotModifier] ?? 0)
-            digest.turretHardpoints = Self.positive(module.attributes[.turretHardPointModifier] ?? 0)
-            digest.launcherHardpoints = Self.positive(module.attributes[.launcherHardPointModifier] ?? 0)
+            let slots = module.slotModifiers
+            let hardpoints = module.hardpointModifiers
+            digest.hiSlots = Self.positive(slots[.hi])
+            digest.medSlots = Self.positive(slots[.med])
+            digest.lowSlots = Self.positive(slots[.low])
+            digest.turretHardpoints = Self.positive(hardpoints[.turret])
+            digest.launcherHardpoints = Self.positive(hardpoints[.launcher])
 
             return digest
         })
@@ -844,9 +846,9 @@ actor FitSession {
             }
             digest.miningYield = Self.positive(drone.miningYield())
 
-            digest.volumePerDrone = Self.positive(drone.attributes[.volume] ?? 0)
-            digest.bandwidthPerDrone = Self.positive(drone.attributes[.droneBandwidthUsed] ?? 0)
-            digest.maxVelocity = Self.positive(drone.attributes[.maxVelocity] ?? 0)
+            digest.volumePerDrone = Self.positive(drone.volume)
+            digest.bandwidthPerDrone = Self.positive(drone.bandwidthUsed)
+            digest.maxVelocity = Self.positive(drone.maxVelocity)
 
             return digest
         })
@@ -858,148 +860,70 @@ actor FitSession {
         value > 0 && value.isFinite ? value : nil
     }
 
+    private static func positive(_ value: Int?) -> Double? {
+        value.flatMap { positive(Double($0)) }
+    }
+
     private static func nonZero(_ vector: DamageVector) -> DamageVector? {
         vector.sum() > 0 ? vector : nil
     }
 
-
     // MARK: - Reading the engine
-
-    /// Values available only from `Fit`, collected in one pass before the stats are read.
-    private struct WriteSide: Sendable {
-        var environment: [TypeID] = []
-        var charges: [ModuleID: TypeID] = [:]
-        /// Modules and drone stacks of the fleet aimed at another ship.
-        var moduleTargets: [ModuleID: PilotID] = [:]
-        var droneTargets: [DroneID: PilotID] = [:]
-    }
 
     /// Collects the selected ship's snapshot and the fleet's lines. `nil` when the selected
     /// ship is not in the engine.
     ///
-    /// Static so that `load` can call it before the session exists.
+    /// Only the selected ship is snapshotted in full; the other ships give their overview
+    /// figures and the effects they aim at another ship. Static so that `load` can call it
+    /// before the session exists.
     private static func read(from engine: DogmaEngine,
                              ships: [PilotID],
                              selected: PilotID,
                              warnings: [PilotID: [String]]) async -> FleetSnapshot? {
-        // Charges, targets and the environment are not exposed by `FitStats`, so they are read
-        // from `Fit` first. `edit` marks the session dirty, so running it after `evaluate` would
-        // force a recalculation on every snapshot.
-        let writeSide = await engine.edit({ fit -> WriteSide in
-            var result = WriteSide()
-            let present = Array(fit.pilots.allIDs)
-            guard present.contains(selected) else { return result }
-            let environment = fit.environment
-            environment.forEach { result.environment.append($0.typeID) }
-            let selectedHull = fit[selected.hull]
-            selectedHull.modules.forEach { module in
-                result.charges[module.id] = module.charge?.typeID
-            }
-            guard ships.count > 1 else { return result }
-            for pilot in ships where present.contains(pilot) {
-                let hull = fit[pilot.hull]
-                hull.modules.forEach { module in
-                    if let target = module.target { result.moduleTargets[module.id] = target.pilot }
-                }
-                hull.drones.forEach { drone in
-                    if let target = drone.target { result.droneTargets[drone.id] = target.pilot }
-                }
-            }
-            return result
-        })
-
-        return await engine.evaluate({ stats -> FleetSnapshot? in
+        await engine.evaluate({ stats -> FleetSnapshot? in
             let present = Array(stats.pilots.allIDs)
             guard present.contains(selected) else { return nil }
-            let pilot = stats[selected]
+            let isFleet = ships.count > 1
+            let pilot = stats[selected].snapshot()
             let hull = pilot.hull
 
             var modules: [FitSnapshot.Module] = []
             // Sorted by rack and socket: entity ids are not allocated in socket order.
             for slot in Entity.Module.Slot.allCases {
-                var inRack: [FitSnapshot.Module] = []
-                hull.modules.forEach(in: slot) { module in
-                    // Full load, as the game fills a module.
-                    var chargeCount = 0
-                    if let charge = module.charge {
-                        let volume = charge.attributes[.volume] ?? 0
-                        let capacity = module.attributes[.capacity] ?? 0
-                        chargeCount = volume > 0 ? max(Int((capacity / volume).rounded(.down)), 1) : 1
-                    }
+                let inRack = hull.modules.filter { $0.slot == slot }.sorted { $0.socket < $1.socket }
+                modules.append(contentsOf: inRack.map { module in
                     var mutation: FitSnapshot.Mutation?
                     if module.isMutated, let mutaplasmid = module.mutaplasmidTypeID, let base = module.baseTypeID {
-                        var rolls: [MutationRoll] = []
-                        module.forEachRoll { rolls.append($0) }
-                        mutation = FitSnapshot.Mutation(mutaplasmidTypeID: mutaplasmid, baseTypeID: base, rolls: rolls)
+                        mutation = FitSnapshot.Mutation(mutaplasmidTypeID: mutaplasmid, baseTypeID: base, rolls: module.rolls)
                     }
-                    inRack.append(FitSnapshot.Module(id: module.id,
-                                                     typeID: module.typeID,
-                                                     slot: slot,
-                                                     socket: module.socket,
-                                                     state: module.state,
-                                                     effectiveState: module.effectiveState,
-                                                     maxAllowedState: module.maxAllowedState,
-                                                     charge: writeSide.charges[module.id],
-                                                     chargeCount: chargeCount,
-                                                     chargeGroups: module.chargeGroup ?? [],
-                                                     chargeSize: module.chargeSize?.rawValue,
-                                                     isProjectable: module.isProjectable,
-                                                     target: writeSide.moduleTargets[module.id],
-                                                     mutation: mutation))
-                }
-                modules.append(contentsOf: inRack.sorted { $0.socket < $1.socket })
+                    return FitSnapshot.Module(id: module.id,
+                                              typeID: module.typeID,
+                                              slot: slot,
+                                              socket: module.socket,
+                                              state: module.state,
+                                              effectiveState: module.effectiveState,
+                                              maxAllowedState: module.maxAllowedState,
+                                              charge: module.charge?.typeID,
+                                              chargeCount: module.chargeCount,
+                                              chargeGroups: module.chargeGroup ?? [],
+                                              chargeSize: module.chargeSize?.rawValue,
+                                              isProjectable: module.isProjectable,
+                                              target: isFleet ? module.target?.pilot : nil,
+                                              mutation: mutation)
+                })
             }
 
-            // The drones-in-space count covers ordinary drones only; fighters use squadron
-            // slots and tubes, the latter counting launched squadrons.
-            var drones: [FitSnapshot.Drone] = []
-            var dronesActive = 0
-            var squadronCounts: [Entity.Drone.Squadron: Int] = [:]
-            var squadronsLaunched = 0
-            hull.drones.forEach { drone in
-                let volume = drone.attributes[.volume] ?? 0
-                let bandwidth = drone.attributes[.droneBandwidthUsed] ?? 0
-                let squadron = drone.squadron
-                if squadron == .none {
-                    if drone.isActive { dronesActive += drone.count }
-                } else {
-                    squadronCounts[squadron, default: 0] += 1
-                    if drone.isActive { squadronsLaunched += 1 }
-                }
-                drones.append(FitSnapshot.Drone(id: drone.id,
-                                                typeID: drone.typeID,
-                                                count: drone.count,
-                                                maxCount: drone.squadronSize,
-                                                isActive: drone.isActive,
-                                                volume: volume,
-                                                bandwidthUsed: bandwidth,
-                                                isProjectable: drone.isProjectable,
-                                                target: writeSide.droneTargets[drone.id],
-                                                squadron: squadron))
-            }
-            var squadrons: [Entity.Drone.Squadron: SlotCapacity] = [:]
-            for squadron in Entity.Drone.Squadron.fighterSquadrons {
-                guard let attribute = squadron.slotsAttribute else { continue }
-                let total = Int(hull.attributes[attribute] ?? 0)
-                let used = squadronCounts[squadron] ?? 0
-                if total > 0 || used > 0 {
-                    squadrons[squadron] = SlotCapacity(used: used, total: total)
-                }
-            }
-
-            // Sorted by slot: entity ids are not allocated in slot order.
-            var implants: [FitSnapshot.Implant] = []
-            pilot.implants.forEach { implant in
-                implants.append(FitSnapshot.Implant(id: implant.id, typeID: implant.typeID, slot: implant.slot))
-            }
-            var boosters: [FitSnapshot.Booster] = []
-            pilot.boosters.forEach { booster in
-                boosters.append(FitSnapshot.Booster(id: booster.id, typeID: booster.typeID, slot: booster.slot))
-            }
-
-            var slots: [Entity.Module.Slot: SlotCapacity] = [:]
-            for slot in Entity.Module.Slot.allCases {
-                slots[slot] = hull.capacity(of: slot)
+            let drones = hull.drones.map { drone in
+                FitSnapshot.Drone(id: drone.id,
+                                  typeID: drone.typeID,
+                                  count: drone.count,
+                                  maxCount: drone.squadronSize,
+                                  isActive: drone.isActive,
+                                  volume: drone.volume,
+                                  bandwidthUsed: drone.bandwidthUsed,
+                                  isProjectable: drone.isProjectable,
+                                  target: isFleet ? drone.target.map { PilotID(rawValue: $0.pilot) } : nil,
+                                  squadron: drone.squadron)
             }
 
             let resources = FitSnapshot.Resources(
@@ -1008,14 +932,13 @@ actor FitSession {
                 calibration: hull.calibration,
                 droneBay: hull.droneBay,
                 droneBandwidth: hull.droneBandwidth,
-                dronesInSpace: SlotCapacity(used: dronesActive, total: hull.dronesInSpace.total),
+                dronesInSpace: hull.dronesInSpace,
                 fighterHangar: hull.fighterBay,
-                fighterTubes: SlotCapacity(used: squadronsLaunched,
-                                           total: Int(hull.attributes[.fighterTubes] ?? 0)),
-                squadrons: squadrons,
-                slots: slots,
-                turrets: hull.capacity(of: .turret),
-                launchers: hull.capacity(of: .launcher))
+                fighterTubes: hull.fighterTubes,
+                squadrons: hull.squadrons.filter { $0.value.total > 0 || $0.value.used > 0 },
+                slots: hull.slots,
+                turrets: hull.turretHardpoints,
+                launchers: hull.launcherHardpoints)
 
             let selectedStats = summary(of: hull)
 
@@ -1024,32 +947,35 @@ actor FitSession {
             var lines: [FleetSnapshot.Ship] = []
             var effects: [FitSnapshot.Incoming] = []
             for source in ships where present.contains(source) {
-                if source == selected {
-                    lines.append(FleetSnapshot.Ship(id: selected, shipTypeID: hull.typeID, stats: selectedStats))
-                } else {
-                    let otherHull = stats[source.hull]
-                    lines.append(FleetSnapshot.Ship(id: source, shipTypeID: otherHull.typeID, stats: summary(of: otherHull)))
-                }
-                guard ships.count > 1 else { continue }
                 let sourceHull = stats[source.hull]
+                if source == selected {
+                    lines.append(FleetSnapshot.Ship(id: selected,
+                                                    shipTypeID: hull.typeID,
+                                                    stats: FleetSnapshot.Ship.Stats(selectedStats)))
+                } else {
+                    lines.append(FleetSnapshot.Ship(id: source,
+                                                    shipTypeID: sourceHull.typeID,
+                                                    stats: FleetSnapshot.Ship.Stats(sourceHull)))
+                }
+                guard isFleet else { continue }
                 sourceHull.modules.forEach { module in
-                    guard let target = writeSide.moduleTargets[module.id], present.contains(target) else { return }
-                    let isActive = module.effectiveState >= .active
+                    guard let target = module.target?.pilot, present.contains(target) else { return }
                     let repair = module.repair().flatMap { $0.isRemote ? $0 : nil }
-                    let node = module.projectedCapacitorNode(disallowOffensive: false, disallowAssistance: false)
+                    let node = module.projectedCapacitorNode()
                     effects.append(FitSnapshot.Incoming(id: .module(module.id),
                                                         pilotID: source,
                                                         targetID: target,
                                                         shipTypeID: sourceHull.typeID,
                                                         typeID: module.typeID,
                                                         count: 1,
-                                                        isActive: isActive,
+                                                        isActive: module.effectiveState >= .active,
                                                         repair: repair,
                                                         capacitor: node.map { $0.averageRecharge - $0.averageDrain }))
                 }
                 sourceHull.drones.forEach { drone in
-                    guard let target = writeSide.droneTargets[drone.id], present.contains(target) else { return }
-                    let node = drone.projectedCapacitorNode(disallowOffensive: false, disallowAssistance: false)
+                    guard let target = drone.target.map({ PilotID(rawValue: $0.pilot) }),
+                          present.contains(target) else { return }
+                    let node = drone.projectedCapacitorNode()
                     effects.append(FitSnapshot.Incoming(id: .drone(drone.id),
                                                         pilotID: source,
                                                         targetID: target,
@@ -1063,35 +989,35 @@ actor FitSession {
             }
             let incoming = effects.filter { $0.targetID == selected }
 
+            var environment: [TypeID] = []
+            stats.environment.forEach { environment.append($0.typeID) }
+
+            // Sorted by slot: entity ids are not allocated in slot order.
             let snapshot = FitSnapshot(pilotID: selected,
                                        shipTypeID: hull.typeID,
                                        modules: modules,
                                        drones: drones,
-                                       implants: implants.sorted { $0.slot < $1.slot },
-                                       boosters: boosters.sorted { $0.slot < $1.slot },
+                                       implants: pilot.implants
+                                           .map { FitSnapshot.Implant(id: $0.id, typeID: $0.typeID, slot: $0.slot) }
+                                           .sorted { $0.slot < $1.slot },
+                                       boosters: pilot.boosters
+                                           .map { FitSnapshot.Booster(id: $0.id, typeID: $0.typeID, slot: $0.slot) }
+                                           .sorted { $0.slot < $1.slot },
                                        resources: resources,
                                        stats: selectedStats,
                                        warnings: warnings[selected] ?? [],
                                        incoming: incoming,
-                                       environment: writeSide.environment)
+                                       environment: environment)
             return FleetSnapshot(ships: lines, selected: snapshot, effects: effects)
         })
     }
 
     /// Reads the stats summary of the hull.
     ///
-    /// `FitStats.Hull` is `~Escapable`, so it is read into a plain value inside the `evaluate`
-    /// closure. The capacitor simulation runs once and is passed to `sustainableTank(capacitor:)`
-    /// rather than simulated again.
-    private static func summary(of hull: borrowing FitStats.Hull) -> FitStatsSummary {
-        let hitPoints = hull.hitPoints
-        // `resonance` is `1 - resistance`; reading it first avoids computing the values twice.
-        let resonance = hull.resonance
+    /// The capacitor simulation runs once and is passed to `sustainableTank(capacitor:)` rather
+    /// than simulated again; the damage figures share the snapshot's `armament`.
+    private static func summary(of hull: FitStats.Hull.Snapshot) -> FitStatsSummary {
         let capacitor = hull.capacitor()
-
-        let tank = hull.tank()
-        let sustainedTank = hull.sustainableTank(capacitor: capacitor)
-
         let damage = FitStatsSummary.Damage(dps: hull.dps(),
                                             volley: hull.volleyDamage(),
                                             turrets: hull.dps(from: .turrets),
@@ -1102,16 +1028,16 @@ actor FitSession {
 
         // Effective figures depend on the damage pattern, which the editor applies separately
         // (`FitStatsSummary.resonance`).
-        return FitStatsSummary(hitPoints: hitPoints,
-                               resonance: resonance,
-                               resistances: resonance.resistances,
-                               tank: tank,
-                               sustainedTank: sustainedTank,
+        return FitStatsSummary(hitPoints: hull.hitPoints,
+                               resonance: hull.resonance,
+                               resistances: hull.resistances,
+                               tank: hull.tank,
+                               sustainedTank: hull.sustainableTank(capacitor: capacitor),
                                damage: damage,
                                capacitor: capacitor,
                                navigation: hull.navigation,
                                targeting: hull.targeting,
-                               cargoCapacity: hull.attributes[.capacity] ?? 0,
+                               cargoCapacity: hull.cargoCapacity,
                                fuel: FitFuel(hull))
     }
 }

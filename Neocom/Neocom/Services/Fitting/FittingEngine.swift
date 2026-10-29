@@ -52,8 +52,8 @@ actor FittingEngine {
         let engine = DogmaEngine()
         let importWarnings = try await engine.load(document, strict: false)
 
-        // Read through `edit` rather than `evaluate`: `FitStats.Charge` has no `typeID`, and the
-        // layout does not depend on the dogma calculation.
+        // Read through `edit` rather than `evaluate`: the layout does not depend on the dogma
+        // calculation, which `evaluate` would run.
         guard var layout = await engine.edit({ fit -> Layout? in
             guard let pilotID = fit.pilots.allIDs.first(where: { _ in true }) else { return nil }
             let hull = fit[pilotID.hull]

@@ -387,7 +387,7 @@ struct FittingEditorView: View {
 
     private var fleetLine: String? {
         guard let model, isFleet else { return nil }
-        let dps = model.fleet.reduce(0) { $0 + $1.stats.damage.dps.sum() }
+        let dps = model.fleet.reduce(0) { $0 + $1.stats.dps.sum() }
         return String(localized: "\(model.ships.count) ships · \(FitStatFormat.dpsFigure(dps)) DPS")
     }
 

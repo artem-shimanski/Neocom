@@ -13,19 +13,6 @@ nonisolated extension Entity.Drone.Squadron {
         .light, .heavy, .support, .standupLight, .standupHeavy, .standupSupport,
     ]
 
-    /// The hull attribute holding this type's squadron slot count. `nil` for `.none`.
-    var slotsAttribute: AttributeID? {
-        switch self {
-        case .none: nil
-        case .light: .fighterLightSlots
-        case .heavy: .fighterHeavySlots
-        case .support: .fighterSupportSlots
-        case .standupLight: .fighterStandupLightSlots
-        case .standupHeavy: .fighterStandupHeavySlots
-        case .standupSupport: .fighterStandupSupportSlots
-        }
-    }
-
     /// The type attribute that marks a fighter as belonging to this squadron. `nil` for `.none`.
     var membershipAttribute: AttributeID? {
         switch self {

@@ -113,8 +113,7 @@ nonisolated struct FitSnapshot: Sendable {
         var slot: UInt16
     }
 
-    /// What the fit uses and the hull provides. All values are engine stats except
-    /// `dronesInSpace`, which counts ordinary drones only; the engine's count includes fighters.
+    /// What the fit uses and the hull provides, as the engine computes it.
     nonisolated struct Resources: Sendable {
         var cpu: Resource
         var powerGrid: Resource
@@ -122,6 +121,7 @@ nonisolated struct FitSnapshot: Sendable {
         /// Ordinary drones only; fighters use `fighterHangar`. Bandwidth counts drones in space.
         var droneBay: Resource
         var droneBandwidth: Resource
+        /// Ordinary drones only; launched squadrons are `fighterTubes`.
         var dronesInSpace: SlotCapacity
         /// Total squadron volume against the hull's `fighterCapacity`.
         var fighterHangar = Resource(used: 0, total: 0)
@@ -160,9 +160,23 @@ nonisolated struct FitSnapshot: Sendable {
 /// ship can change the others' figures.
 nonisolated struct FleetSnapshot: Sendable {
     nonisolated struct Ship: Sendable, Identifiable {
+        /// The figures of the fleet overview: the full `FitStatsSummary` is read for the
+        /// selected ship only.
+        nonisolated struct Stats: Sendable {
+            var dps: DamageVector
+            var hitPoints: HitPoints
+            var resonance: Resonance
+            var capacitor: CapacitorSimulator.Result
+
+            /// Effective hit points against the uniform pattern, for comparing ships.
+            var uniformEffectiveHitPoints: HitPoints {
+                hitPoints.effective(resonance: resonance, damagePattern: FitDamagePattern.uniform.vector)
+            }
+        }
+
         var id: PilotID
         var shipTypeID: TypeID
-        var stats: FitStatsSummary
+        var stats: Stats
     }
 
     var ships: [Ship]
@@ -191,5 +205,18 @@ nonisolated extension FitSnapshot {
     /// tube unless it is already launched. Mirrors `FitSession.setActive`.
     func canLaunch(_ drone: Drone) -> Bool {
         !drone.isFighter || drone.isActive || resources.fighterTubes.available > 0
+    }
+}
+
+nonisolated extension FleetSnapshot.Ship.Stats {
+    init(_ summary: FitStatsSummary) {
+        self.init(dps: summary.damage.dps,
+                  hitPoints: summary.hitPoints,
+                  resonance: summary.resonance,
+                  capacitor: summary.capacitor)
+    }
+
+    init(_ hull: borrowing FitStats.Hull) {
+        self.init(dps: hull.dps(), hitPoints: hull.hitPoints, resonance: hull.resonance, capacitor: hull.capacitor())
     }
 }

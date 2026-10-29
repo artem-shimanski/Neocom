@@ -15,7 +15,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/artem-shimanski/DogmaKit.git",
       "state" : {
-        "revision" : "d68de262e5fe82a1cdc6f3f1b9b9dafde6a6f2e9",
+        "revision" : "74ad7d655cd896859c24ceebcc43e10d0fd82bb2",
         "version" : "0.4.2"
       }
     },
