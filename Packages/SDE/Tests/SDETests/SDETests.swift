@@ -67,6 +67,19 @@ struct SearchTests {
         #expect(byRussian.map(\.id) == [377])
     }
 
+    @Test("неопубликованный тип не находится поиском, но читается по id")
+    func unpublished() async throws {
+        let fixture = try Fixture()
+        defer { fixture.remove() }
+        let sde = try await fixture.open(language: "en")
+
+        #expect(try await search(sde, "shield").map(\.id) == [377])
+        let rows = try await sde.database.read { reader in
+            try reader.fetchAll(TypeInfo.all().filter { type in type.id == Fixture.unpublished }.query())
+        }
+        #expect(rows.map(\.published) == [false])
+    }
+
     @Test("ввод без токенов — это не ошибка базы, а пустой результат")
     func emptyInput() async throws {
         let fixture = try Fixture()

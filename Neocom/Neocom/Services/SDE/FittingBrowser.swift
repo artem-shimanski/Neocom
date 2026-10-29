@@ -567,8 +567,9 @@ enum FittingBrowser {
             .filter { fts, _, _, _, _, _ in
                 fts.match(pattern) && fts.ranked(by: SDEDatabase.searchRanking)
             }
-            .filter { _, _, _, _, _, item in
-                fits(item, kind: kind, allowed: allowed, rigSize: rigSize, structureHull: structureHull)
+            .filter { _, type, _, _, _, item in
+                type.published == true
+                    && fits(item, kind: kind, allowed: allowed, rigSize: rigSize, structureHull: structureHull)
             }
             .select { _, type, name, meta, metaName, item in
                 SDEBrowser.typeListRow(type, name, meta, metaName, item)
@@ -592,7 +593,7 @@ enum FittingBrowser {
         let withItem = withMetaName
             .join(DogmaItem.self) { type, _, _, _, item in type.id == item.id }
         var query = withItem
-            .filter { type, _, _, _, _ in type.groupID.in(groups) }
+            .filter { type, _, _, _, _ in type.groupID.in(groups) && type.published == true }
             .filter { _, _, _, _, item in item.kind == DogmaItemKind.charge }
         if size != nil {
             query = query.filter { _, _, _, _, item in item.chargeSize == size }
@@ -623,7 +624,7 @@ enum FittingBrowser {
             .filter { fts, _, _, _, _, _ in
                 fts.match(pattern) && fts.ranked(by: SDEDatabase.searchRanking)
             }
-            .filter { _, type, _, _, _, _ in type.groupID.in(groups) }
+            .filter { _, type, _, _, _, _ in type.groupID.in(groups) && type.published == true }
             .filter { _, _, _, _, _, item in item.kind == DogmaItemKind.charge }
         if size != nil {
             query = query.filter { _, _, _, _, _, item in item.chargeSize == size }
@@ -662,13 +663,17 @@ enum FittingBrowser {
     /// The caller narrows it to each module's groups and size.
     static func damageCharges(inGroups groups: [GroupID]) -> SQLQuery<DamageItemRow> {
         let kind = DogmaItemKind.charge
-        return damageItems { type, item in type.groupID.in(groups) && item.kind == kind }
+        return damageItems { type, item in type.groupID.in(groups) && type.published == true && item.kind == kind }
     }
 
     /// Every damaging drone the hull may fit, by name.
     static func damageDrones(allowed: [TypeID]) -> SQLQuery<DamageItemRow> {
         let kind = DogmaItemKind.drone
-        return damageItems { _, item in item.kind == kind && (item.hasShipRestrictions == false || item.id.in(allowed)) }
+        return damageItems { type, item in
+            type.published == true
+                && item.kind == kind
+                && (item.hasShipRestrictions == false || item.id.in(allowed))
+        }
     }
 
     /// The four damage values of these types; a type has no rows for damage types it does not deal.
@@ -738,8 +743,8 @@ enum FittingBrowser {
 
     /// Everyone in the family: the root and every variant.
     ///
-    /// The hull's filters apply as in the picker, since the list offers replacements. A family may
-    /// cross meta groups freely.
+    /// The hull's filters apply as in the picker, since the list offers replacements; unpublished
+    /// members are left out. A family may cross meta groups freely.
     static func variations(ofRoot root: TypeID,
                            kind: DogmaItemKind,
                            allowed: [TypeID],
@@ -755,7 +760,7 @@ enum FittingBrowser {
             .join(DogmaItem.self) { type, _, _, _, item in type.id == item.id }
         return withItem
             .filter { type, _, _, _, _ in
-                type.id == root || type.variationParentID == root
+                (type.id == root || type.variationParentID == root) && type.published == true
             }
             .filter { _, _, _, _, item in fits(item, kind: kind, allowed: allowed, rigSize: rigSize, structureHull: structureHull) }
             .select { type, name, meta, metaName, item in
@@ -794,8 +799,8 @@ enum FittingBrowser {
         let withType = withItem
             .join(TypeInfo.self) { attribute, _, type in attribute.typeID == type.id }
         var query = withType
-            .filter { attribute, item, _ in
-                attribute.attributeID == slotAttribute && item.kind == kind
+            .filter { attribute, item, type in
+                attribute.attributeID == slotAttribute && item.kind == kind && type.published == true
             }
         if let slot {
             let slotValue = Double(slot)
@@ -825,6 +830,7 @@ enum FittingBrowser {
         return withType
             .filter { attribute, item, type in
                 attribute.attributeID == slotAttribute && item.kind == kind && type.marketGroupID != nil
+                    && type.published == true
             }
             .group(by: { attribute, _, _ in attribute.value })
             .select { attribute, _, _ in SlotNumberRow.projection(id: attribute.value) }
@@ -1184,8 +1190,8 @@ enum FittingBrowser {
     /// `structureHull` is `true` for a structure (structure modules only), `false` for a ship
     /// (anything else) and `nil` without a hull (drones).
     ///
-    /// `published` is not checked: `dogmaItems` already holds published types plus the 18 T3D
-    /// tactical modes, which are unpublished.
+    /// `published` is checked by the callers: `dogmaItems` also holds unpublished types, the T3D
+    /// tactical modes and the fit content kept for imported fits.
     ///
     /// The rig size and `structureHull` are bound constants, not `if`s, to keep one expression of
     /// one Swift type for all four callers; for non-rigs the term is a literal true that SQLite drops.

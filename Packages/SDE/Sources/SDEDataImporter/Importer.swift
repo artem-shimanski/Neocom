@@ -420,7 +420,8 @@ final class Importer {
                 metaGroupID: metaGroupID,
                 metaLevel: raw.metaLevel,
                 volume: raw.volume,
-                englishName: raw.name.en
+                englishName: raw.name.en,
+                published: raw.published
             )
             rows.append(TypeRow(
                 id: id,
@@ -485,11 +486,16 @@ final class Importer {
         })
     }
 
-    /// Type selection rule: published ones plus four exceptions; beacons must also carry dogma.
+    /// Type selection rule: published ones plus the exceptions; unpublished fit content and beacons
+    /// must also carry dogma.
     private func isIncluded(_ raw: TypeInfo, groupID: GroupID) -> Bool {
         if raw.published { return true }
-        guard exceptionGroups.contains(groupID) else { return false }
         if groupID == modeGroup || groupID == planetGroup { return true }
+        let categoryID = CategoryID(rawValue: UInt16(groups[groupID]!.categoryID))
+        if Scope.fitCategories.contains(categoryID) {
+            return dogma[TypeID(rawValue: UInt32(raw._key))] != nil
+        }
+        guard exceptionGroups.contains(groupID) else { return false }
         let record = dogma[TypeID(rawValue: UInt32(raw._key))]
         return !(record?.attributes.isEmpty ?? true) || !(record?.effects.isEmpty ?? true)
     }

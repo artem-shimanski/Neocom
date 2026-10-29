@@ -225,7 +225,7 @@ extension Importer {
         try main.create(CertificateRecommendation.self, filledWith: certificates.flatMap { raw in
             (raw.recommendedFor ?? []).compactMap { typeID -> CertificateRecommendation? in
                 let id = TypeID(rawValue: UInt32(typeID))
-                guard keptTypes[id] != nil else { return nil }
+                guard keptTypes[id]?.published == true else { return nil }
                 return CertificateRecommendation(
                     certificateID: CertificateID(rawValue: UInt16(raw._key)),
                     typeID: id

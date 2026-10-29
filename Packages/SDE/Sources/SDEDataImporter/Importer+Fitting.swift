@@ -21,6 +21,7 @@ struct KeptType {
     /// English name: the link from a tactical mode to its hull is expressed only through it
     /// (`hullsWithModes`).
     var englishName: String
+    var published: Bool
 }
 
 extension Importer {
@@ -65,7 +66,8 @@ extension Importer {
         // Hulls with tactical modes and the "mode → hull" link. SDE has no such link; its only
         // trace is the name: "Confessor Defense Mode" → "Confessor".
         var hullsByName: [String: TypeID] = [:]
-        for (id, kept) in keptTypes where kept.categoryID == Scope.shipCategory {
+        // Published hulls only: unpublished ones may share the name.
+        for (id, kept) in keptTypes where kept.categoryID == Scope.shipCategory && kept.published {
             hullsByName[kept.englishName] = id
         }
         var hullsWithModes: Set<TypeID> = []

@@ -40,6 +40,8 @@ public struct ShipListRow: Sendable {
     public var ordinal: UInt32
 }
 
+/// List queries return published types only: the database also keeps unpublished fit content the
+/// engine calculates, so that a fit carrying it still resolves names and icons by id.
 public enum SDEQuery {
 
     // MARK: - Browsing
@@ -62,7 +64,7 @@ public enum SDEQuery {
         let withName = withType
             .join(NameRow.self) { _, type, name in type.nameID == name.id }
         return withName
-            .filter { item, _, _ in item.kind == kind }
+            .filter { item, type, _ in item.kind == kind && type.published == true }
             .select { item, type, name in listRow(item, type, name) }
             .order(by: { _, _, name in name.ordinal })
             .limit(limit)
@@ -79,7 +81,7 @@ public enum SDEQuery {
         let withName = withType
             .join(NameRow.self) { _, type, name in type.nameID == name.id }
         return withName
-            .filter { _, type, _ in type.marketGroupID.in(descendants) }
+            .filter { _, type, _ in type.marketGroupID.in(descendants) && type.published == true }
             .select { item, type, name in listRow(item, type, name) }
             .order(by: { _, _, name in name.ordinal })
             .limit(limit)
@@ -108,8 +110,9 @@ public enum SDEQuery {
         let withName = withType
             .join(NameRow.self) { _, type, name in type.nameID == name.id }
         return withName
-            .filter { item, _, _ in
+            .filter { item, type, _ in
                 item.kind == kind
+                    && type.published == true
                     && (item.hasShipRestrictions == false
                         || item.id.in(allowedByType)
                         || item.id.in(allowedByGroup))
@@ -130,7 +133,7 @@ public enum SDEQuery {
         let withName = withType
             .join(NameRow.self) { _, type, name in type.nameID == name.id }
         return withName
-            .filter { _, type, _ in type.groupID.in(groups) }
+            .filter { _, type, _ in type.groupID.in(groups) && type.published == true }
             .select { item, type, name in listRow(item, type, name) }
             .order(by: { _, _, name in name.ordinal })
             .limit(limit)
@@ -144,7 +147,7 @@ public enum SDEQuery {
         let withName = withType
             .join(NameRow.self) { _, type, name in type.nameID == name.id }
         return withName
-            .filter { _, type, _ in type.variationParentID == parent }
+            .filter { _, type, _ in type.variationParentID == parent && type.published == true }
             .select { item, type, name in listRow(item, type, name) }
             .order(by: { item, _, _ in item.metaLevel })
             .limit(limit)
@@ -162,7 +165,7 @@ public enum SDEQuery {
         let withName = withType
             .join(NameRow.self) { _, type, name in type.nameID == name.id }
         return withName
-            .filter { _, type, _ in type.marketGroupID.in(descendants) }
+            .filter { _, type, _ in type.marketGroupID.in(descendants) && type.published == true }
             .select { ship, type, name in
                 ShipListRow.projection(
                     id: ship.id,
@@ -203,6 +206,7 @@ public enum SDEQuery {
             .join(NameRow.self) { _, type, _, name in type.nameID == name.id }
         var query = withName
             .filter { fts, _, _, _ in fts.match(pattern) && fts.ranked(by: SDEDatabase.searchRanking) }
+            .filter { _, type, _, _ in type.published == true }
         if let kind {
             query = query.filter { _, _, item, _ in item.kind == kind }
         }

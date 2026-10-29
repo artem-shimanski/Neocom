@@ -15,7 +15,8 @@ import SDEModels
 /// dependency on `.SDE`.
 ///
 /// Data: a ship, an unrestricted module, a ship-restricted module and a charge, plus two skills and
-/// an implant. Skill B requires A, Rifter (587) requires B.
+/// an implant. Skill B requires A, Rifter (587) requires B. One more unrestricted module is
+/// unpublished: it resolves by id and stays out of every list.
 struct Fixture {
     static let buildNumber = 3284752
 
@@ -36,6 +37,7 @@ struct Fixture {
         .init(id: 1, text: "Малый щитовой расширитель", textEn: "Small Shield Extender", ordinal: 0),
         .init(id: 2, text: "Ионный бластер", textEn: "Ion Blaster", ordinal: 1),
         .init(id: 3, text: "Антивещество", textEn: "Antimatter Charge", ordinal: 3),
+        .init(id: 4, text: "Щитовой флуктуатор", textEn: "Shield Fluctuator", ordinal: 4),
     ]
 
     static let types: [TypeInfo] = [
@@ -43,6 +45,7 @@ struct Fixture {
         TypeInfo(id: 377, groupID: 40, nameID: 1, marketGroupID: 5, metaGroupID: 1, published: true),
         TypeInfo(id: 3178, groupID: 74, nameID: 2, marketGroupID: 6, metaGroupID: 1, published: true),
         TypeInfo(id: 222, groupID: 83, nameID: 3, marketGroupID: 7, published: true),
+        TypeInfo(id: unpublished, groupID: 40, nameID: 4, marketGroupID: 5, published: false),
     ]
 
     static let items: [DogmaItem] = [
@@ -52,7 +55,11 @@ struct Fixture {
         DogmaItem(id: 3178, kind: .hi, hardpoint: .turret, cpu: 14, power: 130,
                   hasShipRestrictions: true),
         DogmaItem(id: 222, kind: .charge),
+        DogmaItem(id: unpublished, kind: .med, cpu: 10, power: 5),
     ]
+
+    /// Unpublished med-slot module.
+    static let unpublished: TypeID = 16479
 
     /// Market: 1 → 2 → {4, 5, 6, 7}.
     static let marketGroups: [MarketGroupInfo] = [

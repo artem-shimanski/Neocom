@@ -9,9 +9,10 @@ import SDEModels
 
 /// What goes into the database.
 ///
-/// The rule is "only `published`" plus four exceptions the UI needs. Other unpublished content
-/// (Infantry, NPC, scenery, QA types) is not imported; this also keeps `GroupID` and `CategoryID`
-/// within `UInt16`: groups beyond it belong only to Infantry.
+/// The rule is "only `published`" plus the exceptions the UI needs: unpublished fit content the
+/// engine calculates (`fitCategories`), tactical modes, environment effects and planets. Other
+/// unpublished content (Infantry, NPC, scenery, QA types) is not imported; this also keeps
+/// `GroupID` and `CategoryID` within `UInt16`: groups beyond it belong only to Infantry.
 enum Scope {
     /// T3D tactical modes (group 1306). They have no effect of their own, so they are recognized by
     /// group.
@@ -53,4 +54,12 @@ enum Scope {
     static let structureModuleCategory: CategoryID = 66
     static let fighterCategory: CategoryID = 87
     static let celestialCategory: CategoryID = 2
+
+    /// Categories whose unpublished types are imported when they carry a `typeDogma` record: the
+    /// DogmaKit importer keeps them, and a fit from outside (ESI, DNA, legacy) can hold them.
+    /// Browsers and pickers hide them by `types.published`.
+    static let fitCategories: Set<CategoryID> = [
+        shipCategory, moduleCategory, chargeCategory, droneCategory, implantCategory,
+        subsystemCategory, structureCategory, structureModuleCategory, fighterCategory,
+    ]
 }
