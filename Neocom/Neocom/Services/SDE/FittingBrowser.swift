@@ -50,13 +50,6 @@ struct SlotNumberRow: Sendable, Identifiable {
     var id: Double
 }
 
-/// An inventory group by name, the heading of the ammo list.
-@Projection
-struct GroupNameRow: Sendable, Identifiable {
-    var id: GroupID
-    var name: String
-}
-
 /// Where a type stands in its variation family.
 ///
 /// `variationParentID` is `nil` on the root and holds the root's id on every variant, so the family
@@ -578,7 +571,7 @@ enum FittingBrowser {
             .query()
     }
 
-    /// Charges a module takes: the groups it names, narrowed to its charge size. A flat list.
+    /// Charges a module takes: the groups it names, narrowed to its charge size, by name.
     ///
     /// There is no `allowed` argument; what a charge fits into is decided by the module. `size` is
     /// `nil` for modules taking sizeless charges (scripts, single-size mining crystals), which
@@ -634,17 +627,6 @@ enum FittingBrowser {
                 SDEBrowser.typeListRow(type, name, meta, metaName, item)
             }
             .order(by: { fts, _, _, _, _, _ in fts.rank })
-            .query()
-    }
-
-    /// Names of the groups a module takes charges from, in the current language's alphabet.
-    static func groupNames(of groups: [GroupID]) -> SQLQuery<GroupNameRow> {
-        let withName = GroupInfo.all()
-            .join(NameRow.self) { group, name in group.nameID == name.id }
-        return withName
-            .filter { group, _ in group.id.in(groups) }
-            .select { group, name in GroupNameRow.projection(id: group.id, name: name.text) }
-            .order(by: { _, name in name.ordinal })
             .query()
     }
 

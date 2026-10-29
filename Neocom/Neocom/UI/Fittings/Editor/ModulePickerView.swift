@@ -30,8 +30,8 @@ struct ModulePickerView: View {
         /// sheet opens. The editor offers the row only while a slot is free.
         case fighters(squadron: Entity.Drone.Squadron, allowed: [TypeID], hullName: String,
                       hangar: Resource, slots: SlotCapacity)
-        /// A module's own charges, flat: `groups` and `size` from the module's `chargeGroups` and
-        /// `chargeSize` in the snapshot.
+        /// A module's own charges by meta tier: `groups` and `size` from the module's `chargeGroups`
+        /// and `chargeSize` in the snapshot.
         ///
         /// `loaded` is the charge already in the module, checkmarked. `moduleName` is the subtitle;
         /// with `sameTypeCount` (modules of this very type in the fit) it labels "Apply to All",
@@ -556,8 +556,6 @@ private struct ChargePickerBrowser: View {
     @Binding var appliesToAll: Bool
     let onSelect: (TypeID) -> Void
 
-    @LiteQuery private var groupNames: [GroupNameRow]
-
     init(sde: SDEDatabase, groups: [GroupID], size: UInt8?, loaded: TypeID?, moduleName: String, sameTypeCount: Int,
          searchText: String, appliesToAll: Binding<Bool>, onSelect: @escaping (TypeID) -> Void) {
         self.sde = sde
@@ -569,14 +567,12 @@ private struct ChargePickerBrowser: View {
         self.searchText = searchText
         _appliesToAll = appliesToAll
         self.onSelect = onSelect
-        _groupNames = LiteQuery(FittingBrowser.groupNames(of: groups))
     }
 
     var body: some View {
         if searchText.isEmpty {
             ChargePickerListView(
                 query: FittingBrowser.charges(inGroups: groups, size: size),
-                heading: heading,
                 loaded: loaded,
                 moduleName: moduleName,
                 sameTypeCount: sameTypeCount,
@@ -589,7 +585,6 @@ private struct ChargePickerBrowser: View {
                 query: sde.pattern(searchText).map {
                     FittingBrowser.charges(inGroups: groups, size: size, matching: $0)
                 },
-                heading: nil,
                 loaded: loaded,
                 moduleName: moduleName,
                 sameTypeCount: sameTypeCount,
@@ -599,22 +594,12 @@ private struct ChargePickerBrowser: View {
             )
         }
     }
-
-    /// `HYBRID CHARGE · M · 58`: the group the charges come from, their size and their count. A
-    /// sizeless charge has no size to say.
-    private var heading: (names: String, size: String?)? {
-        guard !groupNames.isEmpty else { return nil }
-        // Sizes as `dogmaItems.chargeSize` numbers them: 1…4; 0 is a charge with none.
-        let letter = size.flatMap { [1: "S", 2: "M", 3: "L", 4: "XL"][Int($0)] }
-        return (groupNames.map(\.name).formatted(.list(type: .and, width: .narrow)), letter)
-    }
 }
 
-/// The ammo picker's body: every charge the module's groups and size accept, flat, under the
-/// "Apply to All" button when the fit holds more than one such module.
+/// The ammo picker's body: every charge the module's groups and size accept, by meta tier (search
+/// results flat), under the "Apply to All" button when the fit holds more than one such module.
 private struct ChargePickerListView: View {
     @LiteQuery private var charges: [TypeListRow]
-    let heading: (names: String, size: String?)?
     let loaded: TypeID?
     let moduleName: String
     let sameTypeCount: Int
@@ -622,10 +607,9 @@ private struct ChargePickerListView: View {
     let searchText: String
     let onSelect: (TypeID) -> Void
 
-    init(query: SQLQuery<TypeListRow>?, heading: (names: String, size: String?)?, loaded: TypeID?, moduleName: String,
+    init(query: SQLQuery<TypeListRow>?, loaded: TypeID?, moduleName: String,
          sameTypeCount: Int, appliesToAll: Binding<Bool>, searchText: String, onSelect: @escaping (TypeID) -> Void) {
         _charges = LiteQuery(query)
-        self.heading = heading
         self.loaded = loaded
         self.moduleName = moduleName
         self.sameTypeCount = sameTypeCount
@@ -642,36 +626,34 @@ private struct ChargePickerListView: View {
                 if sameTypeCount > 1 {
                     ApplyToAllButton(count: sameTypeCount, moduleName: moduleName, isOn: $appliesToAll)
                 }
-                HUDListSection(charges, row: { charge in
-                    let isCurrent = charge.id == loaded
-                    Button {
-                        onSelect(charge.id)
-                    } label: {
-                        PickerTypeRow(row: charge, isCurrent: isCurrent)
+                if searchText.isEmpty {
+                    TypeListSections(rows: charges, order: .ascending, headsEverySection: true) { charge, _ in
+                        chargeRow(charge)
                     }
-                    .contextMenu {
-                        // The charge is not loaded yet, so there are no in-fit values.
-                        NavigationLink("Info", value: DatabaseRoute.type(charge.id))
-                    }
-                    .hudRowButton(PickerTypeRow.rowStyle(isCurrent: isCurrent))
-                }, header: {
-                    sectionHeader
-                })
+                } else {
+                    HUDListSection(charges, row: { charge in
+                        chargeRow(charge)
+                    }, header: {
+                        HUDSectionHeader(Text("Results · \(charges.count)"))
+                    })
+                }
             }
         }
     }
 
-    /// `HYBRID CHARGE ———— M · 58`. Group names can be long, so they take the title and give way
-    /// first; the size and count sit in the header's trailing slot, which does not truncate.
     @ViewBuilder
-    private var sectionHeader: some View {
-        if let heading, searchText.isEmpty {
-            HUDSectionHeader(Text(verbatim: heading.names)) {
-                Text(verbatim: [heading.size, "\(charges.count)"].compactMap { $0 }.joined(separator: " · "))
-            }
-        } else {
-            HUDSectionHeader(Text("Results · \(charges.count)"))
+    private func chargeRow(_ charge: TypeListRow) -> some View {
+        let isCurrent = charge.id == loaded
+        Button {
+            onSelect(charge.id)
+        } label: {
+            PickerTypeRow(row: charge, isCurrent: isCurrent)
         }
+        .contextMenu {
+            // The charge is not loaded yet, so there are no in-fit values.
+            NavigationLink("Info", value: DatabaseRoute.type(charge.id))
+        }
+        .hudRowButton(PickerTypeRow.rowStyle(isCurrent: isCurrent))
     }
 }
 
