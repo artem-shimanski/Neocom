@@ -3,6 +3,12 @@
   "strings" : {
     "%@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -60,11 +66,35 @@
               }
             }
           }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "vor %lld Tag"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "vor %lld Tagen"
+                }
+              }
+            }
+          }
         }
       }
     },
     "Add skills in the EVE client." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fügen Sie Skills im EVE-Client hinzu."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -75,6 +105,12 @@
     },
     "Ends" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ende"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -85,6 +121,12 @@
     },
     "Ends soon" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endet bald"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -95,6 +137,12 @@
     },
     "Idle" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inaktiv"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -105,6 +153,12 @@
     },
     "Idle for" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inaktiv seit"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -115,6 +169,12 @@
     },
     "In your plan" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In Ihrem Plan"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -125,6 +185,12 @@
     },
     "In your plan · %lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In Ihrem Plan · %lld"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -135,6 +201,12 @@
     },
     "Level %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stufe %@"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -145,6 +217,12 @@
     },
     "Next" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächster"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -155,6 +233,12 @@
     },
     "Next · %lld in queue" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächster · %lld in der Warteschlange"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -165,6 +249,12 @@
     },
     "Next · last in queue" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächster · letzter in der Warteschlange"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -175,6 +265,12 @@
     },
     "Next · nothing queued" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächster · nichts in der Warteschlange"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -185,6 +281,12 @@
     },
     "No pilot" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Pilot"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -195,6 +297,12 @@
     },
     "No queue yet" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine Warteschlange"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -205,6 +313,12 @@
     },
     "Nothing in training" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nichts im Training"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -215,6 +329,12 @@
     },
     "Nothing planned. Plan skills in Neocom." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nichts geplant. Planen Sie Skills in Neocom."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -225,6 +345,12 @@
     },
     "Open Neocom and sign in with EVE Online." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnen Sie Neocom und melden Sie sich mit EVE Online an."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -235,6 +361,12 @@
     },
     "Open Neocom and sign in with EVE Online. Training queues show up here." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnen Sie Neocom und melden Sie sich mit EVE Online an. Skill-Warteschlangen erscheinen hier."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -245,6 +377,12 @@
     },
     "Open Neocom to load the queue." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnen Sie Neocom, um die Warteschlange zu laden."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -255,6 +393,12 @@
     },
     "Open Neocom to load the training queue." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnen Sie Neocom, um die Skill-Warteschlange zu laden."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -265,6 +409,12 @@
     },
     "Open the app and sign in with EVE Online." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnen Sie die App und melden Sie sich mit EVE Online an."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -275,6 +425,12 @@
     },
     "Paused" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausiert"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -285,6 +441,12 @@
     },
     "Paused in game" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Spiel pausiert"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -295,6 +457,12 @@
     },
     "Pilot" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilot"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -305,6 +473,12 @@
     },
     "Pilots" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piloten"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -315,6 +489,12 @@
     },
     "planned to %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "geplant bis %@"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -325,6 +505,12 @@
     },
     "Queue" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warteschlange"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -335,6 +521,12 @@
     },
     "Queue ends in" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warteschlange endet in"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -345,6 +537,12 @@
     },
     "queued to %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "in der Warteschlange bis %@"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -355,6 +553,12 @@
     },
     "Resume in EVE" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In EVE fortsetzen"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -365,6 +569,12 @@
     },
     "Resume it from the EVE client." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setzen Sie sie im EVE-Client fort."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -375,6 +585,12 @@
     },
     "Skill Queue" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skill-Warteschlange"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -385,6 +601,12 @@
     },
     "The queue ends within a day. Add skills in the EVE client." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Warteschlange endet innerhalb eines Tages. Fügen Sie Skills im EVE-Client hinzu."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -395,6 +617,12 @@
     },
     "The skill in training and when the queue runs out." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Skill im Training und wann die Warteschlange ausläuft."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -405,6 +633,12 @@
     },
     "Training" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Training"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -415,6 +649,12 @@
     },
     "training %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Training %@"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -425,6 +665,12 @@
     },
     "training %@, paused" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Training %@, pausiert"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -435,6 +681,12 @@
     },
     "Up to three pilots and when their queues run out." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bis zu drei Piloten und wann ihre Warteschlangen ausgehen."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -445,6 +697,12 @@
     },
     "waits for resume" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "wartet auf Fortsetzung"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
