@@ -21,6 +21,7 @@ private struct SettingsList: View {
     @Environment(MarketSheet.self) private var market
     @Environment(ZKillboardSheet.self) private var zkillboard
     @Environment(ServerStatusSheet.self) private var serverStatus
+    @Environment(ReviewPrompter.self) private var reviewPrompter
     @Environment(\.openURL) private var openURL
 
     @AppStorage(AppTheme.storageKey) private var theme = AppTheme.system
@@ -152,7 +153,7 @@ private struct SettingsList: View {
             }
             .hudRowButton()
             external(SettingsLinks.review, systemImage: "star", title: Text("Rate on the App Store"),
-                     subtitle: Text(verbatim: "apps.apple.com"))
+                     subtitle: Text(verbatim: "apps.apple.com"), onOpen: reviewPrompter.recordManualReview)
             external(SettingsLinks.sourceCode, systemImage: "chevron.left.forwardslash.chevron.right",
                      title: Text("Source Code"), subtitle: Text(verbatim: "github.com"))
             external(SettingsLinks.privacyPolicy, systemImage: "checkmark.shield",
@@ -173,8 +174,10 @@ private struct SettingsList: View {
         }
     }
 
-    private func external(_ url: URL, systemImage: String, title: Text, subtitle: Text) -> some View {
+    private func external(_ url: URL, systemImage: String, title: Text, subtitle: Text,
+                          onOpen: (() -> Void)? = nil) -> some View {
         Button {
+            onOpen?()
             openURL(url)
         } label: {
             HUDLinkRowLabel(systemImage: systemImage, title: title, subtitle: subtitle, destination: .external)
@@ -192,5 +195,6 @@ private struct SettingsList: View {
     .environment(MarketSheet())
     .environment(ZKillboardSheet())
     .environment(ServerStatusSheet())
+    .environment(ReviewPrompter())
     .environment(LocalNotifications.shared)
 }

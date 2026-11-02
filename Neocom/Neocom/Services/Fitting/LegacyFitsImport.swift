@@ -24,6 +24,9 @@ enum LegacyFitsImport {
             return
         }
         let inserted = store.insert(fits)
+        if inserted > 0 {
+            ReviewPrompter.shared.record(.legacyImported)
+        }
         if !fits.isEmpty {
             log.info("Old fits: \(inserted) imported, \(fits.count - inserted) already present")
         }

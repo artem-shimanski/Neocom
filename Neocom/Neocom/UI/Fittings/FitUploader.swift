@@ -78,6 +78,7 @@ final class FitUploader {
                                                shipTypeID: upload.shipTypeID,
                                                items: upload.items)
             fittings.link(fit.id, esiFittingID: newID, characterID: sheet.characterID)
+            ReviewPrompter.shared.record(.fitUploaded)
         } catch {
             self.error = error
         }

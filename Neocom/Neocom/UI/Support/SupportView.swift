@@ -8,6 +8,7 @@ import SwiftUI
 /// tiles give way to the thank-you card for as long as the screen is open.
 struct SupportView: View {
     @Environment(TipJar.self) private var tipJar
+    @Environment(ReviewPrompter.self) private var reviewPrompter
     @Environment(\.purchase) private var purchase
     @Environment(\.openURL) private var openURL
 
@@ -36,6 +37,7 @@ struct SupportView: View {
 
             HUDListSection {
                 Button {
+                    reviewPrompter.recordManualReview()
                     openURL(TipConfiguration.reviewURL)
                 } label: {
                     HUDLinkRowLabel(systemImage: "star", title: Text("Rate on the App Store"))
@@ -297,4 +299,5 @@ struct SupportView: View {
         SupportView()
     }
     .environment(TipJar())
+    .environment(ReviewPrompter())
 }

@@ -96,6 +96,17 @@ final class TipJar {
         guard !isPurchasing else { return .cancelled }
         isPurchasing = true
         defer { isPurchasing = false }
+        let outcome = await buy(tip, using: purchase)
+        switch outcome {
+        case .thanked: ReviewPrompter.shared.record(.tipped)
+        case .failed: ReviewPrompter.shared.recordFailure()
+        case .cancelled, .pending: break
+        }
+        return outcome
+    }
+
+    private func buy(_ tip: Tip,
+                     using purchase: (Product) async throws -> Product.PurchaseResult) async -> PurchaseOutcome {
         do {
             switch try await purchase(tip.product) {
             case let .success(verification):

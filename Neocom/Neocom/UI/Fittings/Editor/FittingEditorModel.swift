@@ -87,11 +87,15 @@ final class FittingEditorModel {
     /// an actor, which serializes execution but not arrival, so the chain gives the taps their
     /// order.
     @ObservationIgnored private var work: Task<Void, Never>?
+    /// Whether a command that writes a ship was queued; reported to `ReviewPrompter` on close.
+    @ObservationIgnored private var hasEdits = false
 
     init(fittingIDs: [UUID], store: FittingStore, sde: SDEStore) {
         self.initialFittingIDs = fittingIDs
         self.store = store
         self.sde = sde
+        // No review request over an open editor; a request armed meanwhile waits for it to close.
+        ReviewPrompter.shared.hold()
     }
 
     convenience init(fittingID: UUID, store: FittingStore, sde: SDEStore) {
@@ -105,6 +109,10 @@ final class FittingEditorModel {
         for fittingID in initialFittingIDs {
             store.discardDraft(fittingID)
         }
+        if hasEdits {
+            ReviewPrompter.shared.record(.fitSaved)
+        }
+        ReviewPrompter.shared.release()
     }
 
     /// The record a ship is saved to.
@@ -319,6 +327,7 @@ final class FittingEditorModel {
     /// snapshot yet, so `None` right after an effect would be dropped as a no-op.
     func setEnvironment(_ typeIDs: [TypeID]) {
         guard session != nil else { return }
+        hasEdits = true
         enqueue { model, session in
             do {
                 try await session.setEnvironment(typeIDs)
@@ -367,6 +376,9 @@ final class FittingEditorModel {
     /// command that changes no document (a target). One command, at most one write.
     private func run(saving: (pilot: PilotID, fittingID: UUID)?,
                      _ command: @escaping @Sendable (FitSession) async throws -> Void) {
+        if saving != nil, session != nil {
+            hasEdits = true
+        }
         enqueue { model, session in
             do {
                 try await command(session)

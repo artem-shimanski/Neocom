@@ -20,6 +20,7 @@ struct NeocomApp: App {
     @State private var serverStatus = ServerStatusSheet()
     /// Created at launch so that it observes StoreKit's transaction updates from the start.
     @State private var tipJar = TipJar()
+    @State private var reviewPrompter = ReviewPrompter.shared
 
     @Environment(\.scenePhase) private var scenePhase
 
@@ -36,6 +37,8 @@ struct NeocomApp: App {
         SDEStore.removeDownloadedLanguages()
         _accounts = State(initialValue: accounts)
         _sde = State(initialValue: sde)
+        ReviewPrompter.shared.attach(hasCharacter: { !accounts.accounts.isEmpty })
+        ReviewPrompter.shared.recordActiveDay()
         let fittings = FittingStore(context: container.mainContext)
         _fittings = State(initialValue: fittings)
         // Imports the old app's fits; a no-op after the first successful run.
@@ -56,6 +59,7 @@ struct NeocomApp: App {
             TrainingContextProvider {
                 MainMenuView()
             }
+            .reviewPrompt()
             .environment(accounts)
             .environment(fittings)
             .environment(sde)
@@ -63,6 +67,7 @@ struct NeocomApp: App {
             .environment(zkillboard)
             .environment(serverStatus)
             .environment(tipJar)
+            .environment(reviewPrompter)
             .environment(LocalNotifications.shared)
             .appliesAppTheme()
             #if targetEnvironment(macCatalyst)
@@ -76,6 +81,7 @@ struct NeocomApp: App {
         .onChange(of: scenePhase) { _, phase in
             switch phase {
             case .active:
+                reviewPrompter.recordActiveDay()
                 // The notification authorization may have changed in Settings.
                 Task { await NotificationPlanner.shared.refreshAuthorization() }
             case .background:

@@ -94,7 +94,16 @@ final class AccountStore {
     /// Presents EVE SSO and adds (or re-authorizes) a character.
     @discardableResult
     func signIn() async throws -> Account {
-        let (claims, token) = try await authenticator.signIn()
+        let claims: SSOClaims
+        let token: SSOToken
+        do {
+            (claims, token) = try await authenticator.signIn()
+        } catch SSOError.cancelled {
+            throw SSOError.cancelled
+        } catch {
+            ReviewPrompter.shared.recordFailure()
+            throw error
+        }
         let account = Account(claims: claims, token: token)
         exitDemo()
         // A re-authorization brings a new token pair and possibly new scopes.
@@ -535,7 +544,9 @@ final class AccountStore {
         if account.isDemo { return demoPlan(for: account) }
         guard let modelContext else { return nil }
 
-        let plan = TrainingPlanStore(context: modelContext, characterID: account.id)
+        let plan = TrainingPlanStore(context: modelContext, characterID: account.id) {
+            ReviewPrompter.shared.record(.planExtended)
+        }
         plans[account.id] = plan
         return plan
     }

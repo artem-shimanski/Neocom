@@ -17,10 +17,13 @@ final class TrainingPlanStore {
     @ObservationIgnored private let context: ModelContext
     /// `Int`, matching `TrainingPlanEntry.characterID` in predicates.
     @ObservationIgnored private let characterID: Int
+    /// Called after `add` put at least one new entry into the plan.
+    @ObservationIgnored private let onExtend: (() -> Void)?
 
-    init(context: ModelContext, characterID: Int64) {
+    init(context: ModelContext, characterID: Int64, onExtend: (() -> Void)? = nil) {
         self.context = context
         self.characterID = Int(characterID)
+        self.onExtend = onExtend
         reload()
     }
 
@@ -39,7 +42,8 @@ final class TrainingPlanStore {
     func add(_ requirements: [SkillCatalog.Requirement]) {
         let stored = fetch()
         var known = Set(stored.map(Self.requirement(of:)))
-        var position = (stored.map(\.position).max() ?? -1) + 1
+        let firstPosition = (stored.map(\.position).max() ?? -1) + 1
+        var position = firstPosition
 
         for requirement in requirements {
             // Skips duplicates both in the plan and within `requirements`.
@@ -51,6 +55,9 @@ final class TrainingPlanStore {
             position += 1
         }
         save()
+        if position > firstPosition {
+            onExtend?()
+        }
     }
 
     /// Removes every level of `skill` from the plan.
