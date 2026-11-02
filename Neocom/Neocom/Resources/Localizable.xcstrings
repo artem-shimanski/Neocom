@@ -2314,7 +2314,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@: %2$@, der letzte Skill in der Warteschlange, ist um %3$@ fertig. Fügen Sie Skills hinzu, damit das Training nie stoppt."
+            "value" : "%1$@: %2$@, der letzte Skill in der Warteschlange, ist um %3$@ fertig trainiert. Fügen Sie Skills hinzu, damit das Training nie stoppt."
           }
         },
         "en" : {
@@ -2336,7 +2336,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@: %2$@, der letzte Skill in der Warteschlange, ist fertig. Fügen Sie Skills hinzu, damit das Training nie stoppt."
+            "value" : "%1$@: %2$@, der letzte Skill in der Warteschlange, ist fertig trainiert. Fügen Sie Skills hinzu, damit das Training nie stoppt."
           }
         },
         "en" : {
@@ -14028,7 +14028,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ziehen Sie einen Anteil; die anderen behalten ihre Werte und alles wird auf 100 % normiert. NPC-Profile sind ungefähre Werte (≈)."
+            "value" : "Ziehen Sie einen Anteil; die anderen behalten ihre Werte und alles wird auf 100 % normiert. NPC-Profile sind Näherungswerte (≈)."
           }
         },
         "ru" : {
@@ -20146,7 +20146,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kills und Verluste werden aus Sicht des Suchobjekts gezählt. Ein vergangener Zeitraum reicht höchstens eine Woche zurück; ein Monat kann jeder beliebige Monat sein. Die Ergebnisse sind nach Neuheit sortiert, 200 pro Seite."
+            "value" : "Kills und Verluste werden aus Sicht des Suchobjekts gezählt. Ein vergangener Zeitraum reicht höchstens eine Woche zurück; ein Monat kann jeder beliebige Monat sein. Die neuesten Ergebnisse werden zuerst angezeigt, 200 pro Seite."
           }
         },
         "ru" : {
@@ -21416,7 +21416,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hier erscheinen Mails, die Sie erhalten. Verfassen Sie eine mit der Stift-Taste."
+            "value" : "Hier erscheinen Mails, die Sie erhalten. Verfassen Sie eine mit der Stift-Schaltfläche."
           }
         },
         "ru" : {
@@ -21464,7 +21464,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hier erscheinen Mails, die Sie senden. Verfassen Sie eine mit der Stift-Taste."
+            "value" : "Hier erscheinen Mails, die Sie senden. Verfassen Sie eine mit der Stift-Schaltfläche."
           }
         },
         "ru" : {
@@ -30548,7 +30548,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der Anteil ist der Schaden jedes Angreifers vom %1$@ Schaden, den %2$@ erlitten hat. NPCs haben keinen Piloten und keinen Sicherheitsstatus. Das kleine Schild zeigt die Waffe; ein Pilot in einer Kapsel hat mit Drohnen gekämpft."
+            "value" : "Der Anteil zeigt, wie viel jeder Angreifer zu den %1$@ Schadenspunkten am Ziel (%2$@) beigetragen hat. NPCs haben keinen Piloten und keinen Sicherheitsstatus. Das kleine Schild zeigt die Waffe; ein Pilot in einer Kapsel hat mit Drohnen gekämpft."
           }
         },
         "en" : {
@@ -31942,7 +31942,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jemand, an den diese Mail adressiert ist, verlangt eine Gebühr für Mails von Piloten außerhalb seiner Kontakte. EVE nennt nicht, wer."
+            "value" : "Einer der Empfänger verlangt eine Gebühr für Mails von Piloten außerhalb seiner Kontakte. EVE nennt nicht, welcher."
           }
         },
         "ru" : {
@@ -32183,7 +32183,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stapel desselben Gegenstands werden addiert. Tippen Sie auf ein Schiff oder einen Container, um den Inhalt zu sehen; tippen Sie auf einen Gegenstand für seine Info."
+            "value" : "Stapel desselben Gegenstands werden addiert. Tippen Sie auf ein Schiff oder einen Container, um den Inhalt zu sehen, oder auf einen Gegenstand, um seine Informationen anzuzeigen."
           }
         },
         "ru" : {
@@ -32802,7 +32802,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wischen Sie einen Fit, um ihn zu löschen; berühren und halten Sie, um ihn umzubenennen, zu duplizieren, hochzuladen oder zu löschen."
+            "value" : "Wischen Sie über einen Fit, um ihn zu löschen; halten Sie ihn gedrückt, um ihn umzubenennen, zu duplizieren, hochzuladen oder zu löschen."
           }
         },
         "ru" : {
@@ -32818,7 +32818,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wischen Sie einen Hub nach links, um ihn zu entfernen. Ein Hub ist ein Sonnensystem: Die Preise stammen aus seiner Region."
+            "value" : "Wischen Sie über einen Hub nach links, um ihn zu entfernen. Ein Hub ist ein Sonnensystem: Die Preise stammen aus seiner Region."
           }
         },
         "ru" : {
@@ -32834,7 +32834,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wischen Sie ein Label, um es zu löschen; seine Mails behalten ihre anderen Labels. Ein Label hat bis zu 40 Zeichen und eine der 18 Farben von EVE."
+            "value" : "Wischen Sie über ein Label, um es zu löschen; seine Mails behalten ihre anderen Labels. Ein Label hat bis zu 40 Zeichen und eine der 18 Farben von EVE."
           }
         },
         "ru" : {
@@ -32850,7 +32850,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wischen Sie einen Piloten nach links, um ihn zu entfernen."
+            "value" : "Wischen Sie über einen Piloten nach links, um ihn zu entfernen."
           }
         },
         "ru" : {
@@ -32866,7 +32866,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wischen Sie eine Zeile nach links, um „Entfernen“ anzuzeigen; erst das Tippen darauf entfernt."
+            "value" : "Wischen Sie über eine Zeile nach links, um „Entfernen“ anzuzeigen; erst das Tippen darauf entfernt."
           }
         },
         "ru" : {
@@ -33074,7 +33074,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tippen Sie auf einen Skill, um Beschreibung, Stufen und Voraussetzungen zu sehen. Die Taste (?) erklärt die Symbole und Balkensegmente."
+            "value" : "Tippen Sie auf einen Skill, um Beschreibung, Stufen und Voraussetzungen zu sehen. Die Schaltfläche (?) erklärt die Symbole und Balkensegmente."
           }
         },
         "ru" : {
@@ -33733,7 +33733,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die fünf Imperiumshubs sind immer vorhanden. Ihre eigenen folgen direkt danach in der Marktregionauswahl."
+            "value" : "Die fünf Imperiums-Hubs sind immer vorhanden. Ihre eigenen folgen direkt danach in der Auswahl der Marktregion."
           }
         },
         "ru" : {
@@ -34705,7 +34705,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Brieftasche deckt die Gebühr nicht. EVE zieht sie erst beim Versand der Mail ein, daher wurde nichts abgebucht."
+            "value" : "Das Guthaben in der Brieftasche reicht für die Gebühr nicht aus. EVE zieht sie erst beim Versand der Mail ein, daher wurde nichts abgebucht."
           }
         },
         "ru" : {
