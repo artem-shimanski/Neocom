@@ -63,13 +63,12 @@ struct TypeListSection: Identifiable {
     let rows: [TypeListRow]
 
     enum Order {
-        /// The lowest tier first.
+        /// The weakest tier first.
         case ascending
     }
 
-    /// Splits a list of items into tiers, the lowest first unless `order` says otherwise. The split
-    /// is by meta group, which has a name, while the order is by meta level. Rows keep their incoming
-    /// order.
+    /// Splits a list of items into tiers by meta group id, the weakest first, items outside a meta
+    /// group last. Rows keep their incoming order.
     static func sections(of rows: [TypeListRow], order: Order = .ascending) -> [TypeListSection] {
         Dictionary(grouping: rows, by: \.metaGroupID)
             .map { id, rows in
@@ -82,12 +81,8 @@ struct TypeListSection: Identifiable {
             .sorted { $0.order < $1.order }
     }
 
-    /// Lowest tier first, everything outside a meta group last. A section's level is the lowest one
-    /// in it. The export leaves the meta level empty for much of the catalogue (ships among them);
-    /// those sections fall back to the meta group id, which misorders only Officer and Deadspace.
-    /// The id breaks ties, as Tech II and Storyline are both meta 5.
-    private var order: (Int, Int, UInt16) {
-        (id == nil ? 1 : 0, rows.compactMap(\.metaLevel).min() ?? .max, id?.rawValue ?? .max)
+    private var order: (Int, UInt16) {
+        (id == nil ? 1 : 0, id?.rawValue ?? .max)
     }
 }
 
