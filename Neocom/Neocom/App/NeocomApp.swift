@@ -38,7 +38,6 @@ struct NeocomApp: App {
         _accounts = State(initialValue: accounts)
         _sde = State(initialValue: sde)
         ReviewPrompter.shared.attach(hasCharacter: { !accounts.accounts.isEmpty })
-        ReviewPrompter.shared.recordActiveDay()
         let fittings = FittingStore(context: container.mainContext)
         _fittings = State(initialValue: fittings)
         // Imports the old app's fits; a no-op after the first successful run.
@@ -85,6 +84,7 @@ struct NeocomApp: App {
                 // The notification authorization may have changed in Settings.
                 Task { await NotificationPlanner.shared.refreshAuthorization() }
             case .background:
+                reviewPrompter.sceneDidEnterBackground()
                 NotificationBackgroundCheck.schedule()
                 WidgetSnapshotWriter.shared.setNeedsUpdate()
             default:

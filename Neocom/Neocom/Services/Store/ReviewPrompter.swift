@@ -27,8 +27,8 @@ nonisolated enum ReviewEvent: Sendable {
 /// The only owner of the App Store review request: counts usage and success moments, decides
 /// when a request is due and arms it for `reviewPrompt()` to present.
 ///
-/// Counters live in `UserDefaults` (`ReviewPolicy`); a failure seen in this session blocks the
-/// request until the next launch.
+/// Counters live in `UserDefaults` (`ReviewPolicy`); a failure seen while the app is on screen
+/// blocks the request until the app next returns from the background.
 @Observable
 @MainActor
 final class ReviewPrompter {
@@ -46,6 +46,8 @@ final class ReviewPrompter {
     @ObservationIgnored private let calendar: Calendar
     @ObservationIgnored private var policy: ReviewPolicy
     @ObservationIgnored private var hasFailure = false
+    /// Failures in a background launch or refresh are not the player's experience.
+    @ObservationIgnored private var isForeground = false
     @ObservationIgnored private var hasCharacter: () -> Bool = { false }
     @ObservationIgnored private var hasWidget = false
     @ObservationIgnored private var didCheckWidgets = false
@@ -72,6 +74,7 @@ final class ReviewPrompter {
 
     /// Counts the day as active and checks for an installed widget once per launch.
     func recordActiveDay() {
+        isForeground = true
         update { $0.recordActivation(now: now(), calendar: calendar) }
         guard !didCheckWidgets else { return }
         didCheckWidgets = true
@@ -88,15 +91,22 @@ final class ReviewPrompter {
         pendingRequest = requestCount
     }
 
-    /// Blocks the request for the rest of the session.
+    /// Blocks the request for the rest of the foreground session.
     func recordFailure() {
+        guard isForeground else { return }
         hasFailure = true
         pendingRequest = nil
     }
 
+    /// Ends the foreground session; the next one starts with a clean failure record.
+    func sceneDidEnterBackground() {
+        isForeground = false
+        hasFailure = false
+    }
+
     /// The player opened the App Store review page from inside the app.
     func recordManualReview() {
-        update { $0.recordManualReview(version: version) }
+        update { $0.recordManualReview(now: now(), version: version) }
         pendingRequest = nil
     }
 

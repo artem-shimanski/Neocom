@@ -19,7 +19,8 @@ nonisolated struct ReviewPolicy: Codable, Equatable, Sendable {
     private(set) var lastSuccessDay: Date?
     private(set) var lastRequestVersion: String?
     private(set) var lastRequestDate: Date?
-    /// The version the player opened the App Store review page from inside the app for.
+    /// The version the player opened the App Store review page from inside the app for; counts
+    /// as a request for the spacing between requests.
     private(set) var manualReviewVersion: String?
 
     mutating func recordActivation(now: Date, calendar: Calendar) {
@@ -41,8 +42,9 @@ nonisolated struct ReviewPolicy: Codable, Equatable, Sendable {
         lastRequestDate = now
     }
 
-    mutating func recordManualReview(version: String) {
+    mutating func recordManualReview(now: Date, version: String) {
         manualReviewVersion = version
+        lastRequestDate = now
     }
 
     /// Whether the usage so far allows a request for `version`.
