@@ -42,7 +42,7 @@ let package = Package(
     ] + dataTargetNames.map(dataProduct),
     dependencies: [
         .package(url: "https://github.com/artem-shimanski/LiteRow.git", .upToNextMinor(from: "0.1.0")),
-        .package(url: "https://github.com/artem-shimanski/DogmaKit.git", from: "0.2.1")
+        .package(url: "https://github.com/artem-shimanski/DogmaKit.git", from: "0.4.3")
     ],
 
     targets: [
