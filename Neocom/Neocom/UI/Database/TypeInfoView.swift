@@ -82,7 +82,7 @@ private struct TypeInfoBody: View {
 
     /// The type's attributes with the fit's numbers swapped in. The SDE figure stays as `baseValue`,
     /// so a row can show what the fit changed. A row the fit has no value for keeps its SDE one; the
-    /// fit never adds or drops rows. Id-valued rows (`requiredSkill1`, `canFitShipGroup01`) are
+    /// fit never adds or drops rows. Id-valued rows (`canFitShipType1`, `canFitShipGroup01`) are
     /// substituted like any other; `AttributeRowView` draws a reference it cannot name as a plain
     /// value.
     private var rows: [TypeAttributeRow] {

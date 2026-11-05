@@ -54,14 +54,12 @@ extension Importer {
             + [try attribute("fitsToShipType")]
         let shipGroupAttributes = names.attributes(prefix: "canFitShipGroup")
         let chargeGroupAttributes = names.attributes(prefix: "chargeGroup")
-        let requiredSkills = names.requiredSkills()
 
         var items: [DogmaItem] = []
         var ships: [DogmaShip] = []
         var shipTypes: [DogmaItemShipType] = []
         var shipGroups: [DogmaItemShipGroup] = []
         var chargeGroups: [DogmaItemChargeGroup] = []
-        var skills: [DogmaItemSkill] = []
 
         // Hulls with tactical modes and the "mode → hull" link. SDE has no such link; its only
         // trace is the name: "Confessor Defense Mode" → "Confessor".
@@ -126,16 +124,6 @@ extension Importer {
                 else { continue }
                 chargeGroups.append(DogmaItemChargeGroup(itemID: id, chargeGroupID: groupID))
             }
-            for requirement in requiredSkills {
-                guard let skill = record.value(requirement.skill).flatMap({ UInt32(exactly: $0.rounded()) }),
-                      skill != 0
-                else { continue }
-                skills.append(DogmaItemSkill(
-                    itemID: id,
-                    skillID: TypeID(rawValue: skill),
-                    level: Int(record.value(requirement.level) ?? 1)
-                ))
-            }
 
             items.append(DogmaItem(
                 id: id,
@@ -180,7 +168,6 @@ extension Importer {
         try main.create(DogmaItemShipType.self, filledWith: shipTypes, options: .keyOrdered)
         try main.create(DogmaItemShipGroup.self, filledWith: shipGroups, options: .keyOrdered)
         try main.create(DogmaItemChargeGroup.self, filledWith: chargeGroups, options: .keyOrdered)
-        try main.create(DogmaItemSkill.self, filledWith: skills, options: .keyOrdered)
     }
 
     /// Hull of a tactical destroyer by its mode name.

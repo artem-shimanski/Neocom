@@ -108,6 +108,7 @@ final class Importer {
         try step("карта") { try importUniverse() }
         try step("таблицы фитинга") { try importFitting() }
         try step("навыки") { try importSkills() }
+        try step("требования навыков") { try importSkillRequirements() }
 
         try step("индексы") {
             try createIndexes()

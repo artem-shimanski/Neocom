@@ -13,10 +13,6 @@ import SDEModels
 extension Importer {
 
     /// Skills for training-time calculation and implant attribute bonuses.
-    ///
-    /// Runs after `importFitting()`: it does not see skills (their `kind` is `.none`), so
-    /// skill-to-skill requirements are appended to the `dogmaItemSkills` it created via
-    /// `DatabaseBuilder.insert(_:)`.
     func importSkills() throws {
         let skillTimeConstant = try attribute("skillTimeConstant")
         let primaryAttribute = try attribute("primaryAttribute")
@@ -28,11 +24,9 @@ extension Importer {
             (try attribute("perceptionBonus"), .perception),
             (try attribute("willpowerBonus"), .willpower),
         ]
-        let requiredSkills = names.requiredSkills()
 
         var skillRows: [DogmaSkill] = []
         var implantRows: [DogmaImplantAttribute] = []
-        var skillRequirementRows: [DogmaItemSkill] = []
 
         for id in sortedTypes {
             let kept = keptTypes[id]!
@@ -62,18 +56,6 @@ extension Importer {
                     primaryAttribute: primary,
                     secondaryAttribute: secondary
                 ))
-
-                // Skill-to-skill requirements, as in `importFitting()`.
-                for requirement in requiredSkills {
-                    guard let skill = record.value(requirement.skill).flatMap({ UInt32(exactly: $0.rounded()) }),
-                          skill != 0
-                    else { continue }
-                    skillRequirementRows.append(DogmaItemSkill(
-                        itemID: id,
-                        skillID: TypeID(rawValue: skill),
-                        level: Int(record.value(requirement.level) ?? 1)
-                    ))
-                }
             }
             else if kept.categoryID == Scope.implantCategory {
                 for (attribute, target) in bonuses {
@@ -89,6 +71,28 @@ extension Importer {
 
         try main.create(DogmaSkill.self, filledWith: skillRows)
         try main.create(DogmaImplantAttribute.self, filledWith: implantRows, options: .keyOrdered)
-        try main.insert(skillRequirementRows)
+    }
+
+    /// Skill requirements of every type: modules, ships, skills, but also ores, POS modules and
+    /// commodities.
+    func importSkillRequirements() throws {
+        let requiredSkills = names.requiredSkills()
+        var rows: [DogmaItemSkill] = []
+
+        for id in sortedTypes {
+            guard let record = dogma[id] else { continue }
+            for requirement in requiredSkills {
+                guard let skill = record.value(requirement.skill).flatMap({ UInt32(exactly: $0.rounded()) }),
+                      skill != 0
+                else { continue }
+                rows.append(DogmaItemSkill(
+                    itemID: id,
+                    skillID: TypeID(rawValue: skill),
+                    level: Int(record.value(requirement.level) ?? 1)
+                ))
+            }
+        }
+
+        try main.create(DogmaItemSkill.self, filledWith: rows, options: .keyOrdered)
     }
 }

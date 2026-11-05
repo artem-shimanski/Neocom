@@ -2,7 +2,7 @@ import Foundation
 import SDEKit
 
 /// The units whose stored number is not what is shown: a resistance is stored as the multiplier
-/// `0.85` and shown as `15%`, a required skill as its type id. Other units are plain suffixes.
+/// `0.85` and shown as `15%`, a fitting restriction as its type id. Other units are plain suffixes.
 enum SDEUnit: UInt16 {
     case milliseconds = 101
     case inverseAbsolutePercent = 108

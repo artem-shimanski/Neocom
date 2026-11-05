@@ -151,7 +151,7 @@ struct TypeAttributeRow: Sendable, Identifiable {
 
 // MARK: - Attributes that hold a reference
 //
-// `requiredSkill1` holds a type id, `canFitShipGroup01` a group id and `maxGroupActive` an
+// `canFitShipType1` holds a type id, `canFitShipGroup01` a group id and `maxGroupActive` an
 // attribute id, all in the same `REAL` column as other values. SQLite joins `REAL` to `INTEGER`
 // keys numerically, but the query builder compares Swift types, so `Expression<Double>` cannot
 // meet `Expression<TypeID>`.
@@ -481,8 +481,12 @@ enum SDEBrowser {
             .query()
     }
 
+    /// The attribute category of `requiredSkill1…6`.
+    private static let requiredSkillsCategory: AttributeCategoryID = 8
+
     /// Published attributes of a type, ordered by the screen's grouping. Unpublished attributes
-    /// are internal (`isCapitalSize`, `entityFlyRange`).
+    /// are internal (`isCapitalSize`, `entityFlyRange`). Required skills are left out: the screen
+    /// shows them as a tree from `requiredSkills(of:)`.
     static func attributes(of type: TypeID) -> SQLQuery<TypeAttributeRow> {
         let withAttribute = TypeAttribute.all()
             .join(DogmaAttributeInfo.self) { row, attribute in row.attributeID == attribute.id }
@@ -498,7 +502,10 @@ enum SDEBrowser {
             .leftJoin(NameRow.self) { _, _, _, _, unit, unitName in unit.displayNameID == unitName.id }
         return withUnitName
             .filter { row, attribute, _, _, _, _ in
+                // `!=` alone would also drop the attributes without a category.
                 row.typeID == type && attribute.published == true
+                    && (attribute.attributeCategoryID.isNull()
+                        || attribute.attributeCategoryID != Self.requiredSkillsCategory)
             }
             .select { row, attribute, name, category, unit, unitName in
                 TypeAttributeRow.projection(
@@ -520,7 +527,7 @@ enum SDEBrowser {
 
     // MARK: - Attribute references
 
-    /// Names of the types this type's attributes refer to, such as required skills and ammunition.
+    /// Names of the types this type's attributes refer to, such as fitting restrictions and fuel.
     static func referencedTypes(of type: TypeID) -> SQLQuery<TypeReference> {
         let withAttribute = TypeAttributeAsTypeReference.all()
             .join(DogmaAttributeInfo.self) { row, attribute in row.attributeID == attribute.id }
